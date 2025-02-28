@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeFi Chatbot</title>
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <button id="login-btn">Login</button>
+    </header>
+    <div class="content-wrapper">
+      <aside class="sidebar">
+        <h2>Investment Stats</h2>
+        <ul id="stats">
+          <li>FLR: 100.5</li>
+          <li>USDT: 50.0</li>
+          <li>Yield: 3.2%</li>
+        </ul>
+      </aside>
+      <main class="chat-container">
+        <div id="chat" class="chat"></div>
+        <div class="input-container">
+          <textarea id="message-input" rows="2" placeholder="Type your command..."></textarea>
+          <div id="send-btn" type="button">
+            <svg id="button-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="stroke-[2] relative">
+              <path d="M5 11L12 4M12 4L19 11M12 4V21" stroke="currentColor"></path>
+            </svg>
+          </div>
+          <!-- <button id="send-btn" type="button">↑</button> -->
+        </div>
+        <p class="disclaimer">Do not invest more than you can afford to lose.</p>
+      </main>
+    </div>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
