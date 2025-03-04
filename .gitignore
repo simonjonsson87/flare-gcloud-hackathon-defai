@@ -12,3 +12,7 @@ wheels/
 .ruff_cache
 .vscode
 .DS_Store
+
+
+server.crt
+server.key

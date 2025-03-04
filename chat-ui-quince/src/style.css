@@ -1,0 +1,209 @@
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #0f0f0f;
+  color: #fff;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.header {
+  padding: 10px; /* Reduced padding to fit button */
+  background: #181818;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  width: 100%; /* Ensure it spans full width */
+  box-sizing: border-box; /* Include padding in width */
+}
+
+#login-btn {
+  padding: 8px 16px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #000;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+#login-btn.google-style {
+  background: #fff;
+  color: #757575;
+  font-family: 'Roboto', sans-serif;
+  padding: 8px 16px; /* Tightened padding */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap; /* Prevent text wrap */
+}
+
+#login-btn.google-style::before {
+  content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="18px" height="18px"><path fill="#4285F4" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11.8 0 21.8-9.8 21.8-22 0-1.3-.2-2.7-.5-4z"/><path fill="#34A853" d="M6.6 14.4l6.4 6.4c-.9 2.6-1.4 5.4-1.4 8.2 0 3.1.5 6 1.4 8.6l-6.4 6.4C3.8 40.4 2 32.5 2 24s1.8-16.4 4.6-9.6z"/><path fill="#FBBC05" d="M24 11c3.2 0 6 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2c-6.1 0-11.5 2.4-15.4 6.4L13 14.8c1.8-2.6 4.8-4.8 8-4.8z"/><path fill="#EA4335" d="M24 37c-3.2 0-6-1.1-8.1-2.9l-6.4 6.4C13.4 43.9 18.4 46 24 46c6.1 0 11.5-2.4 15.4-6.4l-6.4-6.4c-1.8 2.6-4.8 4.8-8 4.8z"/></svg>');
+}
+
+#login-btn:hover {
+  background: #f0f0f0;
+}
+
+.content-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+.sidebar {
+  width: 250px;
+  height: 10%;
+  background: #181818;
+  padding: 20px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  overflow-y: auto;
+  margin: 20px 0 20px 20px; /* Consistent margins */
+  flex-shrink: 0;
+}
+
+
+
+.chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  min-height: 0;
+}
+
+.message {
+  max-width: 70%;
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  word-wrap: break-word;
+}
+
+.user-message {
+  background: #2a2a2a;
+  margin-left: auto;
+}
+
+.bot-message {
+  background: #1a1a1a;
+}
+
+.input-container {
+  position: relative;
+  padding: 10px 0;
+  flex-shrink: 0;
+}
+
+.stroke-\[2\] {
+  stroke-width: 2;
+}
+
+#message-input {
+  width: 100%;
+  height: 60px;
+  padding: 10px 40px 10px 10px;
+  border: 1px solid #333;
+  border-radius: 12px;
+  background: #1a1a1a;
+  color: #fff;
+  resize: none;
+  outline: none;
+  font-size: 16px;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+#send-btn {
+  position: absolute;
+  right: 15px;
+  bottom: 20px;
+  width: 30px;
+  height: 30px;
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  color: #000;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#send-btn:hover {
+  background: #e0e0e0;
+}
+
+
+
+.disclaimer {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  margin: 5px 0 10px;
+  flex-shrink: 0;
+}
+
+.sidebar h2 {
+  margin: 0 0 20px;
+  font-size: 1.2em;
+}
+
+#stats {
+  list-style: none;
+  padding: 0;
+}
+
+#stats li {
+  padding: 8px 0;
+  border-bottom: 1px solid #222;
+}
+
+@media (min-width: 1080px) {
+  .container {
+    flex-direction: column;
+  }
+  .header {
+    position: static;
+    width: 100%;
+  }
+  .content-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch; /* Ensures children align vertically */
+  }
+  .sidebar {
+    margin: 20px 20px 20px 20px; /* Equal margins all around */
+    height: calc(100% - 80px); /* Full height minus top/bottom margins */
+    max-height: none; /* Remove cap */
+  }
+  .chat-container {
+    margin-top: 0;
+    height: auto;
+  }
+}

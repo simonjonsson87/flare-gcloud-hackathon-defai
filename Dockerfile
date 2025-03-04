@@ -1,7 +1,14 @@
-# Stage 1: Build Frontend
+# Stage 1: Build template Frontend
+#FROM node:18-alpine AS frontend-builder
+#WORKDIR /frontend
+#COPY chat-ui/ .
+#RUN npm install
+#RUN npm run build
+
+# Stage 1: Build quince Frontend
 FROM node:18-alpine AS frontend-builder
 WORKDIR /frontend
-COPY chat-ui/ .
+COPY chat-ui-quince/ .
 RUN npm install
 RUN npm run build
 
@@ -25,10 +32,15 @@ COPY --from=backend-builder /flare-ai-defai/pyproject.toml .
 COPY --from=backend-builder /flare-ai-defai/README.md .
 
 # Copy frontend files
-COPY --from=frontend-builder /frontend/build /usr/share/nginx/html
+#COPY --from=frontend-builder /frontend/build /usr/share/nginx/html
+COPY --from=frontend-builder /frontend/dist /usr/share/nginx/html
 
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/sites-enabled/default
+
+# Copy self-published TLS certificate
+COPY server.crt /app/server.crt
+COPY server.key /app/server.key
 
 # Setup supervisor configuration
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
@@ -38,6 +50,7 @@ LABEL "tee.launch_policy.allow_env_override"="GEMINI_API_KEY,GEMINI_MODEL,WEB3_P
 LABEL "tee.launch_policy.log_redirect"="always"
 
 EXPOSE 80
+EXPOSE 8080
 
 # Start supervisor (which will start both nginx and the backend)
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
