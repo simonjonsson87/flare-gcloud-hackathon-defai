@@ -39,6 +39,8 @@ class ChatMessage(BaseModel):
 
     message: str = Field(..., min_length=1)
 
+class TokenRequest(BaseModel):
+    token: str
 
 class ChatRouter:
     """
@@ -144,10 +146,69 @@ class ChatRouter:
                 self.logger.exception("message_handling_failed", error=str(e))
                 raise HTTPException(status_code=500, detail=str(e)) from e
 
+        @self._router.post("/verify")
+        async def verify(token_request: TokenRequest) -> dict[str, str]:
+            """
+            Verify a Google ID token sent from the frontend.
+
+            Args:
+                token_request: Pydantic model containing the token
+
+            Returns:
+                dict: Verification result with user info or error
+
+            Raises:
+                HTTPException: If verification fails
+            """
+            result = await self.verify_google_token(token_request.token)
+            if "error" in result:
+                raise HTTPException(status_code=401, detail=result["error"])
+            return result               
+
+    async def verify_google_token(self, token: str) -> dict[str, str]:
+        """
+        Verify a Google ID token asynchronously.
+
+        Args:
+            token: Google ID token to verify
+
+        Returns:
+            dict: User info if valid, error message if invalid
+        """
+        try:
+            id_info = id_token.verify_oauth2_token(
+                token,
+                requests.Request(),
+                'YOUR_CLIENT_ID.apps.googleusercontent.com'
+            )
+            return {
+                "user_id": id_info["sub"],
+                "email": id_info["email"],
+                "message": "User verified"
+            }
+        except ValueError as e:
+            self.logger.error(f"Token verification failed: {e}")
+            return {"error": f"Invalid token: {e}"}
+
     @property
     def router(self) -> APIRouter:
         """Get the FastAPI router with registered routes."""
         return self._router
+
+    def verify_google_token(token):
+        try:
+            id_info = id_token.verify_oauth2_token(
+                token,
+                requests.Request(),
+                'YOUR_CLIENT_ID.apps.googleusercontent.com'
+            )
+            return {
+                'user_id': id_info['sub'],
+                'email': id_info['email'],
+                'message': 'User verified'
+            }
+        except ValueError as e:
+            return {'error': f'Invalid token: {e}'}
 
     async def handle_command(self, command: str) -> dict[str, str]:
         """
