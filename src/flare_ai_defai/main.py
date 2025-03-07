@@ -19,6 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from flare_ai_defai import (
     ChatRouter,
     FlareProvider,
+    FlareExplorer,
     GeminiProvider,
     PromptService,
     Vtpm,
@@ -71,6 +72,7 @@ def create_app() -> FastAPI:
     chat = ChatRouter(
         ai=GeminiProvider(api_key=settings.gemini_api_key, model=settings.gemini_model),
         blockchain=FlareProvider(web3_provider_url=settings.web3_provider_url),
+        flareExplorer=FlareExplorer(base_url=settings.web3_explorer_url),
         attestation=Vtpm(simulate=settings.simulate_attestation),
         prompts=PromptService(),
     )

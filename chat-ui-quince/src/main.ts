@@ -11,6 +11,11 @@ const input = document.getElementById('message-input') as HTMLTextAreaElement;
 const sendBtn = document.getElementById('send-btn') as HTMLButtonElement;
 const loginBtn = document.getElementById('login-btn') as HTMLButtonElement;
 
+window.onload = function () {
+  const messageInput = document.getElementById('message-input') as HTMLInputElement;
+  messageInput.focus();
+};
+
 const appendToChat = (text: string, isUser: boolean): void => {
   const messageDiv = document.createElement('div');
   messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;

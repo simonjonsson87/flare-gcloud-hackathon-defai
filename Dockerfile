@@ -38,9 +38,9 @@ COPY --from=frontend-builder /frontend/dist /usr/share/nginx/html
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/sites-enabled/default
 
-# Copy self-published TLS certificate
-COPY server.crt /app/server.crt
-COPY server.key /app/server.key
+# Copy Let's Encrypt TLS certificate and key
+COPY fullchain.pem /app/fullchain.pem
+COPY privkey.pem /app/privkey.pem
 
 # Setup supervisor configuration
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
@@ -50,7 +50,7 @@ LABEL "tee.launch_policy.allow_env_override"="GEMINI_API_KEY,GEMINI_MODEL,WEB3_P
 LABEL "tee.launch_policy.log_redirect"="always"
 
 EXPOSE 80
-EXPOSE 8080
+EXPOSE 443
 
 # Start supervisor (which will start both nginx and the backend)
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

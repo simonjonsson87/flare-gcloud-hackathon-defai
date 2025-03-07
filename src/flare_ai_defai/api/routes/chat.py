@@ -19,9 +19,13 @@ from pydantic import BaseModel, Field
 from web3 import Web3
 from web3.exceptions import Web3RPCError
 
+from google.oauth2 import id_token
+from google.auth.transport import requests
+
 from flare_ai_defai.ai import GeminiProvider
 from flare_ai_defai.attestation import Vtpm, VtpmAttestationError
 from flare_ai_defai.blockchain import FlareProvider
+from flare_ai_defai.blockchain import FlareExplorer
 from flare_ai_defai.prompts import PromptService, SemanticRouterResponse
 from flare_ai_defai.settings import settings
 
@@ -62,6 +66,7 @@ class ChatRouter:
         self,
         ai: GeminiProvider,
         blockchain: FlareProvider,
+        flareExplorer: FlareExplorer,
         attestation: Vtpm,
         prompts: PromptService,
     ) -> None:
@@ -77,10 +82,12 @@ class ChatRouter:
         self._router = APIRouter()
         self.ai = ai
         self.blockchain = blockchain
+        self.flareExplorer = flareExplorer
         self.attestation = attestation
         self.prompts = prompts
         self.logger = logger.bind(router="chat")
         self._setup_routes()
+        self.google_auth_client_id = "289493342717-rqktph7q97vsgegclf28ngfhuhcni1d8.apps.googleusercontent.com"
 
     def _setup_routes(self) -> None:
         """
@@ -103,7 +110,7 @@ class ChatRouter:
                 HTTPException: If message handling fails
             """
             try:
-                self.logger.debug("received_message", message=message.message)
+                self.logger.debug("received_message in the chat route", message=message.message)
 
                 if message.message.startswith("/"):
                     return await self.handle_command(message.message)
@@ -160,26 +167,18 @@ class ChatRouter:
             Raises:
                 HTTPException: If verification fails
             """
+            self.logger.debug("received a call in the verify API route")
             result = await self.verify_google_token(token_request.token)
             if "error" in result:
                 raise HTTPException(status_code=401, detail=result["error"])
-            return result               
-
+            return result  
+                     
     async def verify_google_token(self, token: str) -> dict[str, str]:
-        """
-        Verify a Google ID token asynchronously.
-
-        Args:
-            token: Google ID token to verify
-
-        Returns:
-            dict: User info if valid, error message if invalid
-        """
         try:
             id_info = id_token.verify_oauth2_token(
                 token,
                 requests.Request(),
-                'YOUR_CLIENT_ID.apps.googleusercontent.com'
+                self.google_auth_client_id
             )
             return {
                 "user_id": id_info["sub"],
@@ -189,26 +188,14 @@ class ChatRouter:
         except ValueError as e:
             self.logger.error(f"Token verification failed: {e}")
             return {"error": f"Invalid token: {e}"}
+   
 
     @property
     def router(self) -> APIRouter:
         """Get the FastAPI router with registered routes."""
         return self._router
 
-    def verify_google_token(token):
-        try:
-            id_info = id_token.verify_oauth2_token(
-                token,
-                requests.Request(),
-                'YOUR_CLIENT_ID.apps.googleusercontent.com'
-            )
-            return {
-                'user_id': id_info['sub'],
-                'email': id_info['email'],
-                'message': 'User verified'
-            }
-        except ValueError as e:
-            return {'error': f'Invalid token: {e}'}
+    
 
     async def handle_command(self, command: str) -> dict[str, str]:
         """
@@ -220,10 +207,17 @@ class ChatRouter:
         Returns:
             dict[str, str]: Response containing command result
         """
+        self.logger.debug("received command: ", command=command)
         if command == "/reset":
             self.blockchain.reset()
             self.ai.reset()
             return {"response": "Reset complete"}
+        
+        if command == "/queryDefi":
+            self.logger.debug("In /queryDefi just before calling flare explorer")
+            response = self.flareExplorer.get_contract_abi("0x12e605bc104e93B45e1aD99F9e555f659051c2BB")
+            return {"response": json.dumps(response)}
+        
         return {"response": "Unknown command"}
 
     async def get_semantic_route(self, message: str) -> SemanticRouterResponse:
