@@ -17,6 +17,7 @@ import json
 import structlog
 import logging
 from fastapi import APIRouter, HTTPException
+from fastapi import Request, Body
 from pydantic import BaseModel, Field
 from web3 import Web3
 from web3.exceptions import Web3RPCError
@@ -173,31 +174,52 @@ class ChatRouter:
                 self.logger.exception("message_handling_failed", error=str(e))
                 raise HTTPException(status_code=500, detail=str(e)) from e
 
+        #@self._router.post("/verify")
+        #async def verify(request: dict):
+        #    """
+        #    Verify a Google ID token sent from the frontend.
+#
+        #    Args:
+        #        token_request: Pydantic model containing the token
+#
+        #    Returns:
+        #        dict: Verification result with user info or error
+#
+        #    Raises:
+        #        HTTPException: If verification fails
+        #    """
+        #    self.logger.debug("Raw request at /verify", request=request)
+        #    token_request = TokenRequest(**request)  # Validate after logging
+        #    self.logger.debug("Received a call in the verify API route")
+        #    self.logger.info("Token received", token=token_request.token)
+        #    result = await self.verify_google_token(token_request.token)
+        #    if "error" in result:
+        #        self.logger.error("Verification error", error=result["error"])
+        #        raise HTTPException(status_code=401, detail=result["error"])
+        #    user_id = result["user_id"]
+        #    self.logger.debug("Verified user", user_id=user_id, user_email=result["email"], message=result["message"])
+        #    return result
+        
         @self._router.post("/verify")
-        async def verify(request: dict):
-            """
-            Verify a Google ID token sent from the frontend.
-
-            Args:
-                token_request: Pydantic model containing the token
-
-            Returns:
-                dict: Verification result with user info or error
-
-            Raises:
-                HTTPException: If verification fails
-            """
-            self.logger.debug("Raw request at /verify", request=request)
-            token_request = TokenRequest(**request)  # Validate after logging
-            self.logger.debug("Received a call in the verify API route")
-            self.logger.info("Token received", token=token_request.token)
-            result = await self.verify_google_token(token_request.token)
-            if "error" in result:
-                self.logger.error("Verification error", error=result["error"])
-                raise HTTPException(status_code=401, detail=result["error"])
-            user_id = result["user_id"]
-            self.logger.debug("Verified user", user_id=user_id, user_email=result["email"], message=result["message"])
-            return result
+        async def verify(request: Request, body: bytes = Body(...)):
+            raw_body = body.decode('utf-8')  # Decode bytes to string
+            self.logger.debug("Raw request body at /verify", raw_body=raw_body)
+            try:
+                request_json = json.loads(raw_body)  # Parse JSON manually
+                self.logger.debug("Parsed request JSON", request_json=request_json)
+                token_request = TokenRequest(**request_json)  # Validate after logging
+                self.logger.info("Token received", token=token_request.token)
+                result = await self.verify_google_token(token_request.token)
+                if "error" in result:
+                    raise HTTPException(status_code=401, detail=result["error"])
+                self.logger.debug("Verified user", user_id=result["user_id"], user_email=result["email"], message=result["message"])
+                return result
+            except json.JSONDecodeError:
+                self.logger.error("Invalid JSON in request", raw_body=raw_body)
+                raise HTTPException(status_code=400, detail="Invalid JSON")
+            except ValueError as e:
+                self.logger.error("Validation error", error=str(e))
+                raise HTTPException(status_code=422, detail=str(e))        
                      
     async def verify_google_token(self, token: str) -> dict[str, str]:
         try:

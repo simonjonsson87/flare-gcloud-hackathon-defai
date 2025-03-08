@@ -25,20 +25,25 @@ declare global {
 }
 
 async function handleGoogleSignIn(response: { credential: string }): Promise<void> {
-    console.log('GIS response:', response)
-    const idToken = response.credential;  
-    const request: TokenRequest = { token: idToken };
-  
+    const idToken = response.credential;
+    if (!idToken) {
+      console.error("No credential in GIS response:", response);
+      return;
+    }
+    const request = { token: idToken };
+    console.log('Sending to /verify:', JSON.stringify(request));
     try {
-      console.log('Sending request:', JSON.stringify(request));  // Add debug log
-      const response = await fetch(BACKEND_ROUTE + 'verify', {
+      const fetchResponse = await fetch(BACKEND_ROUTE + 'verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(request),
       });
-  
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const data: VerifyResponse = await response.json();
+      if (!fetchResponse.ok) {
+        const errorText = await fetchResponse.text();  // Get response body
+        console.error('Fetch failed:', fetchResponse.status, errorText);
+        throw new Error(`HTTP error! status: ${fetchResponse.status}`);
+      }
+      const data: VerifyResponse = await fetchResponse.json();
       console.log('User verified:', data);
     } catch (error) {
       console.error('Sign-in failed:', error);
