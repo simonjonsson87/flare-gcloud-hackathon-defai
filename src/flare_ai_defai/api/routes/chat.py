@@ -15,6 +15,7 @@ The module provides a ChatRouter class that integrates various services:
 import json
 
 import structlog
+import logging
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from web3 import Web3
@@ -30,6 +31,24 @@ from flare_ai_defai.blockchain import FlareExplorer
 from flare_ai_defai.prompts import PromptService, SemanticRouterResponse
 from flare_ai_defai.settings import settings
 
+
+# Configure structlog to output to console
+structlog.configure(
+    processors=[
+        structlog.stdlib.filter_by_level,
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.format_exc_info,
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.dev.ConsoleRenderer(),
+    ],
+    context_class=dict,
+    logger_factory=structlog.stdlib.LoggerFactory(),
+    wrapper_class=structlog.stdlib.BoundLogger,
+    cache_logger_on_first_use=True,
+)
+
+# Set logging level to INFO
+logging.basicConfig(level=logging.INFO)
 logger = structlog.get_logger(__name__)
 router = APIRouter()
 

@@ -25,7 +25,8 @@ declare global {
 }
 
 async function handleGoogleSignIn(response: { credential: string }): Promise<void> {
-    const idToken = response.credential;  // Change from .credentials to .credential
+    console.log('GIS response:', response)
+    const idToken = response.credential;  
     const request: TokenRequest = { token: idToken };
   
     try {
