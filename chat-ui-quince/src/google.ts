@@ -24,8 +24,10 @@ declare global {
   }
 }
 
-async function handleGoogleSignIn(response: { credentials: string }): Promise<void> {
-    const idToken = response.credentials;
+ 
+
+async function handleGoogleSignIn(response: { credential: string }): Promise<void> {
+    const idToken = response.credential;
     if (!idToken) {
       console.error("No credential in GIS response:", response);
       return;
@@ -41,7 +43,7 @@ async function handleGoogleSignIn(response: { credentials: string }): Promise<vo
       if (!fetchResponse.ok) {
         const errorText = await fetchResponse.text();  // Get response body
         console.error('Fetch failed:', fetchResponse.status, errorText);
-        throw new Error(`HTTP error! status: ${fetchResponse.status}`);
+        throw new Error(`HTTP error! # status: ${fetchResponse.status}`);
       }
       const data: VerifyResponse = await fetchResponse.json();
       console.log('User verified:', data);
