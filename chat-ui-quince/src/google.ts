@@ -27,6 +27,7 @@ declare global {
  
 
 async function handleGoogleSignIn(response: { credential: string }): Promise<void> {
+    console.log('Callback triggered! Response:', response);
     const idToken = response.credential;
     if (!idToken) {
       console.error("No credential in GIS response:", response);
