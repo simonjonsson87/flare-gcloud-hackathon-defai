@@ -1,4 +1,5 @@
 
+// google.ts
 const BACKEND_ROUTE = 'api/routes/chat/' 
 
 // Define interfaces for type safety
