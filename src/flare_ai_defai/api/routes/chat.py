@@ -187,6 +187,7 @@ class ChatRouter:
             Raises:
                 HTTPException: If verification fails
             """
+            print("Test if print() works")
             self.logger.info("Received a call in the verify API route")
             self.logger.info(token_request.token)
             result = await self.verify_google_token(token_request.token)

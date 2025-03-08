@@ -103,6 +103,7 @@ def start() -> None:
 
     uvicorn.run(app, host="0.0.0.0", port=8080) 
     # uvicorn.run(app, host="0.0.0.0", port=8080, ssl_keyfile="server.key", ssl_certfile="server.crt")  # noqa: S104
+    print("Started")
 
 
 if __name__ == "__main__":
