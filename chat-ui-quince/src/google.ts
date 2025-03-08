@@ -24,10 +24,8 @@ declare global {
   }
 }
 
- 
-
 async function handleGoogleSignIn(response: { credential: string }): Promise<void> {
-    console.log('Callback triggered! Response:', response);
+    console.log('Callback triggered! Response:', response);  // Must appear
     const idToken = response.credential;
     if (!idToken) {
       console.error("No credential in GIS response:", response);
@@ -42,9 +40,9 @@ async function handleGoogleSignIn(response: { credential: string }): Promise<voi
         body: JSON.stringify(request),
       });
       if (!fetchResponse.ok) {
-        const errorText = await fetchResponse.text();  // Get response body
+        const errorText = await fetchResponse.text();
         console.error('Fetch failed:', fetchResponse.status, errorText);
-        throw new Error(`HTTP error! # status: ${fetchResponse.status}`);
+        throw new Error(`HTTP error! status: ${fetchResponse.status}`);
       }
       const data: VerifyResponse = await fetchResponse.json();
       console.log('User verified:', data);
@@ -52,8 +50,8 @@ async function handleGoogleSignIn(response: { credential: string }): Promise<voi
       console.error('Sign-in failed:', error);
     }
   }
-
-window.addEventListener('load', () => {
+  
+  window.addEventListener('load', () => {
     console.log('Window loaded, checking google.accounts.id:', window.google.accounts.id);
     if (!window.google || !window.google.accounts || !window.google.accounts.id) {
       console.error('Google Identity Services script not loaded');
@@ -65,12 +63,24 @@ window.addEventListener('load', () => {
       callback: handleGoogleSignIn
     });
     console.log('After initialize, google.accounts.id:', window.google.accounts.id);
-
+  
     const loginBtn = document.getElementById('google-sign-in') as HTMLButtonElement;
+    if (!loginBtn) {
+      console.error('Login button not found');
+      return;
+    }
     loginBtn.onclick = function() {
-      console.log('Before calling signIn, google.accounts.id:', window.google.accounts.id);
-      //console.log('Calling signIn:', window.google.accounts.id.signIn);
+      console.log('Button clicked, triggering prompt');
       console.log('Calling prompt:', window.google.accounts.id.prompt);
-      window.google.accounts.id.prompt();
+      window.google.accounts.id.prompt((notification) => {
+        console.log('Prompt notification:', notification);  
+        if (notification.isNotDisplayed()) {
+          console.log('Prompt not displayed:', notification.getNotDisplayedReason());
+        } else if (notification.isSkippedMoment()) {
+          console.log('Prompt skipped:', notification.getSkippedReason());
+        } else if (notification.isDismissedMoment()) {
+          console.log('Prompt dismissed:', notification.getDismissedReason());
+        }
+      });
     };
   });
