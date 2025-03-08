@@ -174,7 +174,7 @@ class ChatRouter:
                 raise HTTPException(status_code=500, detail=str(e)) from e
 
         @self._router.post("/verify")
-        async def verify(token_request: TokenRequest) -> dict[str, str]:
+        async def verify(request: dict):
             """
             Verify a Google ID token sent from the frontend.
 
@@ -187,20 +187,17 @@ class ChatRouter:
             Raises:
                 HTTPException: If verification fails
             """
-            print("Test if print() works")
-            self.logger.info("Received a call in the verify API route")
-            self.logger.info(token_request.token)
+            self.logger.debug("Raw request at /verify", request=request)
+            token_request = TokenRequest(**request)  # Validate after logging
+            self.logger.debug("Received a call in the verify API route")
+            self.logger.info("Token received", token=token_request.token)
             result = await self.verify_google_token(token_request.token)
             if "error" in result:
-                self.logger.error("Something went wrong when verifying token")
+                self.logger.error("Verification error", error=result["error"])
                 raise HTTPException(status_code=401, detail=result["error"])
-            
             user_id = result["user_id"]
-            self.logger.info("Verified user", user_id=result["user_id"], user_email=result["email"], message=result["message"])
-            #private_key = self.user_store.get_or_create_private_key(user_id)
-            #self.logger.info("Stored or retrieved private key", user_id=user_id)
-            
-            return result  
+            self.logger.debug("Verified user", user_id=user_id, user_email=result["email"], message=result["message"])
+            return result
                      
     async def verify_google_token(self, token: str) -> dict[str, str]:
         try:
