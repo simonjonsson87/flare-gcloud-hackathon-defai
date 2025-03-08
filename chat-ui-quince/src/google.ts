@@ -44,19 +44,21 @@ async function handleGoogleSignIn(response: { credentials: string }): Promise<vo
 }
 
 window.addEventListener('load', () => {
-  const loginBtn = document.getElementById('google-sign-in') as HTMLButtonElement;
-
-  if (!window.google || !window.google.accounts || !window.google.accounts.id) {
-    console.error('Google Identity Services script not loaded');
-    return;
-  }
-
-  window.google.accounts.id.initialize({
-    client_id: '289493342717-rqktph7q97vsgegclf28ngfhuhcni1d8.apps.googleusercontent.com',
-    callback: handleGoogleSignIn
+    console.log('Window loaded, checking google.accounts.id:', window.google.accounts.id);
+    if (!window.google || !window.google.accounts || !window.google.accounts.id) {
+      console.error('Google Identity Services script not loaded');
+      return;
+    }
+    console.log('Before initialize, google.accounts.id:', window.google.accounts.id);
+    window.google.accounts.id.initialize({
+      client_id: '289493342717-rqktph7q97vsgegclf28ngfhuhcni1d8.apps.googleusercontent.com',
+      callback: handleGoogleSignIn
+    });
+    console.log('After initialize, google.accounts.id:', window.google.accounts.id);
+    const loginBtn = document.getElementById('google-sign-in') as HTMLButtonElement;
+    loginBtn.onclick = function() {
+      console.log('Before calling signIn, google.accounts.id:', window.google.accounts.id);
+      console.log('Calling signIn:', window.google.accounts.id.signIn);
+      window.google.accounts.id.signIn();
+    };
   });
-
-  loginBtn.onclick = function() {
-    window.google.accounts.id.signIn();
-  };
-});
