@@ -57,6 +57,6 @@ window.addEventListener('load', () => {
   });
 
   loginBtn.onclick = function() {
-    window.google.accounts.id.triggerLogin();
+    window.google.accounts.id.signIn();
   };
 });
