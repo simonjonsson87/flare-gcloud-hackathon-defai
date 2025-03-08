@@ -17,7 +17,7 @@ declare global {
       accounts: {
         id: {
           initialize: (options: { client_id: string, callback: (response: { credentials: string }) => void }) => void;
-          signIn: () => void;
+          prompt: () => void;
         }
       }
     };
@@ -55,10 +55,12 @@ window.addEventListener('load', () => {
       callback: handleGoogleSignIn
     });
     console.log('After initialize, google.accounts.id:', window.google.accounts.id);
+
     const loginBtn = document.getElementById('google-sign-in') as HTMLButtonElement;
     loginBtn.onclick = function() {
       console.log('Before calling signIn, google.accounts.id:', window.google.accounts.id);
-      console.log('Calling signIn:', window.google.accounts.id.signIn);
-      window.google.accounts.id.signIn();
+        //console.log('Calling signIn:', window.google.accounts.id.signIn);
+        console.log('Calling prompt:', window.google.accounts.id.prompt);
+      window.google.accounts.id.prompt();
     };
   });
