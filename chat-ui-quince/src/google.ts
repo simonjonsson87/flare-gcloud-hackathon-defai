@@ -17,7 +17,7 @@ declare global {
       accounts: {
         id: {
           initialize: (options: { client_id: string, callback: (response: { credentials: string }) => void }) => void;
-          triggerLogin: () => void;
+          signIn: () => void;
         }
       }
     };
