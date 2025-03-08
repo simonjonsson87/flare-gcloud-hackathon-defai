@@ -24,8 +24,8 @@ declare global {
   }
 }
 
-async function handleGoogleSignIn(response: { credential: string }): Promise<void> {
-    const idToken = response.credential;
+async function handleGoogleSignIn(response: { credentials: string }): Promise<void> {
+    const idToken = response.credentials;
     if (!idToken) {
       console.error("No credential in GIS response:", response);
       return;
@@ -66,8 +66,8 @@ window.addEventListener('load', () => {
     const loginBtn = document.getElementById('google-sign-in') as HTMLButtonElement;
     loginBtn.onclick = function() {
       console.log('Before calling signIn, google.accounts.id:', window.google.accounts.id);
-        //console.log('Calling signIn:', window.google.accounts.id.signIn);
-        console.log('Calling prompt:', window.google.accounts.id.prompt);
+      //console.log('Calling signIn:', window.google.accounts.id.signIn);
+      console.log('Calling prompt:', window.google.accounts.id.prompt);
       window.google.accounts.id.prompt();
     };
   });
