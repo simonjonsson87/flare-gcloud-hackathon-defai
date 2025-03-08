@@ -25,8 +25,11 @@ declare global {
 }
 
 async function handleGoogleSignIn(response: { credentials: string }): Promise<void> {
+  //const idToken = response.credentials;
+  //const request: TokenRequest = { token: idToken };
+        
   const idToken = response.credentials;
-  const request: TokenRequest = { token: idToken };
+  const request = { token: idToken };
 
   try {
     const response = await fetch(BACKEND_ROUTE + 'verify', {
