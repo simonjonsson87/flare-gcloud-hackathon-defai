@@ -24,27 +24,25 @@ declare global {
   }
 }
 
-async function handleGoogleSignIn(response: { credentials: string }): Promise<void> {
-  //const idToken = response.credentials;
-  //const request: TokenRequest = { token: idToken };
-        
-  const idToken = response.credentials;
-  const request = { token: idToken };
-
-  try {
-    const response = await fetch(BACKEND_ROUTE + 'verify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    const data: VerifyResponse = await response.json();
-    console.log('User verified:', data);
-  } catch (error) {
-    console.error('Sign-in failed:', error);
+async function handleGoogleSignIn(response: { credential: string }): Promise<void> {
+    const idToken = response.credential;  // Change from .credentials to .credential
+    const request: TokenRequest = { token: idToken };
+  
+    try {
+      console.log('Sending request:', JSON.stringify(request));  // Add debug log
+      const response = await fetch(BACKEND_ROUTE + 'verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(request),
+      });
+  
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data: VerifyResponse = await response.json();
+      console.log('User verified:', data);
+    } catch (error) {
+      console.error('Sign-in failed:', error);
+    }
   }
-}
 
 window.addEventListener('load', () => {
     console.log('Window loaded, checking google.accounts.id:', window.google.accounts.id);
