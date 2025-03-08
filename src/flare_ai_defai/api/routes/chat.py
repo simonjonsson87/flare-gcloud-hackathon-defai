@@ -201,25 +201,19 @@ class ChatRouter:
         #    return result
         
         @self._router.post("/verify")
-        async def verify(request: Request, body: bytes = Body(...)):
-            raw_body = body.decode('utf-8')  # Decode bytes to string
-            self.logger.debug("Raw request body at /verify", raw_body=raw_body)
+        async def verify(self, token_request: TokenRequest):
+            self.logger.debug("Entered /verify endpoint")
+            self.logger.info("Token received", token=token_request.token)
             try:
-                request_json = json.loads(raw_body)  # Parse JSON manually
-                self.logger.debug("Parsed request JSON", request_json=request_json)
-                token_request = TokenRequest(**request_json)  # Validate after logging
-                self.logger.info("Token received", token=token_request.token)
                 result = await self.verify_google_token(token_request.token)
                 if "error" in result:
+                    self.logger.error("Verification error", error=result["error"])
                     raise HTTPException(status_code=401, detail=result["error"])
                 self.logger.debug("Verified user", user_id=result["user_id"], user_email=result["email"], message=result["message"])
                 return result
-            except json.JSONDecodeError:
-                self.logger.error("Invalid JSON in request", raw_body=raw_body)
-                raise HTTPException(status_code=400, detail="Invalid JSON")
-            except ValueError as e:
-                self.logger.error("Validation error", error=str(e))
-                raise HTTPException(status_code=422, detail=str(e))        
+            except Exception as e:
+                self.logger.error("Unexpected error in /verify", error=str(e))
+                raise HTTPException(status_code=500, detail="Internal server error")      
                      
     async def verify_google_token(self, token: str) -> dict[str, str]:
         try:
