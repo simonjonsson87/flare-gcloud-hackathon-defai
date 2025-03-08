@@ -1,23 +1,20 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quince Finance</title>
-  <link rel="stylesheet" href="/src/style.css">
-
   <script>
     console.log('Before loading GIS script');
   </script>
-  <script src="https://accounts.google.com/gsi/client" defer></script> <!-- async defer -->
+  <script src="https://accounts.google.com/gsi/client" defer></script>
   <script>
     console.log('After loading GIS script');
   </script>
-  <!-- Remove these; Vite will add bundled paths -->
-  <!-- <script src="/src/main.js"></script> -->
-  <!-- <script src="/src/google.js"></script> -->
-
+  <!-- Restore script tags with type="module" -->
+  <script type="module" src="/src/main.js"></script>
+  <script type="module" src="/src/google.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B0WFXdpo.css">
 </head>
 <body>
   <div class="container">
@@ -42,12 +39,10 @@
               <path d="M5 11L12 4M12 4L19 11M12 4V21" stroke="currentColor"></path>
             </svg>
           </div>
-          <!-- <button id="send-btn" type="button">↑</button> -->
         </div>
         <p class="disclaimer">Do not invest more than you can afford to lose.</p>
       </main>
     </div>
   </div>
-  
 </body>
 </html>
