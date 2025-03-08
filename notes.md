@@ -16,3 +16,8 @@ curl -k https://localhost:8080/docs
 ```
 docker build -t flare-ai-defai . && docker run -p 80:80 -p 8080:8080 -it --env-file .env flare-ai-defai
 ```
+
+# uv
+```
+uv add package1 package2
+```

@@ -1,4 +1,6 @@
 
+const BACKEND_ROUTE = 'api/routes/chat/' 
+
 // Define interfaces for type safety
 interface TokenRequest {
     token: string;
@@ -42,12 +44,13 @@ interface TokenRequest {
   }
   
   // Handle successful sign-in
-  async function handleGoogleSignIn(googleUser: GoogleUser): Promise<void> {
+async function handleGoogleSignIn(googleUser: GoogleUser): Promise<void> {
+    console.log("In handleGoogleSignIn");
     const idToken = googleUser.getAuthResponse().id_token;
     const request: TokenRequest = { token: idToken };
   
-    try {
-      const response = await fetch('/verify', {
+      try {
+      const response = await fetch(BACKEND_ROUTE+'verify/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(request),
@@ -115,6 +118,8 @@ interface TokenRequest {
     });
   }
   
+  console.log("Before DOMContentLoadeds");
+
   // Run initialization when the DOM is loaded
   document.addEventListener('DOMContentLoaded', () => {
     initGoogleSignIn();

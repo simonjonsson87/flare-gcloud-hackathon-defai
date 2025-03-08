@@ -9,7 +9,7 @@ const BACKEND_ROUTE = 'api/routes/chat/'
 const chat = document.getElementById('chat') as HTMLDivElement;
 const input = document.getElementById('message-input') as HTMLTextAreaElement;
 const sendBtn = document.getElementById('send-btn') as HTMLButtonElement;
-const loginBtn = document.getElementById('login-btn') as HTMLButtonElement;
+const loginBtn = document.getElementById('google-sign-in') as HTMLButtonElement;
 
 window.onload = function () {
   const messageInput = document.getElementById('message-input') as HTMLInputElement;
@@ -75,6 +75,7 @@ const handleLogin = (): void => {
 
 };
 
+console.log("Before the three event listeneers");
 sendBtn.addEventListener('click', handleSend);
 loginBtn.addEventListener('click', handleLogin);
 

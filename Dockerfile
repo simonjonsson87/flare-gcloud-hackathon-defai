@@ -18,6 +18,7 @@ ADD . /flare-ai-defai
 WORKDIR /flare-ai-defai
 RUN uv sync --frozen
 
+
 # Stage 3: Final Image
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
