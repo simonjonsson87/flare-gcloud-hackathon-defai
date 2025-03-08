@@ -201,7 +201,7 @@ class ChatRouter:
         #    return result
         
         @self._router.post("/verify")
-        async def verify(self, token_request: TokenRequest):
+        async def verify(token_request: TokenRequest):
             self.logger.debug("Entered /verify endpoint")
             self.logger.info("Token received", token=token_request.token)
             try:
