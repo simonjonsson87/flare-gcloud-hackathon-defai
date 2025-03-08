@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DeFi Chatbot</title>
+  <title>Quince Finance</title>
   <link rel="stylesheet" href="/src/style.css">
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 <body>
   <div class="container">
     <header class="header">
-      <button id="login-btn">Login</button>
+      <button id="google-sign-in">Login</button>
     </header>
     <div class="content-wrapper">
       <aside class="sidebar">
@@ -36,5 +37,6 @@
     </div>
   </div>
   <script type="module" src="/src/main.ts"></script>
+  <script type="module" src="/src/google.ts"></script>
 </body>
 </html>

@@ -167,10 +167,16 @@ class ChatRouter:
             Raises:
                 HTTPException: If verification fails
             """
-            self.logger.debug("received a call in the verify API route")
+            self.logger.debug("Received a call in the verify API route")
             result = await self.verify_google_token(token_request.token)
             if "error" in result:
                 raise HTTPException(status_code=401, detail=result["error"])
+            
+            user_id = result["user_id"]
+            self.logger.debug("Verified user", user_id=result["user_id"], user_email=result["email"], message=result["message"])
+            #private_key = self.user_store.get_or_create_private_key(user_id)
+            #self.logger.info("Stored or retrieved private key", user_id=user_id)
+            
             return result  
                      
     async def verify_google_token(self, token: str) -> dict[str, str]:
