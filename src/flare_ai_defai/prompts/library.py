@@ -163,7 +163,7 @@ class PromptLibrary:
                 name="tx_no_confirmation",
                 description="We have initiated a transaction, but didn't get the confirmation we expected.",
                 template=TX_NO_CONFIRMATION,
-                required_inputs=[],
+                required_inputs=["msg"],
                 response_schema=None,
                 response_mime_type=None,
                 category="transfer",

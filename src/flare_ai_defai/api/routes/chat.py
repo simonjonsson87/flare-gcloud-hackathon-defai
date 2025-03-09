@@ -173,7 +173,8 @@ class ChatRouter:
                             return {"response": f"Transaction failed: {str(e)}"}
                     else:
                         prompt, mime_type, schema = self.prompts.get_formatted_prompt(
-                            "tx_no_confirmation"
+                            "tx_no_confirmation",
+                            msg=message
                         )
                         response = self.ai.generate(
                             prompt=prompt,

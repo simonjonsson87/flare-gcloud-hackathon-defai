@@ -237,5 +237,5 @@ Ask for clarify.
 """
 
 TX_NO_CONFIRMATION: Final = """
-Tell the user that we didn't get the confirmation we expected and therefore we have cancelled the transaction. Tell the user that they can initiate another one if they wish.
+Tell the user that we didn't get the confirmation we expected and therefore we have cancelled the transaction. Tell the user that they can initiate another one if they wish. If the user has asked a question in the message (${msg}), answer it.
 """
