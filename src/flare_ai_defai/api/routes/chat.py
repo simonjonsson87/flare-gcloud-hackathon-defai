@@ -172,6 +172,7 @@ class ChatRouter:
                             self.logger.exception("send_tx_failed", error=str(e))
                             return {"response": f"Transaction failed: {str(e)}"}
                     else:
+                        self.blockchain.tx_queue = []
                         prompt, mime_type, schema = self.prompts.get_formatted_prompt(
                             "tx_no_confirmation",
                             msg=message
