@@ -188,6 +188,7 @@ Processing rules:
 Examples:
 ✓ "swap 100 FLR to USDC" → {"from_token": "FLR", "to_token": "USDC", "amount": 100.0}
 ✓ "exchange 50.5 flr for usdc" → {"from_token": "FLR", "to_token": "USDC", "amount": 50.5}
+✓ "I'd like to swap 6 usdc for flr"  → {"from_token": "USDC", "to_token": "FLR", "amount": 6.0}
 ✗ "swap flr to flr" → FAIL (same token)
 ✗ "swap tokens" → FAIL (missing amount)
 """
