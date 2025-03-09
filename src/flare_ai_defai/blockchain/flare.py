@@ -122,7 +122,7 @@ class FlareProvider:
         )
         return self.address
 
-    def sign_and_send_transaction(self, txs: list[TxParams]) -> list[str]:
+    def sign_and_send_transaction(self, tx: TxParams) -> str:
         """
         Sign and send a transaction to the network.
 
@@ -135,19 +135,16 @@ class FlareProvider:
         Raises:
             ValueError: If account is not initialized
         """
-        hashes = []
-        for tx in txs:
-            if not self.private_key or not self.address:
-                msg = "Account not initialized"
-                raise ValueError(msg)
-            signed_tx = self.w3.eth.account.sign_transaction(
-                tx, private_key=self.private_key
-            )
-            tx_hash = self.w3.eth.send_raw_transaction(signed_tx.raw_transaction)
-            self.w3.eth.wait_for_transaction_receipt(tx_hash)
-            self.logger.debug("sign_and_send_transaction", tx=tx)
-            hashes.append( "0x" + tx_hash.hex())
-        return hashes    
+        if not self.private_key or not self.address:
+            msg = "Account not initialized"
+            raise ValueError(msg)
+        signed_tx = self.w3.eth.account.sign_transaction(
+            tx, private_key=self.private_key
+        )
+        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.raw_transaction)
+        self.w3.eth.wait_for_transaction_receipt(tx_hash)
+        self.logger.debug("sign_and_send_transaction", tx=tx)
+        return "0x" + tx_hash.hex()   
 
     def check_balance(self) -> float:
         """
