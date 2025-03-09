@@ -22,8 +22,11 @@ from pydantic import BaseModel, Field
 from web3 import Web3
 from web3.exceptions import Web3RPCError
 
+
+
 from google.oauth2 import id_token
 from google.auth.transport import requests
+from google.cloud import storage
 
 from flare_ai_defai.ai import GeminiProvider
 from flare_ai_defai.attestation import Vtpm, VtpmAttestationError
@@ -31,7 +34,7 @@ from flare_ai_defai.blockchain import FlareProvider
 from flare_ai_defai.blockchain import FlareExplorer
 from flare_ai_defai.prompts import PromptService, SemanticRouterResponse
 from flare_ai_defai.settings import settings
-
+from flare_ai_defai.encryption import EncryptionManager
 
 # Configure structlog to output to console
 structlog.configure(
@@ -109,6 +112,10 @@ class ChatRouter:
         self.logger = logger.bind(router="chat")
         self._setup_routes()
         self.google_auth_client_id = "289493342717-rqktph7q97vsgegclf28ngfhuhcni1d8.apps.googleusercontent.com"
+
+        self.storage_client = storage.Client.from_service_account_json("/app/tee-key.json")
+        self.bucket_name = "quincefinance-user-ids-tee"
+        self.encryption = EncryptionManager(self.logger)
 
     def _setup_routes(self) -> None:
         """
@@ -205,12 +212,31 @@ class ChatRouter:
             self.logger.debug("Entered /verify endpoint")
             self.logger.info("Token received", token=token_request.token)
             try:
+                # Verify the Google token
                 result = await self.verify_google_token(token_request.token)
                 if "error" in result:
                     self.logger.error("Verification error", error=result["error"])
                     raise HTTPException(status_code=401, detail=result["error"])
-                self.logger.debug("Verified user", user_id=result["user_id"], user_email=result["email"], message=result["message"])
-                return result
+
+                user_id = result["user_id"]
+                self.logger.debug("Verified user", user_id=user_id, user_email=result["email"], message=result["message"])
+
+                # Check if user exists in GCS
+                bucket = self.storage_client.bucket(self.bucket_name)
+                blob = bucket.blob(f"{user_id}.enc")
+                if blob.exists():
+                    encrypted_id = blob.download_as_string().decode()
+                    decrypted_id = self.encryption.decrypt(encrypted_id)
+                    if decrypted_id == user_id:
+                        self.logger.info("User already exists", user_id=user_id)
+                        return {"user_id": user_id, "email": result["email"], "message": "Returning user"}
+
+                # Store new user
+                encrypted_id = self.encryption.encrypt(user_id)
+                blob.upload_from_string(encrypted_id, content_type="text/plain")
+                self.logger.info("Stored encrypted user ID in GCS", user_id=user_id)
+                return {"user_id": user_id, "email": result["email"], "message": "New user verified"}
+
             except Exception as e:
                 self.logger.error("Unexpected error in /verify", error=str(e))
                 raise HTTPException(status_code=500, detail="Internal server error")      
