@@ -199,7 +199,7 @@ class PromptLibrary:
             Prompt(
                 name="token_supply",
                 description="",
-                template=FOLLOW_UP_TOKEN_SUPPLY,
+                template=TOKEN_SUPPLY,
                 required_inputs=["user_input"],
                 response_schema=TokenSupplyResponse,
                 response_mime_type="application/json",

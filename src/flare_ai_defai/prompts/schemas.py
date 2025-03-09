@@ -86,8 +86,9 @@ class TokenBorrowResponse(TypedDict):
     
 class TokenSupplyResponse(TypedDict):
     token: str
+    amount: float 
     use_for_collateral: bool
-    amount: float      
+         
 
 class PromptInputs(TypedDict, total=False):
     """
