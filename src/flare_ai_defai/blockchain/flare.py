@@ -27,6 +27,7 @@ class TxQueueElement:
     """
 
     msg: str
+    confirm_msg: str
     tx: TxParams
 
 
@@ -80,7 +81,7 @@ class FlareProvider:
             msg (str): Description of the transaction
             tx (TxParams): Transaction parameters
         """
-        tx_queue_element = TxQueueElement(msg=msg, tx=tx)
+        tx_queue_element = TxQueueElement(msg=msg, confirm_msg="CONFIRM", tx=tx)
         self.tx_queue.append(tx_queue_element)
         self.logger.debug("add_tx_to_queue", tx_queue=self.tx_queue)
 

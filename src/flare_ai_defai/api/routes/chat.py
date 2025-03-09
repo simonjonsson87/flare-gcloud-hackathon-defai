@@ -141,12 +141,10 @@ class ChatRouter:
             message: ChatMessage,
             user: UserInfo = Depends(get_current_user)
         ) -> dict[str, str]:
-            self.logger.debug("debug - Entered chat function.", email=user.email, message=message)
-            self.logger.info("info - Entered chat function.", email=user.email, message=message)
             """Handle chat messages with authenticated user"""
             try:
                 self.logger.debug(
-                    "Received message",
+                    "In chat function - Received message",
                     message=message.message,
                     user_id=user.user_id
                 )
@@ -156,7 +154,7 @@ class ChatRouter:
                 self.logger.debug(tx_queue=self.blockchain.tx_queue, tx_queue_len=len(self.blockchain.tx_queue))
                 if (
                     self.blockchain.tx_queue
-                    and message.message == self.blockchain.tx_queue[-1].msg
+                    and message.message == self.blockchain.tx_queue[-1].confirm_msg
                 ):
                     try:
                         self.logger.debug("About to send_tx_in_queue")
