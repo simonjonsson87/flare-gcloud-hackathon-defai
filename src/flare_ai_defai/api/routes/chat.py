@@ -317,6 +317,7 @@ class ChatRouter:
         )
         return {"response": gen_address_response.text}
 
+
     async def handle_attestation(self, _: str, user: UserInfo) -> dict[str, str]:
         """
         Handle attestation requests.
@@ -332,6 +333,7 @@ class ChatRouter:
         self.attestation.attestation_requested = True
         return {"response": request_attestation_response.text}
     
+    
     async def handle_conversation(self, message: str, user: UserInfo) -> dict[str, str]:
         """
         Handle general conversation messages.
@@ -344,6 +346,7 @@ class ChatRouter:
         """
         response = self.ai.send_message(message)
         return {"response": response.text}
+
 
     async def handle_send_token(self, message: str, user: UserInfo) -> dict[str, str]:
         """
@@ -410,7 +413,7 @@ class ChatRouter:
         except:
             self.logger.debug("We probably did not get valid json back from Gemini. See below.")
                 
-        self.logger.debug(message=message, prompt=prompt, json_len=len(send_token_json), json=send_token_json)
+        self.logger.debug("In getDeFiJson. ",message=message, prompt=prompt, json_len=len(send_token_json), json=send_token_json)
         
         return send_token_json
         
@@ -425,6 +428,7 @@ class ChatRouter:
         Returns:
             dict[str, str]: Response indicating unsupported operation
         """
+        self.logger.debug("In handle_swap()")
         return {"response": "Sorry I can't do that right now"}
 
     
@@ -441,7 +445,8 @@ class ChatRouter:
         Returns:
             dict[str, str]: Response with stringified JSON or a follow-up prompt
         """
-        response_json = await self.getDeFiJson(message, "token_stake")  # Corrected call
+        self.logger.debug("In handle_stake()")
+        response_json = await self.getDeFiJson(message, "token_stake")
         
         expected_json_len = 1
         if (
@@ -457,7 +462,9 @@ class ChatRouter:
     
     
     async def handle_borrow(self, message: str, user: UserInfo) -> dict[str, str]:
+        self.logger.debug("In handle_borrow()")
         response_json = await self.getDeFiJson(message, "token_borrow")  
+        self.logger.debug(response_json=response_json)
         
         expected_json_len = 3
         if (
@@ -472,7 +479,8 @@ class ChatRouter:
         return {"response": json.dumps(response_json)}
     
     
-    async def handle_supply(self, message: str, user: UserInfo) -> dict[str, str]:        
+    async def handle_supply(self, message: str, user: UserInfo) -> dict[str, str]:
+        self.logger.debug("In handle_supply()")        
         response_json = await self.getDeFiJson(message, "token_supply") 
         
         expected_json_len = 3
