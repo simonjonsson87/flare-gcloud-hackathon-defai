@@ -158,6 +158,7 @@ class ChatRouter:
                     and message.message == self.blockchain.tx_queue[-1].msg
                 ):
                     try:
+                        self.logger.debug("About to send_tx_in_queue")
                         tx_hash = self.blockchain.send_tx_in_queue()
                         prompt, mime_type, schema = self.prompts.get_formatted_prompt(
                             "tx_confirmation",
