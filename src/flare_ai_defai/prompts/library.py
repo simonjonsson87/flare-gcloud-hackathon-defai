@@ -149,6 +149,15 @@ class PromptLibrary:
                 response_mime_type=None,
                 category="account",
             ),
+            Prompt(
+                name="follow_up_token_send",
+                description="Feedback when transfer can't be made",
+                template=TX_CONFIRMATION,
+                required_inputs=[],
+                response_schema=None,
+                response_mime_type=None,
+                category="transfer",
+            ),
         ]
 
         for prompt in default_prompts:

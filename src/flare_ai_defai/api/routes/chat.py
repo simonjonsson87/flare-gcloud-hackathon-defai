@@ -325,6 +325,7 @@ class ChatRouter:
             prompt=prompt, response_mime_type=mime_type, response_schema=schema
         )
         send_token_json = json.loads(send_token_response.text)
+        self.logger.debug(prompt=prompt, json=send_token_json)
         expected_json_len = 2
         if (
             len(send_token_json) != expected_json_len

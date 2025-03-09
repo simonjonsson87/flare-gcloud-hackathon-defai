@@ -227,3 +227,8 @@ Great news! Your transaction has been successfully confirmed. 🎉
 
 Your transaction is now securely recorded on the blockchain.
 """
+
+TX_FAILED: Final = """
+Just apologise and say that the transaction could not be completed, either because we didn't understand the user.
+Ask for clarify.
+"""
