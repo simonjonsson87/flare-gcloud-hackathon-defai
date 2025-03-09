@@ -79,6 +79,7 @@ Extract EXACTLY two pieces of information from the input text for a token send o
    • Extract COMPLETE address only
    • DO NOT modify or truncate
    • FAIL if no valid address found
+   - Ensure that your extracted address is an address only, without any more characters at the end. It cannot be longer than a EVM address normally is.
 
 2. TOKEN AMOUNT
    Number extraction rules:
@@ -101,6 +102,8 @@ Rules:
 - DO NOT infer missing values
 - DO NOT modify the address
 - FAIL if either value is missing or invalid
+
+Output format should be valid json.
 """
 
 TOKEN_SWAP: Final = """
