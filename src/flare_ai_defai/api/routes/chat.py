@@ -450,7 +450,7 @@ class ChatRouter:
         ):
             prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_stake")
             follow_up_response = self.ai.generate(prompt)
-            return {"response": follow_up_response.text}
+            return {"response": follow_up_response.text + " \n " + json.dumps(response_json)}
         
         # Return stringified JSON
         return {"response": json.dumps(response_json)}
@@ -466,7 +466,7 @@ class ChatRouter:
         ):
             prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_borrow")
             follow_up_response = self.ai.generate(prompt)
-            return {"response": follow_up_response.text}
+            return {"response": follow_up_response.text + " \n " + json.dumps(response_json)}
         
         # Return stringified JSON
         return {"response": json.dumps(response_json)}
@@ -482,7 +482,7 @@ class ChatRouter:
         ):
             prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_supply")
             follow_up_response = self.ai.generate(prompt)
-            return {"response": follow_up_response.text}
+            return {"response": follow_up_response.text + " \n " + json.dumps(response_json)}
         
         # Return stringified JSON
         return {"response": json.dumps(response_json)}

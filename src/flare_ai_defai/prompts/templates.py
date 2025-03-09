@@ -284,16 +284,15 @@ Extract EXACTLY one piece of information from the input text for a token send op
      - With words: "5 tokens", "10 FLR"
    • Extract first valid number only
    • FAIL if no valid amount found
+   - Some synonyms for stake are: stake, staking, lock, earn rewards, deposit for staking
 
 Input: ${user_input}
 
 Rules:
-- Both fields MUST be present
 - Amount MUST be positive
 - Amount MUST be float type
 - DO NOT infer missing values
-- DO NOT modify the address
-- FAIL if either value is missing or invalid
+- FAIL if no amount is found.
 
 Output format should be valid json.
 """
@@ -308,6 +307,8 @@ Extract EXACTLY three pieces of information from the input text for a token borr
    • Convert to uppercase in output (e.g., "sflr" → "SFLR")
    • FAIL if no valid token ("SFLR" or "USDC") is found
    • FAIL if multiple conflicting borrow tokens are mentioned (e.g., "borrow SFLR and USDC")
+   • The answer can only be 'sFLR' or 'USDC'. 'sFLR or USDC' is not an acceptable answer.
+   - some synonyms for borrow are: borrow, loan, take out, get a loan
 
 2. COLLATERAL_TOKEN
    Required format:
@@ -356,6 +357,8 @@ Extract EXACTLY three pieces of information from the input text for a token supp
    • Convert to uppercase in output (e.g., "sflr" → "SFLR")
    • FAIL if no valid token ("SFLR" or "USDC") is found
    • FAIL if multiple conflicting supply tokens are mentioned (e.g., "supply SFLR and USDC")
+   • The answer can only be 'sFLR' or 'USDC'. 'sFLR or USDC' is not an acceptable answer.
+   - Some synonyms for supply are: supply, lend, provide, deposit for lending
 
 2. SUPPLY_AMOUNT
    Number extraction rules:
