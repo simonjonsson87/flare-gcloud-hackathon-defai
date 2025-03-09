@@ -1,3 +1,5 @@
+import { apiClient } from './google.js';
+
 const BACKEND_ROUTE = 'api/routes/chat/';
 
 const chat = document.getElementById('chat');

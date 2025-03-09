@@ -69,7 +69,8 @@ class ApiClient {
 }
 
 const apiClient = new ApiClient();
-
+export { apiClient };
+  
 async function handleGoogleSignIn(response) {
     console.log('Google Sign-In response:', response);
     const idToken = response.credential;
