@@ -285,7 +285,6 @@ class ChatRouter:
 
         return await handler(message, user)
 
-    # Rest of the methods remain largely the same, just add user context where needed
     async def handle_generate_account(self, _: str, user: UserInfo) -> dict[str, str]:
         if self.blockchain.address:
             return {"response": f"Account exists - {self.blockchain.address}"}
@@ -297,6 +296,7 @@ class ChatRouter:
             prompt=prompt, response_mime_type=mime_type, response_schema=schema
         )
         return {"response": gen_address_response.text}
+
 
     async def handle_send_token(self, message: str, user: UserInfo) -> dict[str, str]:
         """
