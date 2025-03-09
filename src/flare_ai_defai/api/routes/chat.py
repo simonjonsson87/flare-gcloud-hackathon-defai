@@ -334,8 +334,14 @@ class ChatRouter:
         send_token_response = self.ai.generate(
             prompt=prompt, response_mime_type=mime_type, response_schema=schema
         )
-        send_token_json = json.loads(send_token_response.text)
-        self.logger.debug(prompt=prompt, json=send_token_json)
+        
+        send_token_json = json.loads("{}")
+        try:
+            send_token_json = json.loads(send_token_response.text)
+        except:
+            self.logger.debug("We probably did not get valid json back from Gemini. See below.")
+                
+        self.logger.debug(message=message, prompt=prompt, json_len=len(send_token_json), json=send_token_json)
         expected_json_len = 2
         if (
             len(send_token_json) != expected_json_len

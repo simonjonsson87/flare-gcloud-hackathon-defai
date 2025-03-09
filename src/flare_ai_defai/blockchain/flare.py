@@ -28,7 +28,7 @@ class TxQueueElement:
 
     msg: str
     confirm_msg: str
-    tx: TxParams
+    txs: list[TxParams]
 
 
 logger = structlog.get_logger(__name__)
@@ -73,7 +73,7 @@ class FlareProvider:
         self.tx_queue = []
         self.logger.debug("reset", address=self.address, tx_queue=self.tx_queue)
 
-    def add_tx_to_queue(self, msg: str, tx: TxParams) -> None:
+    def add_tx_to_queue(self, msg: str, txs: list[TxParams]) -> None:
         """
         Add a transaction to the queue with an associated message.
 
@@ -81,11 +81,11 @@ class FlareProvider:
             msg (str): Description of the transaction
             tx (TxParams): Transaction parameters
         """
-        tx_queue_element = TxQueueElement(msg=msg, confirm_msg="CONFIRM", tx=tx)
+        tx_queue_element = TxQueueElement(msg=msg, confirm_msg="CONFIRM", txs=txs)
         self.tx_queue.append(tx_queue_element)
         self.logger.debug("add_tx_to_queue", tx_queue=self.tx_queue)
 
-    def send_tx_in_queue(self) -> str:
+    def send_tx_in_queue(self) -> list[str]:
         """
         Send the most recent transaction in the queue.
 
@@ -97,10 +97,13 @@ class FlareProvider:
         """
         self.logger.debug("In send_tx_in_queue.", tx_queue=self.tx_queue)
         if self.tx_queue:
-            tx_hash = self.sign_and_send_transaction(self.tx_queue[-1].tx)
-            self.logger.debug("sent_tx_hash", tx_hash=tx_hash)
+            tx_hashes = []
+            for tx in self.tx_queue[-1].txs:
+                tx_hash = self.sign_and_send_transaction(tx)
+                self.logger.debug("sent_tx_hash", tx_hash=tx_hash)
+                tx_hashes.append(tx_hash)
             self.tx_queue.pop()
-            return tx_hash
+            return tx_hashes
         msg = "Unable to find confirmed tx"
         raise ValueError(msg)
 
@@ -119,7 +122,7 @@ class FlareProvider:
         )
         return self.address
 
-    def sign_and_send_transaction(self, tx: TxParams) -> str:
+    def sign_and_send_transaction(self, txs: list[TxParams]) -> list[str]:
         """
         Sign and send a transaction to the network.
 
@@ -132,16 +135,19 @@ class FlareProvider:
         Raises:
             ValueError: If account is not initialized
         """
-        if not self.private_key or not self.address:
-            msg = "Account not initialized"
-            raise ValueError(msg)
-        signed_tx = self.w3.eth.account.sign_transaction(
-            tx, private_key=self.private_key
-        )
-        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.raw_transaction)
-        self.w3.eth.wait_for_transaction_receipt(tx_hash)
-        self.logger.debug("sign_and_send_transaction", tx=tx)
-        return "0x" + tx_hash.hex()
+        hashes = []
+        for tx in txs:
+            if not self.private_key or not self.address:
+                msg = "Account not initialized"
+                raise ValueError(msg)
+            signed_tx = self.w3.eth.account.sign_transaction(
+                tx, private_key=self.private_key
+            )
+            tx_hash = self.w3.eth.send_raw_transaction(signed_tx.raw_transaction)
+            self.w3.eth.wait_for_transaction_receipt(tx_hash)
+            self.logger.debug("sign_and_send_transaction", tx=tx)
+            hashes.append( "0x" + tx_hash.hex())
+        return hashes    
 
     def check_balance(self) -> float:
         """
