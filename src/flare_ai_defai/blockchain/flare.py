@@ -94,6 +94,7 @@ class FlareProvider:
         Raises:
             ValueError: If no transaction is found in the queue
         """
+        self.logger.debug("In send_tx_in_queue.", tx_queue=self.tx_queue)
         if self.tx_queue:
             tx_hash = self.sign_and_send_transaction(self.tx_queue[-1].tx)
             self.logger.debug("sent_tx_hash", tx_hash=tx_hash)
