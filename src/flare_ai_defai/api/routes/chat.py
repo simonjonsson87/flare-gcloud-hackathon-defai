@@ -153,7 +153,7 @@ class ChatRouter:
 
                 if message.message.startswith("/"):
                     return await self.handle_command(message.message)
-                self.logger.debug(tx_queue=self.blockchain.tx_queue, tx_queue_minusone=self.blockchain.tx_queue[-1].msg)
+                self.logger.debug(tx_queue=self.blockchain.tx_queue, tx_queue_len=len(self.blockchain.tx_queue))
                 if (
                     self.blockchain.tx_queue
                     and message.message == self.blockchain.tx_queue[-1].msg
