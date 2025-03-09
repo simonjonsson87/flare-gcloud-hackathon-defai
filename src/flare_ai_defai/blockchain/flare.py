@@ -8,11 +8,13 @@ It handles account management, transaction queuing, and blockchain interactions.
 from dataclasses import dataclass
 
 import structlog
+import logging
 from eth_account import Account
 from eth_typing import ChecksumAddress
 from web3 import Web3
 from web3.types import TxParams
 
+logging.basicConfig(level=logging.DEBUG)
 
 @dataclass
 class TxQueueElement:

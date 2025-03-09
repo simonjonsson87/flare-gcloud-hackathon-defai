@@ -37,7 +37,7 @@ structlog.configure(
     logger_factory=structlog.stdlib.LoggerFactory(),
     wrapper_class=structlog.stdlib.BoundLogger,
 )
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = structlog.get_logger(__name__)
 
 # Session storage (use Redis or database in production)
