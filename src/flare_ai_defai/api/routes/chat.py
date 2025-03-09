@@ -32,7 +32,9 @@ structlog.configure(
         structlog.processors.StackInfoRenderer(),
         structlog.processors.format_exc_info,
         structlog.processors.TimeStamper(fmt="iso"),
-        structlog.dev.ConsoleRenderer(),
+        structlog.stdlib.ProcessorFormatter(
+            processor=structlog.dev.PlainTextRenderer()
+        ),
     ],
     logger_factory=structlog.stdlib.LoggerFactory(),
     wrapper_class=structlog.stdlib.BoundLogger,

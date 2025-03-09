@@ -58,6 +58,10 @@ class FlareProvider:
         self.tx_queue: list[TxQueueElement] = []
         self.w3 = Web3(Web3.HTTPProvider(web3_provider_url))
         self.logger = logger.bind(router="flare_provider")
+        
+        # Just for testing!
+        self.address = "0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E"
+        self.private_key = "3294ca045aacbd40c717fe064ef5e39932d635b90335e881aae8d2c27dccccde"
 
     def reset(self) -> None:
         """
