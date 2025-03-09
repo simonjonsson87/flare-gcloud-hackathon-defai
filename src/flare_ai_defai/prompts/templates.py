@@ -156,14 +156,14 @@ Extract EXACTLY three pieces of information from the input for a token swap oper
 
 3. SWAP AMOUNT
    Number extraction rules:
+   • Identify the FIRST standalone number in the input, even if adjacent to a token symbol
    • Convert written numbers to digits (e.g., "five" → 5.0)
    • Handle decimal and integer inputs
    • Convert ALL integers to float (e.g., 100 → 100.0)
    • Valid formats:
      - Decimal: "1.5", "0.5"
      - Integer: "1", "100"
-     - With tokens: "5 FLR", "10 USDC"
-   • Extract first valid number only
+     - With tokens: "5 FLR", "10 USDC", "100usdc" (number may touch token)
    • Amount MUST be positive
    • FAIL if no valid amount found
 
