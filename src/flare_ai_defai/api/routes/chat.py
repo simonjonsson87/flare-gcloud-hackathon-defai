@@ -66,6 +66,9 @@ class ChatMessage(BaseModel):
 
 class TokenRequest(BaseModel):
     token: str
+    
+class UserSession():
+    sessionToken: str    
 
 class ChatRouter:
     """
@@ -117,7 +120,7 @@ class ChatRouter:
         """
 
         @self._router.post("/")
-        async def chat(message: ChatMessage) -> dict[str, str]:  # pyright: ignore [reportUnusedFunction]
+        async def chat(message: ChatMessage, sessionToken: str) -> dict[str, str]:  # pyright: ignore [reportUnusedFunction]
             """
             Process incoming chat messages and route them to appropriate handlers.
 

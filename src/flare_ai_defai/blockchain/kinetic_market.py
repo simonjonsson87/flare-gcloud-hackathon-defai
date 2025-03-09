@@ -62,9 +62,61 @@ class KineticMarket:
         
         return result
 
+    def supplySFLR():
+        """
+        To supply FLR or WFLR you need to be staked and converted to sFLR via Sceptre Protocol. 
+        By supplying sFLR you can receive FlareDrops and Delegation.
+        
+        This interaction first makes sFLR from FLR, then supply it. 
+        
+        With supply to collateral disabled:
+        
+        When you click that you want to convert using Sceptre, you are asked to confirm an interaction with c2BB. Using 1.6 FLR
+        https://flarescan.com/tx/0xb76cdb2c6aaed2afebd7df357fb4fb86c1bc5d5d1b41b80a31006a253bc53b4b
+        
+        Then you click 'Supply sFLR' you sign a spending cap transaction with c2BB
+        https://flarescan.com//tx/0xaa331c2537dadb5ddeb5f46c2f5b7303ac28f2a223efee5a3f3ae627a7d0328a
+        
+        Then immediately you sign a transaction request with 5656. This mints ksFLR.
+        https://flarescan.com//tx/0x2a4d05c71a193034194a298efe1ead7a54771101895614b0fd2bc91672c3cd04
+        
+        With supply to collateral enabled:
+        
+        When you click to enable collateral, you a prompted with a transaction request with D7c8
+        https://flare-explorer.flare.network/tx/0x932afc8d9b25be90854d8a22e00e930f6ba2bd430515df8108a555b6684dee9b
+        
+        You then click to convert you FLR to sFLR
+        https://flarescan.com//tx/0x4c1a149336ea3e581d99520d54aab6e69ff600ec1c6be9d929fa42cd0744dba9
+        
+        Then you confirm spending cap request with c2BB
+        https://flarescan.com//tx/0xfccab2077c361a1a0759bc41456c66b645d13c371529767e64d6ae683049536f
+        
+        Then transaction request
+        https://flare-explorer.flare.network/tx/0x87345aaabd6d2ca19730c2dad62e617272200a1a0fdf2ebc31d2fb413d1ae4ae
+        
+        
+        
+        """
+        
+        def borrowUSDC():
+            """
+            When you click to borrow you sign a transaction request with 29B8.
+            This interacts with a borrow() function
+            https://flarescan.com//tx/0x91b3d1e4c4178d05914f05c13d47ee3c2869087b0a7ef7a9b636f8e8ad759f19
+            
+            
+            """
 
+        def borrowUSDT():
+            """
+            When you click to borrow you sign a transaction request with 93bb.
+            This interacts with a borrow() function
+            https://flarescan.com//tx/0xfaff5427e53996a324e81357b1eb9eef430ba5e210f0973f46719f2066510d6d
+            
+            """
 
-
+        def stakeJoule():
+            
 
 
 
