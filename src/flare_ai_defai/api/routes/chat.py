@@ -25,6 +25,8 @@ from flare_ai_defai.blockchain import FlareExplorer
 from flare_ai_defai.prompts import PromptService, SemanticRouterResponse
 from flare_ai_defai.settings import settings
 
+print(dir(structlog.dev))
+
 # Configure logging
 structlog.configure(
     processors=[
@@ -32,15 +34,14 @@ structlog.configure(
         structlog.processors.StackInfoRenderer(),
         structlog.processors.format_exc_info,
         structlog.processors.TimeStamper(fmt="iso"),
-        structlog.stdlib.ProcessorFormatter(
-            processor=structlog.dev.PlainTextRenderer()
-        ),
     ],
     logger_factory=structlog.stdlib.LoggerFactory(),
     wrapper_class=structlog.stdlib.BoundLogger,
 )
 logging.basicConfig(level=logging.DEBUG)
 logger = structlog.get_logger(__name__)
+
+
 
 # Session storage (use Redis or database in production)
 sessions: dict[str, dict] = {}
@@ -103,6 +104,7 @@ class ChatRouter:
     def _setup_routes(self) -> None:
         @self._router.post("/verify")
         async def verify(token_request: TokenRequest):
+            print("Just testing a plain print command.")
             self.logger.debug("Entered verify function.")
             """Verify Google ID token and create session"""
             try:
