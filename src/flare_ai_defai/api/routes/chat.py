@@ -418,7 +418,7 @@ class ChatRouter:
         return send_token_json
         
 
-    async def handle_swap_token(self, _: str, user: UserInfo) -> dict[str, str]:
+    async def handle_swap_token(self, message: str, user: UserInfo) -> dict[str, str]:
         """
         Handle token swap requests (currently unsupported).
 
@@ -429,7 +429,19 @@ class ChatRouter:
             dict[str, str]: Response indicating unsupported operation
         """
         self.logger.debug("In handle_swap()")
-        return {"response": "Sorry I can't do that right now"}
+        response_json = await self.getDeFiJson(message, "token_swap")
+        
+        expected_json_len = 3
+        if (
+            len(response_json) != expected_json_len
+            or response_json.get("amount") == 0.0
+        ):
+            prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_swap")
+            follow_up_response = self.ai.generate(prompt)
+            return {"response": follow_up_response.text + " \n " + json.dumps(response_json)}
+        
+        # Return stringified JSON
+        return {"response": json.dumps(response_json)}
 
     
     

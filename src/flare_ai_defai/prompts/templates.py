@@ -359,6 +359,7 @@ Extract EXACTLY three pieces of information from the input text for a token supp
    • FAIL if multiple conflicting supply tokens are mentioned (e.g., "supply SFLR and USDC")
    • The answer can only be 'sFLR' or 'USDC'. 'sFLR or USDC' is not an acceptable answer.
    - Some synonyms for supply are: supply, lend, provide, deposit for lending
+   - Note that 'lend' is a common word to replace 'supply' with.
 
 2. SUPPLY_AMOUNT
    Number extraction rules:
@@ -424,4 +425,9 @@ Explain that they need to let us know what token they want to supply, and the am
 know if they want to be able to use the token as collateral.
 Also let them know that they can only supply sFLR and USDC. Point out that they can swap if they don't have
 either of those tokens.
+"""
+
+FOLLOW_UP_TOKEN_SWAP: Final = """
+Tell the user that we understood that they wanted to swap, but that we are not sure about the details.
+Explain that they need to let us know what tokens they want to swap from and to, and the amount. 
 """
