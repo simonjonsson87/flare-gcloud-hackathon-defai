@@ -294,6 +294,9 @@ class ChatRouter:
             SemanticRouterResponse.SWAP_TOKEN: self.handle_swap_token,
             SemanticRouterResponse.REQUEST_ATTESTATION: self.handle_attestation,
             SemanticRouterResponse.CONVERSATIONAL: self.handle_conversation,
+            SemanticRouterResponse.STAKE_TOKEN: self.handle_stake,
+            SemanticRouterResponse.BORROW_TOKEN: self.handle_borrow,
+            SemanticRouterResponse.SUPPLY_TOKEN: self.handle_supply,
         }
 
         handler = handlers.get(route)
@@ -314,6 +317,33 @@ class ChatRouter:
         )
         return {"response": gen_address_response.text}
 
+    async def handle_attestation(self, _: str, user: UserInfo) -> dict[str, str]:
+        """
+        Handle attestation requests.
+
+        Args:
+            _: Unused message parameter
+
+        Returns:
+            dict[str, str]: Response containing attestation request
+        """
+        prompt = self.prompts.get_formatted_prompt("request_attestation")[0]
+        request_attestation_response = self.ai.generate(prompt=prompt)
+        self.attestation.attestation_requested = True
+        return {"response": request_attestation_response.text}
+    
+    async def handle_conversation(self, message: str, user: UserInfo) -> dict[str, str]:
+        """
+        Handle general conversation messages.
+
+        Args:
+            message: Message to process
+
+        Returns:
+            dict[str, str]: Response from AI provider
+        """
+        response = self.ai.send_message(message)
+        return {"response": response.text}
 
     async def handle_send_token(self, message: str, user: UserInfo) -> dict[str, str]:
         """
@@ -365,6 +395,26 @@ class ChatRouter:
         )
         return {"response": formatted_preview}
 
+
+    async def getDeFiJson(self, message: str, prompt_str: str) -> dict:
+        prompt, mime_type, schema = self.prompts.get_formatted_prompt(
+            prompt_str, user_input=message
+        )
+        send_token_response = self.ai.generate(
+            prompt=prompt, response_mime_type=mime_type, response_schema=schema
+        )
+        
+        send_token_json = json.loads("{}")
+        try:
+            send_token_json = json.loads(send_token_response.text)
+        except:
+            self.logger.debug("We probably did not get valid json back from Gemini. See below.")
+                
+        self.logger.debug(message=message, prompt=prompt, json_len=len(send_token_json), json=send_token_json)
+        
+        return send_token_json
+        
+
     async def handle_swap_token(self, _: str, user: UserInfo) -> dict[str, str]:
         """
         Handle token swap requests (currently unsupported).
@@ -377,30 +427,65 @@ class ChatRouter:
         """
         return {"response": "Sorry I can't do that right now"}
 
-    async def handle_attestation(self, _: str, user: UserInfo) -> dict[str, str]:
+    
+    
+    
+    async def handle_stake(self, message: str, user: UserInfo) -> dict[str, str]:
         """
-        Handle attestation requests.
+        Handle token staking requests.
 
         Args:
-            _: Unused message parameter
+            message: The user's input message
+            user: User information from authentication
 
         Returns:
-            dict[str, str]: Response containing attestation request
+            dict[str, str]: Response with stringified JSON or a follow-up prompt
         """
-        prompt = self.prompts.get_formatted_prompt("request_attestation")[0]
-        request_attestation_response = self.ai.generate(prompt=prompt)
-        self.attestation.attestation_requested = True
-        return {"response": request_attestation_response.text}
+        response_json = await self.getDeFiJson(message, "token_stake")  # Corrected call
+        
+        expected_json_len = 1
+        if (
+            len(response_json) != expected_json_len
+            or response_json.get("amount") == 0.0
+        ):
+            prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_stake")
+            follow_up_response = self.ai.generate(prompt)
+            return {"response": follow_up_response.text}
+        
+        # Return stringified JSON
+        return {"response": json.dumps(response_json)}
+    
+    
+    async def handle_borrow(self, message: str, user: UserInfo) -> dict[str, str]:
+        response_json = await self.getDeFiJson(message, "token_borrow")  
+        
+        expected_json_len = 3
+        if (
+            len(response_json) != expected_json_len
+            or response_json.get("amount") == 0.0
+        ):
+            prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_borrow")
+            follow_up_response = self.ai.generate(prompt)
+            return {"response": follow_up_response.text}
+        
+        # Return stringified JSON
+        return {"response": json.dumps(response_json)}
+    
+    
+    async def handle_supply(self, message: str, user: UserInfo) -> dict[str, str]:        
+        response_json = await self.getDeFiJson(message, "token_supply") 
+        
+        expected_json_len = 3
+        if (
+            len(response_json) != expected_json_len
+            or response_json.get("amount") == 0.0
+        ):
+            prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_supply")
+            follow_up_response = self.ai.generate(prompt)
+            return {"response": follow_up_response.text}
+        
+        # Return stringified JSON
+        return {"response": json.dumps(response_json)}
+    
 
-    async def handle_conversation(self, message: str, user: UserInfo) -> dict[str, str]:
-        """
-        Handle general conversation messages.
-
-        Args:
-            message: Message to process
-
-        Returns:
-            dict[str, str]: Response from AI provider
-        """
-        response = self.ai.send_message(message)
-        return {"response": response.text}
+    

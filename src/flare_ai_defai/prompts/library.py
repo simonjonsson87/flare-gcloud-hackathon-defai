@@ -25,6 +25,9 @@ from flare_ai_defai.prompts.schemas import (
     SemanticRouterResponse,
     TokenSendResponse,
     TokenSwapResponse,
+    TokenStakeResponse,
+    TokenBorrowResponse,
+    TokenSupplyResponse,
 )
 from flare_ai_defai.prompts.templates import (
     CONVERSATIONAL,
@@ -36,6 +39,12 @@ from flare_ai_defai.prompts.templates import (
     TX_CONFIRMATION,
     TX_FAILED,
     TX_NO_CONFIRMATION,
+    TOKEN_STAKE,
+    TOKEN_BORROW,
+    TOKEN_SUPPLY,
+    FOLLOW_UP_TOKEN_STAKE,
+    FOLLOW_UP_TOKEN_BORROW,
+    FOLLOW_UP_TOKEN_SUPPLY
 )
 
 logger = structlog.get_logger(__name__)
@@ -168,6 +177,60 @@ class PromptLibrary:
                 response_schema=None,
                 response_mime_type=None,
                 category="transfer",
+            ),
+            Prompt(
+                name="token_stake",
+                description="",
+                template=TOKEN_STAKE,
+                required_inputs=["user_input"],
+                response_schema=TokenStakeResponse,
+                response_mime_type="application/json",
+                category="defai",
+            ),
+            Prompt(
+                name="follow_up_token_stake",
+                description="",
+                template=FOLLOW_UP_TOKEN_STAKE,
+                required_inputs=["user_input"],
+                response_schema=TokenStakeResponse,
+                response_mime_type="application/json",
+                category="defai",
+            ),
+            Prompt(
+                name="token_supply",
+                description="",
+                template=FOLLOW_UP_TOKEN_SUPPLY,
+                required_inputs=["user_input"],
+                response_schema=TokenSupplyResponse,
+                response_mime_type="application/json",
+                category="defai",
+            ),
+            Prompt(
+                name="follow_up_token_supply",
+                description="",
+                template=FOLLOW_UP_TOKEN_SUPPLY,
+                required_inputs=["user_input"],
+                response_schema=TokenSupplyResponse,
+                response_mime_type="application/json",
+                category="defai",
+            ),
+            Prompt(
+                name="token_borrow",
+                description="",
+                template=TOKEN_BORROW,
+                required_inputs=["user_input"],
+                response_schema=TokenBorrowResponse,
+                response_mime_type="application/json",
+                category="defai",
+            ),
+            Prompt(
+                name="follow_up_token_borrow",
+                description="",
+                template=FOLLOW_UP_TOKEN_BORROW,
+                required_inputs=["user_input"],
+                response_schema=TokenBorrowResponse,
+                response_mime_type="application/json",
+                category="defai",
             ),
         ]
 

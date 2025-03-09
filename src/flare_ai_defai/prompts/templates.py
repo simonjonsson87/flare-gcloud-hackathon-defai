@@ -28,6 +28,36 @@ Categories (in order of precedence):
    • Use when input doesn't clearly match above categories
    • General questions, greetings, or unclear requests
    • Any ambiguous or multi-category inputs
+   
+6. STAKE_STAKE
+   - Keywords: stake, staking, lock, earn rewards, deposit for staking
+   - Must express intent to stake or lock tokens to earn rewards or participate in a staking mechanism.
+   - Typically involves committing tokens to a protocol or smart contract for a period.
+   - Ignore if the user is just asking about staking without intent to perform the action.
+   Examples:
+   "I want to stake 10 FLR."
+   "Can you help me lock my tokens for staking?"
+   "Stake my tokens to earn rewards."
+   
+7. SUPPLY_TOKEN
+   - Keywords: supply, lend, provide, deposit for lending
+   - Must indicate intent to supply or lend tokens to a protocol (e.g., a lending pool or liquidity pool).
+   - Involves depositing tokens to enable others to borrow or use them, often for interest.
+   - Ignore if the user is just inquiring about supplying without intent to act.
+   Examples:
+   "Supply 5 FLR to the lending pool."
+   "I want to lend my tokens."
+   "Deposit 20 tokens for others to borrow."   
+   
+8. BORROW_TOKEN
+   - Keywords: borrow, loan, take out, get a loan
+   - Must express intent to borrow tokens from a protocol or pool, typically requiring collateral or a repayment plan.
+   - Involves requesting tokens with an obligation to return them later (possibly with interest).
+   - Ignore if the user is just asking about borrowing without intent to proceed.
+   Examples:
+   "Borrow 3 FLR from the pool."
+   "Can I take out a loan of 10 tokens?"
+   "Get me a loan in FLR."   
 
 Input: ${user_input}
 
@@ -238,4 +268,150 @@ Ask for clarify.
 
 TX_NO_CONFIRMATION: Final = """
 Tell the user that we didn't get the confirmation we expected and therefore we have cancelled the transaction. Tell the user that they can initiate another one if they wish. If the user has asked a question in the message (${msg}), answer it.
+"""
+
+TOKEN_STAKE: Final = """
+Extract EXACTLY one piece of information from the input text for a token send operation:
+   
+1. TOKEN AMOUNT
+   Number extraction rules:
+   • Convert written numbers to digits (e.g., "five" → 5)
+   • Handle decimals and integers
+   • Convert ALL integers to float (e.g., 100 → 100.0)
+   • Recognize common amount formats:
+     - Decimal: "1.5", "0.5"
+     - Integer: "1", "100"
+     - With words: "5 tokens", "10 FLR"
+   • Extract first valid number only
+   • FAIL if no valid amount found
+
+Input: ${user_input}
+
+Rules:
+- Both fields MUST be present
+- Amount MUST be positive
+- Amount MUST be float type
+- DO NOT infer missing values
+- DO NOT modify the address
+- FAIL if either value is missing or invalid
+
+Output format should be valid json.
+"""
+
+TOKEN_BORROW: Final = """
+Extract EXACTLY three pieces of information from the input text for a token borrow operation:
+
+1. BORROW_TOKEN
+   Required format:
+   • Must be exactly one of: "SFLR" or "USDC" (case-insensitive)
+   • Extract the FIRST valid token mentioned
+   • Convert to uppercase in output (e.g., "sflr" → "SFLR")
+   • FAIL if no valid token ("SFLR" or "USDC") is found
+   • FAIL if multiple conflicting borrow tokens are mentioned (e.g., "borrow SFLR and USDC")
+
+2. COLLATERAL_TOKEN
+   Required format:
+   • Must be exactly one of: "SFLR" or "USDC" (case-insensitive)
+   • Extract the token explicitly mentioned as collateral (e.g., "use SFLR as collateral")
+   • Convert to uppercase in output (e.g., "usdc" → "USDC")
+   • FAIL if no valid collateral token ("SFLR" or "USDC") is found
+   • FAIL if borrow and collateral tokens are the same (e.g., "borrow SFLR with SFLR collateral")
+   • FAIL if multiple conflicting collateral tokens are mentioned
+
+3. BORROW_AMOUNT
+   Number extraction rules:
+   • Convert written numbers to digits (e.g., "five" → 5)
+   • Handle decimals and integers
+   • Convert ALL integers to float (e.g., 100 → 100.0)
+   • Recognize common amount formats:
+     - Decimal: "1.5", "0.5"
+     - Integer: "1", "100"
+     - With words: "5 tokens", "10 SFLR"
+   • Extract the FIRST valid number associated with the borrow amount
+   • FAIL if no valid amount found
+
+Input: ${user_input}
+
+Rules:
+- All three fields (BORROW_TOKEN, COLLATERAL_TOKEN, BORROW_AMOUNT) MUST be present
+- BORROW_AMOUNT MUST be positive
+- BORROW_AMOUNT MUST be float type
+- BORROW_TOKEN and COLLATERAL_TOKEN MUST be different
+- Only "SFLR" and "USDC" are acceptable as tokens
+- DO NOT infer missing values
+- FAIL if any value is missing or invalid
+
+Output format should be valid JSON. Examples:
+- Success: {"borrow_token": "SFLR", "collateral_token": "USDC", "borrow_amount": 10.0}
+- Failure: {"error": "Missing or invalid borrow token. Please specify SFLR or USDC."}
+"""
+
+TOKEN_SUPPLY: Final = """
+Extract EXACTLY three pieces of information from the input text for a token supply operation:
+
+1. SUPPLY_TOKEN
+   Required format:
+   • Must be exactly one of: "SFLR" or "USDC" (case-insensitive)
+   • Extract the FIRST valid token mentioned
+   • Convert to uppercase in output (e.g., "sflr" → "SFLR")
+   • FAIL if no valid token ("SFLR" or "USDC") is found
+   • FAIL if multiple conflicting supply tokens are mentioned (e.g., "supply SFLR and USDC")
+
+2. SUPPLY_AMOUNT
+   Number extraction rules:
+   • Convert written numbers to digits (e.g., "five" → 5)
+   • Handle decimals and integers
+   • Convert ALL integers to float (e.g., 100 → 100.0)
+   • Recognize common amount formats:
+     - Decimal: "1.5", "0.5"
+     - Integer: "1", "100"
+     - With words: "5 tokens", "10 SFLR"
+   • Extract the FIRST valid number associated with the supply amount
+   • FAIL if no valid amount found
+
+3. USE_AS_COLLATERAL
+   Boolean extraction rules:
+   • Look for explicit indicators of collateral intent:
+     - Positive: "use as collateral", "for collateral", "as collateral", "enable collateral", "with collateral option"
+     - Negative: "don’t use as collateral", "no collateral", "not as collateral"
+   • Default to FALSE if no explicit collateral intent is mentioned
+   • Output as a boolean (true/false)
+   • FAIL only if conflicting intents are present (e.g., "use as collateral and not as collateral")
+
+Input: ${user_input}
+
+Rules:
+- SUPPLY_TOKEN and SUPPLY_AMOUNT MUST be present
+- SUPPLY_AMOUNT MUST be positive
+- SUPPLY_AMOUNT MUST be float type
+- Only "SFLR" and "USDC" are acceptable as tokens
+- USE_AS_COLLATERAL defaults to FALSE if not specified
+- DO NOT infer missing SUPPLY_TOKEN or SUPPLY_AMOUNT values
+- FAIL if SUPPLY_TOKEN or SUPPLY_AMOUNT is missing or invalid
+
+Output format should be valid JSON. Examples:
+- Success: {"supply_token": "SFLR", "supply_amount": 10.0, "use_as_collateral": false}
+- Success: {"supply_token": "USDC", "supply_amount": 5.5, "use_as_collateral": true}
+- Failure: {"error": "Missing or invalid supply token. Please specify SFLR or USDC."}
+"""
+
+FOLLOW_UP_TOKEN_STAKE: Final = """
+Tell the user that we understood that they wanted to stake, but that we are not sure about the details. 
+Inform the user that we only support staking JOULE for the moment. Also tell them that if they don't 
+have any joule to stake, they can ask use to swap some for them. Clarify that they either need to tell us how much 
+JOULE they want to stake, or swap some tokens first.
+"""
+
+FOLLOW_UP_TOKEN_BORROW: Final = """
+Tell the user that we understood that they wanted to borrow, but that we are not sure about the details.
+Explain that they need to tell use what token to borrow, which one to use as collateral, and the amount. 
+Also inform them that only sFLR and USDC are valid. Both as collateral and the borrowed token.
+"""
+
+FOLLOW_UP_TOKEN_SUPPLY: Final = """
+Tell the user that we understood that they wanted to supply, but that we are not sure about the details.
+Explain that they need to let us know what token they want to supply, and the amount. We also need to 
+know if they want to be able to use the token as collateral.
+Also let them know that they can only supply sFLR and USDC. Point out that they can swap if they don't have
+either of those tokens.
 """

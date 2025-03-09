@@ -38,6 +38,9 @@ class SemanticRouterResponse(str, Enum):
     SWAP_TOKEN = "SwapToken"
     REQUEST_ATTESTATION = "RequestAttestation"
     CONVERSATIONAL = "Conversational"
+    STAKE_TOKEN = "Stake"
+    SUPPLY_TOKEN = "Supply"
+    BORROW_TOKEN = "Borrow"
 
 
 class TokenSendResponse(TypedDict):
@@ -73,6 +76,18 @@ class TokenSwapResponse(TypedDict):
     to_token: str
     amount: float
 
+class TokenStakeResponse(TypedDict):
+    amount: float
+    
+class TokenBorrowResponse(TypedDict):
+    token: str
+    collateral: str
+    amount: float  
+    
+class TokenSupplyResponse(TypedDict):
+    token: str
+    use_for_collateral: bool
+    amount: float      
 
 class PromptInputs(TypedDict, total=False):
     """
