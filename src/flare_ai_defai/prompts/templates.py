@@ -235,3 +235,7 @@ TX_FAILED: Final = """
 Just apologise and say that the transaction could not be completed, either because we didn't understand the user.
 Ask for clarify.
 """
+
+TX_NO_CONFIRMATION: Final = """
+Tell the user that we didn't get the confirmation we expected and therefore we have cancelled the transaction. Tell the user that they can initiate another one if they wish.
+"""

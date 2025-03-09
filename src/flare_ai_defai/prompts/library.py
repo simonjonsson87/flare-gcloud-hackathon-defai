@@ -34,6 +34,7 @@ from flare_ai_defai.prompts.templates import (
     TOKEN_SEND,
     TOKEN_SWAP,
     TX_CONFIRMATION,
+    TX_NO_CONFIRMATION,
 )
 
 logger = structlog.get_logger(__name__)
@@ -153,6 +154,15 @@ class PromptLibrary:
                 name="follow_up_token_send",
                 description="Feedback when transfer can't be made",
                 template=TX_CONFIRMATION,
+                required_inputs=[],
+                response_schema=None,
+                response_mime_type=None,
+                category="transfer",
+            ),
+            Prompt(
+                name="tx_no_confirmation",
+                description="We have initiated a transaction, but didn't get the confirmation we expected.",
+                template=TX_NO_CONFIRMATION,
                 required_inputs=[],
                 response_schema=None,
                 response_mime_type=None,

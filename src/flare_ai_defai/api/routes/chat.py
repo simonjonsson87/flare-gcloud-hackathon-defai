@@ -152,27 +152,35 @@ class ChatRouter:
                 if message.message.startswith("/"):
                     return await self.handle_command(message.message)
                 self.logger.debug(tx_queue=self.blockchain.tx_queue, tx_queue_len=len(self.blockchain.tx_queue))
-                if (
-                    self.blockchain.tx_queue
-                    and message.message == self.blockchain.tx_queue[-1].confirm_msg
-                ):
-                    try:
-                        self.logger.debug("About to send_tx_in_queue")
-                        tx_hash = self.blockchain.send_tx_in_queue()
+                if (self.blockchain.tx_queue):
+                    if (message.message == self.blockchain.tx_queue[-1].confirm_msg):
+                        try:
+                            self.logger.debug("About to send_tx_in_queue")
+                            tx_hash = self.blockchain.send_tx_in_queue()
+                            prompt, mime_type, schema = self.prompts.get_formatted_prompt(
+                                "tx_confirmation",
+                                tx_hash=tx_hash,
+                                block_explorer=settings.web3_explorer_url,
+                            )
+                            response = self.ai.generate(
+                                prompt=prompt,
+                                response_mime_type=mime_type,
+                                response_schema=schema,
+                            )
+                            return {"response": response.text}
+                        except Web3RPCError as e:
+                            self.logger.exception("send_tx_failed", error=str(e))
+                            return {"response": f"Transaction failed: {str(e)}"}
+                    else:
                         prompt, mime_type, schema = self.prompts.get_formatted_prompt(
-                            "tx_confirmation",
-                            tx_hash=tx_hash,
-                            block_explorer=settings.web3_explorer_url,
+                            "tx_no_confirmation"
                         )
                         response = self.ai.generate(
                             prompt=prompt,
                             response_mime_type=mime_type,
                             response_schema=schema,
-                        )
-                        return {"response": response.text}
-                    except Web3RPCError as e:
-                        self.logger.exception("send_tx_failed", error=str(e))
-                        return {"response": f"Transaction failed: {str(e)}"}
+                        )  
+                        return {"response": response.text}      
 
                 if self.attestation.attestation_requested:
                     try:
