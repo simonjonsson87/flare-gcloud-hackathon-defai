@@ -350,7 +350,8 @@ class ChatRouter:
             amount=send_token_json.get("amount"),
         )
         self.logger.debug("send_token_tx", tx=tx)
-        self.blockchain.add_tx_to_queue(msg=message, tx=tx)
+        txs = [tx]
+        self.blockchain.add_tx_to_queue(msg=message, txs=txs)
         formatted_preview = (
             "Transaction Preview: "
             + f"Sending {Web3.from_wei(tx.get('value', 0), 'ether')} "
