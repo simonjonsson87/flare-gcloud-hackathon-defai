@@ -101,6 +101,7 @@ class ChatRouter:
     def _setup_routes(self) -> None:
         @self._router.post("/verify")
         async def verify(token_request: TokenRequest):
+            self.logger.debug("Entered verify function.")
             """Verify Google ID token and create session"""
             try:
                 # Verify Google token
@@ -136,6 +137,8 @@ class ChatRouter:
             message: ChatMessage,
             user: UserInfo = Depends(get_current_user)
         ) -> dict[str, str]:
+            self.logger.debug("debug - Entered chat function.", email=user.email, message=message)
+            self.logger.info("info - Entered chat function.", email=user.email, message=message)
             """Handle chat messages with authenticated user"""
             try:
                 self.logger.debug(
