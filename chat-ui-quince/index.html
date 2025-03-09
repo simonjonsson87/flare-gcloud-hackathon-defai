@@ -12,14 +12,15 @@
     console.log('After loading GIS script');
   </script>
   <!-- Restore script tags with type="module" -->
-  <script type="module" src="/src/main.js"></script>
   <script type="module" src="/src/google.js"></script>
+  <script type="module" src="/src/main.js"></script>
   <link rel="stylesheet" crossorigin href="/src/style.css">
 </head>
 <body>
   <div class="container">
     <header class="header">
-      <button id="google-sign-in">Login</button>
+      <button id="google-sign-in">Sign in with Google</button>
+      <button id="logout-btn" style="display: none;">Logout</button>
     </header>
     <div class="content-wrapper">
       <aside class="sidebar">

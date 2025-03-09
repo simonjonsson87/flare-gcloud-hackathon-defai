@@ -1,27 +1,20 @@
-# chat.py
 """
 Chat Router Module
 
-This module implements the main chat routing system for the AI Agent API.
-It handles message routing, blockchain interactions, attestations, and AI responses.
-
-The module provides a ChatRouter class that integrates various services:
-- AI capabilities through GeminiProvider
-- Blockchain operations through FlareProvider
-- Attestation services through Vtpm
-- Prompt management through PromptService
+This module implements the main chat routing system for the AI Agent API with Google Sign-In authentication.
 """
 
 import json
-
+import secrets
+import datetime
+from typing import Optional, Dict
 import structlog
 import logging
-from fastapi import APIRouter, HTTPException
-from fastapi import Request, Body
+from fastapi import APIRouter, HTTPException, Depends, Header
+from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel, Field
 from web3 import Web3
 from web3.exceptions import Web3RPCError
-
 from google.oauth2 import id_token
 from google.auth.transport import requests
 
@@ -32,8 +25,7 @@ from flare_ai_defai.blockchain import FlareExplorer
 from flare_ai_defai.prompts import PromptService, SemanticRouterResponse
 from flare_ai_defai.settings import settings
 
-
-# Configure structlog to output to console
+# Configure logging
 structlog.configure(
     processors=[
         structlog.stdlib.filter_by_level,
@@ -42,50 +34,52 @@ structlog.configure(
         structlog.processors.TimeStamper(fmt="iso"),
         structlog.dev.ConsoleRenderer(),
     ],
-    context_class=dict,
     logger_factory=structlog.stdlib.LoggerFactory(),
     wrapper_class=structlog.stdlib.BoundLogger,
-    cache_logger_on_first_use=True,
 )
-
-# Set logging level to INFO
 logging.basicConfig(level=logging.INFO)
 logger = structlog.get_logger(__name__)
-router = APIRouter()
 
+# Session storage (use Redis or database in production)
+sessions: dict[str, dict] = {}
 
+# Google Client ID
+GOOGLE_CLIENT_ID = "289493342717-rqktph7q97vsgegclf28ngfhuhcni1d8.apps.googleusercontent.com"
+
+# Models
 class ChatMessage(BaseModel):
-    """
-    Pydantic model for chat message validation.
-
-    Attributes:
-        message (str): The chat message content, must not be empty
-    """
-
     message: str = Field(..., min_length=1)
 
 class TokenRequest(BaseModel):
     token: str
-    
-class UserSession():
-    sessionToken: str    
+
+class UserInfo(BaseModel):
+    user_id: str
+    email: str
+
+# OAuth2 scheme for token authentication
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/verify")
+
+async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserInfo:
+    """Dependency to verify Google token and get user info"""
+    try:
+        # Verify Google ID token
+        id_info = id_token.verify_oauth2_token(
+            token,
+            requests.Request(),
+            GOOGLE_CLIENT_ID
+        )
+        
+        # Check if session exists
+        if token not in sessions:
+            raise HTTPException(status_code=401, detail="Invalid session")
+            
+        return UserInfo(user_id=id_info["sub"], email=id_info["email"])
+    except ValueError as e:
+        logger.error(f"Token verification failed: {e}")
+        raise HTTPException(status_code=401, detail="Invalid token")
 
 class ChatRouter:
-    """
-    Main router class handling chat messages and their routing to appropriate handlers.
-
-    This class integrates various services and provides routing logic for different
-    types of chat messages including blockchain operations, attestations, and general
-    conversation.
-
-    Attributes:
-        ai (GeminiProvider): Provider for AI capabilities
-        blockchain (FlareProvider): Provider for blockchain operations
-        attestation (Vtpm): Provider for attestation services
-        prompts (PromptService): Service for managing prompts
-        logger (BoundLogger): Structured logger for the chat router
-    """
-
     def __init__(
         self,
         ai: GeminiProvider,
@@ -94,15 +88,6 @@ class ChatRouter:
         attestation: Vtpm,
         prompts: PromptService,
     ) -> None:
-        """
-        Initialize the ChatRouter with required service providers.
-
-        Args:
-            ai: Provider for AI capabilities
-            blockchain: Provider for blockchain operations
-            attestation: Provider for attestation services
-            prompts: Service for managing prompts
-        """
         self._router = APIRouter()
         self.ai = ai
         self.blockchain = blockchain
@@ -114,27 +99,50 @@ class ChatRouter:
         self.google_auth_client_id = "289493342717-rqktph7q97vsgegclf28ngfhuhcni1d8.apps.googleusercontent.com"
 
     def _setup_routes(self) -> None:
-        """
-        Set up FastAPI routes for the chat endpoint.
-        Handles message routing, command processing, and transaction confirmations.
-        """
+        @self._router.post("/verify")
+        async def verify(token_request: TokenRequest):
+            """Verify Google ID token and create session"""
+            try:
+                # Verify Google token
+                id_info = id_token.verify_oauth2_token(
+                    token_request.token,
+                    requests.Request(),
+                    GOOGLE_CLIENT_ID
+                )
+                
+                # Store session with Google token
+                sessions[token_request.token] = {
+                    "user_id": id_info["sub"],
+                    "email": id_info["email"],
+                    "created_at": datetime.datetime.utcnow().isoformat()
+                }
+                
+                self.logger.info(
+                    "User authenticated",
+                    user_id=id_info["sub"],
+                    email=id_info["email"]
+                )
+                return {
+                    "message": "User verified",
+                    "user_id": id_info["sub"],
+                    "email": id_info["email"]
+                }
+            except ValueError as e:
+                self.logger.error(f"Token verification failed: {e}")
+                raise HTTPException(status_code=401, detail=f"Invalid token: {str(e)}")
 
         @self._router.post("/")
-        async def chat(message: ChatMessage, sessionToken: str) -> dict[str, str]:  # pyright: ignore [reportUnusedFunction]
-            """
-            Process incoming chat messages and route them to appropriate handlers.
-
-            Args:
-                message: Validated chat message
-
-            Returns:
-                dict[str, str]: Response containing handled message result
-
-            Raises:
-                HTTPException: If message handling fails
-            """
+        async def chat(
+            message: ChatMessage,
+            user: UserInfo = Depends(get_current_user)
+        ) -> dict[str, str]:
+            """Handle chat messages with authenticated user"""
             try:
-                self.logger.debug("received_message in the chat route", message=message.message)
+                self.logger.debug(
+                    "Received message",
+                    message=message.message,
+                    user_id=user.user_id
+                )
 
                 if message.message.startswith("/"):
                     return await self.handle_command(message.message)
@@ -144,80 +152,45 @@ class ChatRouter:
                 ):
                     try:
                         tx_hash = self.blockchain.send_tx_in_queue()
+                        prompt, mime_type, schema = self.prompts.get_formatted_prompt(
+                            "tx_confirmation",
+                            tx_hash=tx_hash,
+                            block_explorer=settings.web3_explorer_url,
+                        )
+                        response = self.ai.generate(
+                            prompt=prompt,
+                            response_mime_type=mime_type,
+                            response_schema=schema,
+                        )
+                        return {"response": response.text}
                     except Web3RPCError as e:
                         self.logger.exception("send_tx_failed", error=str(e))
-                        msg = (
-                            f"Unfortunately the tx failed with the error:\n{e.args[0]}"
-                        )
-                        return {"response": msg}
+                        return {"response": f"Transaction failed: {str(e)}"}
 
-                    prompt, mime_type, schema = self.prompts.get_formatted_prompt(
-                        "tx_confirmation",
-                        tx_hash=tx_hash,
-                        block_explorer=settings.web3_explorer_url,
-                    )
-                    tx_confirmation_response = self.ai.generate(
-                        prompt=prompt,
-                        response_mime_type=mime_type,
-                        response_schema=schema,
-                    )
-                    return {"response": tx_confirmation_response.text}
                 if self.attestation.attestation_requested:
                     try:
                         resp = self.attestation.get_token([message.message])
+                        self.attestation.attestation_requested = False
+                        return {"response": resp}
                     except VtpmAttestationError as e:
-                        resp = f"The attestation failed with  error:\n{e.args[0]}"
-                    self.attestation.attestation_requested = False
-                    return {"response": resp}
+                        return {"response": f"Attestation failed: {str(e)}"}
 
                 route = await self.get_semantic_route(message.message)
-                return await self.route_message(route, message.message)
+                return await self.route_message(route, message.message, user)
 
             except Exception as e:
                 self.logger.exception("message_handling_failed", error=str(e))
-                raise HTTPException(status_code=500, detail=str(e)) from e
+                raise HTTPException(status_code=500, detail=str(e))
 
-        #@self._router.post("/verify")
-        #async def verify(request: dict):
-        #    """
-        #    Verify a Google ID token sent from the frontend.
-#
-        #    Args:
-        #        token_request: Pydantic model containing the token
-#
-        #    Returns:
-        #        dict: Verification result with user info or error
-#
-        #    Raises:
-        #        HTTPException: If verification fails
-        #    """
-        #    self.logger.debug("Raw request at /verify", request=request)
-        #    token_request = TokenRequest(**request)  # Validate after logging
-        #    self.logger.debug("Received a call in the verify API route")
-        #    self.logger.info("Token received", token=token_request.token)
-        #    result = await self.verify_google_token(token_request.token)
-        #    if "error" in result:
-        #        self.logger.error("Verification error", error=result["error"])
-        #        raise HTTPException(status_code=401, detail=result["error"])
-        #    user_id = result["user_id"]
-        #    self.logger.debug("Verified user", user_id=user_id, user_email=result["email"], message=result["message"])
-        #    return result
+        @self._router.post("/logout")
+        async def logout(token: str = Depends(oauth2_scheme)):
+            """Remove user session"""
+            if token in sessions:
+                del sessions[token]
+                self.logger.info("User logged out", token=token)
+                return {"message": "Logged out successfully"}
+            return {"message": "No active session"}
         
-        @self._router.post("/verify")
-        async def verify(token_request: TokenRequest):
-            self.logger.debug("Entered /verify endpoint")
-            self.logger.info("Token received", token=token_request.token)
-            try:
-                result = await self.verify_google_token(token_request.token)
-                if "error" in result:
-                    self.logger.error("Verification error", error=result["error"])
-                    raise HTTPException(status_code=401, detail=result["error"])
-                self.logger.debug("Verified user", user_id=result["user_id"], user_email=result["email"], message=result["message"])
-                return result
-            except Exception as e:
-                self.logger.error("Unexpected error in /verify", error=str(e))
-                raise HTTPException(status_code=500, detail="Internal server error")      
-                     
     async def verify_google_token(self, token: str) -> dict[str, str]:
         try:
             id_info = id_token.verify_oauth2_token(
@@ -238,10 +211,8 @@ class ChatRouter:
     @property
     def router(self) -> APIRouter:
         """Get the FastAPI router with registered routes."""
-        return self._router
-
+        return self._router    
     
-
     async def handle_command(self, command: str) -> dict[str, str]:
         """
         Handle special command messages starting with '/'.
@@ -288,7 +259,7 @@ class ChatRouter:
             return SemanticRouterResponse.CONVERSATIONAL
 
     async def route_message(
-        self, route: SemanticRouterResponse, message: str
+        self, route: SemanticRouterResponse, message: str, user: UserInfo
     ) -> dict[str, str]:
         """
         Route a message to the appropriate handler based on semantic route.
@@ -312,31 +283,22 @@ class ChatRouter:
         if not handler:
             return {"response": "Unsupported route"}
 
-        return await handler(message)
+        return await handler(message, user)
 
-    async def handle_generate_account(self, _: str) -> dict[str, str]:
-        """
-        Handle account generation requests.
-
-        Args:
-            _: Unused message parameter
-
-        Returns:
-            dict[str, str]: Response containing new account information
-                or existing account
-        """
+    # Rest of the methods remain largely the same, just add user context where needed
+    async def handle_generate_account(self, _: str, user: UserInfo) -> dict[str, str]:
         if self.blockchain.address:
             return {"response": f"Account exists - {self.blockchain.address}"}
         address = self.blockchain.generate_account()
         prompt, mime_type, schema = self.prompts.get_formatted_prompt(
-            "generate_account", address=address
+            "generate_account", address=address, user_id=user.user_id
         )
         gen_address_response = self.ai.generate(
             prompt=prompt, response_mime_type=mime_type, response_schema=schema
         )
         return {"response": gen_address_response.text}
 
-    async def handle_send_token(self, message: str) -> dict[str, str]:
+    async def handle_send_token(self, message: str, user: UserInfo) -> dict[str, str]:
         """
         Handle token sending requests.
 
@@ -347,7 +309,7 @@ class ChatRouter:
             dict[str, str]: Response containing transaction preview or follow-up prompt
         """
         if not self.blockchain.address:
-            await self.handle_generate_account(message)
+            await self.handle_generate_account(message, user)
 
         prompt, mime_type, schema = self.prompts.get_formatted_prompt(
             "token_send", user_input=message
@@ -378,7 +340,7 @@ class ChatRouter:
         )
         return {"response": formatted_preview}
 
-    async def handle_swap_token(self, _: str) -> dict[str, str]:
+    async def handle_swap_token(self, _: str, user: UserInfo) -> dict[str, str]:
         """
         Handle token swap requests (currently unsupported).
 
@@ -390,7 +352,7 @@ class ChatRouter:
         """
         return {"response": "Sorry I can't do that right now"}
 
-    async def handle_attestation(self, _: str) -> dict[str, str]:
+    async def handle_attestation(self, _: str, user: UserInfo) -> dict[str, str]:
         """
         Handle attestation requests.
 
@@ -405,7 +367,7 @@ class ChatRouter:
         self.attestation.attestation_requested = True
         return {"response": request_attestation_response.text}
 
-    async def handle_conversation(self, message: str) -> dict[str, str]:
+    async def handle_conversation(self, message: str, user: UserInfo) -> dict[str, str]:
         """
         Handle general conversation messages.
 

@@ -1,66 +1,166 @@
 const BACKEND_ROUTE = 'api/routes/chat/';
 
-// No interfaces needed in JS, but we'll keep structure in mind
-// TokenRequest: { token: string }
-// VerifyResponse: { user_id: string, email: string, message: string, error?: string }
+class ApiClient {
+    constructor() {
+        this.token = localStorage.getItem('google_token') || null;
+        this.userInfo = null;
+    }
+
+    setToken(token) {
+        this.token = token;
+        localStorage.setItem('google_token', token);
+    }
+
+    clearSession() {
+        this.token = null;
+        this.userInfo = null;
+        localStorage.removeItem('google_token');
+    }
+
+    async verifyGoogleToken(idToken) {
+        try {
+            const response = await fetch(BACKEND_ROUTE + 'verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: idToken })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Verification failed: ${response.status} - ${errorText}`);
+            }
+
+            const data = await response.json();
+            this.setToken(idToken);
+            this.userInfo = {
+                user_id: data.user_id,
+                email: data.email
+            };
+            return data;
+        } catch (error) {
+            console.error('Token verification failed:', error);
+            throw error;
+        }
+    }
+
+    async logout() {
+        if (!this.token) return;
+
+        try {
+            const response = await fetch(BACKEND_ROUTE + 'logout', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`
+                }
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.warn(`Logout failed: ${response.status} - ${errorText}`);
+            }
+
+            this.clearSession();
+            return await response.json();
+        } catch (error) {
+            console.error('Logout failed:', error);
+            throw error;
+        }
+    }
+}
+
+const apiClient = new ApiClient();
 
 async function handleGoogleSignIn(response) {
-  console.log('Callback triggered! Response:', response);
-  const idToken = response.credential;
-  if (!idToken) {
-    console.error('No credential in GIS response:', response);
-    return;
-  }
-  const request = { token: idToken };
-  console.log('Sending to /verify:', JSON.stringify(request));
-  try {
-    const fetchResponse = await fetch(BACKEND_ROUTE + 'verify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request),
-    });
-    if (!fetchResponse.ok) {
-      const errorText = await fetchResponse.text();
-      console.error('Fetch failed:', fetchResponse.status, errorText);
-      throw new Error(`HTTP error! status: ${fetchResponse.status}`);
+    console.log('Google Sign-In response:', response);
+    const idToken = response.credential;
+
+    if (!idToken) {
+        console.error('No credential in GIS response:', response);
+        return;
     }
-    const data = await fetchResponse.json();
-    console.log('User verified:', data);
-  } catch (error) {
-    console.error('Sign-in failed:', error);
-  }
+
+    try {
+        const result = await apiClient.verifyGoogleToken(idToken);
+        console.log('User verified:', result);
+        updateUI(true);
+    } catch (error) {
+        console.error('Sign-in failed:', error);
+        updateUI(false);
+    }
+}
+
+function updateUI(isAuthenticated) {
+    const loginBtn = document.getElementById('google-sign-in');
+    const logoutBtn = document.getElementById('logout-btn');
+    const chatInput = document.getElementById('message-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    if (isAuthenticated) {
+        loginBtn.style.display = 'none';
+        logoutBtn.style.display = 'block';
+        chatInput.disabled = false;
+        sendBtn.disabled = false;
+    } else {
+        loginBtn.style.display = 'block';
+        logoutBtn.style.display = 'none';
+        chatInput.disabled = true;
+        sendBtn.disabled = true;
+    }
 }
 
 window.addEventListener('load', function() {
-  console.log('Window loaded, checking google.accounts.id:', window.google.accounts.id);
-  if (!window.google || !window.google.accounts || !window.google.accounts.id) {
-    console.error('Google Identity Services script not loaded');
-    return;
-  }
-  console.log('Before initialize, google.accounts.id:', window.google.accounts.id);
-  window.google.accounts.id.initialize({
-    client_id: '289493342717-rqktph7q97vsgegclf28ngfhuhcni1d8.apps.googleusercontent.com',
-    callback: handleGoogleSignIn
-  });
-  console.log('After initialize, google.accounts.id:', window.google.accounts.id);
+    if (!window.google || !window.google.accounts || !window.google.accounts.id) {
+        console.error('Google Identity Services script not loaded');
+        return;
+    }
 
-  const loginBtn = document.getElementById('google-sign-in');
-  if (!loginBtn) {
-    console.error('Login button not found');
-    return;
-  }
-  loginBtn.onclick = function() {
-    console.log('Button clicked, triggering prompt');
-    console.log('Calling prompt:', window.google.accounts.id.prompt);
-    window.google.accounts.id.prompt(function(notification) {
-      console.log('Prompt notification:', notification);
-      if (notification.isNotDisplayed()) {
-        console.log('Prompt not displayed:', notification.getNotDisplayedReason());
-      } else if (notification.isSkippedMoment()) {
-        console.log('Prompt skipped:', notification.getSkippedReason());
-      } else if (notification.isDismissedMoment()) {
-        console.log('Prompt dismissed:', notification.getDismissedReason());
-      }
+    window.google.accounts.id.initialize({
+        client_id: '289493342717-rqktph7q97vsgegclf28ngfhuhcni1d8.apps.googleusercontent.com',
+        callback: handleGoogleSignIn
     });
-  };
+
+    const loginBtn = document.getElementById('google-sign-in');
+    if (!loginBtn) {
+        console.error('Login button not found');
+        return;
+    }
+
+    loginBtn.onclick = function() {
+        console.log('Button clicked, triggering prompt');
+        window.google.accounts.id.prompt((notification) => {
+            console.log('Prompt notification:', notification);
+            if (notification.isNotDisplayed()) {
+                console.log('Prompt not displayed:', notification.getNotDisplayedReason());
+            } else if (notification.isSkippedMoment()) {
+                console.log('Prompt skipped:', notification.getSkippedReason());
+            } else if (notification.isDismissedMoment()) {
+                console.log('Prompt dismissed:', notification.getDismissedReason());
+            }
+        });
+    };
+
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.onclick = async function() {
+            try {
+                await apiClient.logout();
+                console.log('Logged out successfully');
+                updateUI(false);
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        };
+    }
+
+    // Check existing session
+    if (apiClient.token) {
+        apiClient.verifyGoogleToken(apiClient.token)
+            .then(() => updateUI(true))
+            .catch(() => {
+                apiClient.clearSession();
+                updateUI(false);
+            });
+    } else {
+        updateUI(false);
+    }
 });
