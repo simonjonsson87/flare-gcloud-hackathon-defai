@@ -396,6 +396,13 @@ Output format should be valid JSON. Examples:
 - Success: {"supply_token": "SFLR", "supply_amount": 10.0, "use_as_collateral": false}
 - Success: {"supply_token": "USDC", "supply_amount": 5.5, "use_as_collateral": true}
 - Failure: {"error": "Missing or invalid supply token. Please specify SFLR or USDC."}
+
+More examples:
+User input: "Ok, I would like to supply 13 sFLR tokens and use them as collateral", ai output: {"amount": 13.0, "token": "sFLR", "use_for_collateral": true}
+User input: "I'll lend 67 USDC, but I don't want to use it as collateral", ai output: {"amount": 67.0, "token": "USDC", "use_for_collateral": false}
+User input: "Supply 67 sflr. Yes to collateral", ai output: {"amount": 67.0, "token": "sFLR", "use_for_collateral": true}
+User input: "I want to supply 1234 USDC tokens and use them for collateral", ai output: {"amount": 1234.0, "token": "USDC", "use_for_collateral": true}
+
 """
 
 FOLLOW_UP_TOKEN_STAKE: Final = """
