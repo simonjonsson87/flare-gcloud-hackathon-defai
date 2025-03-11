@@ -500,15 +500,20 @@ class ChatRouter:
             prompt=prompt, response_mime_type=mime_type, response_schema=schema
         )
         
-        
-        
-        
         ai_response_json = json.loads("{}")
         try:
             ai_response_json = json.loads(ai_response.text)
         except:
             self.logger.debug("We probably did not get valid json back from Gemini. See below.")
                 
+        
+        self.logger.debug(message=message)
+        self.logger.debug(prompt=prompt)
+        self.logger.debug(mime_type=mime_type)
+        self.logger.debug(schema=schema)
+        self.logger.debug(ai_response=ai_response)
+        self.logger.debug(ai_response_json=ai_response_json)
+        self.logger.debug(len_ai_response_json=len(ai_response_json))
         
         expected_json_len = 3
         if (
@@ -519,13 +524,7 @@ class ChatRouter:
             follow_up_response = self.ai.generate(prompt)
             return {"response": follow_up_response.text + " \n " + json.dumps(ai_response_json)}
         
-        self.logger.debug(message=message)
-        self.logger.debug(prompt=prompt)
-        self.logger.debug(mime_type=mime_type)
-        self.logger.debug(schema=schema)
-        self.logger.debug(ai_response=ai_response)
-        self.logger.debug(ai_response_json=ai_response_json)
-        self.logger.debug(len_ai_response_json=len(ai_response_json))
+        
         
         # Return stringified JSON
         return {"response": json.dumps(ai_response_json)}
