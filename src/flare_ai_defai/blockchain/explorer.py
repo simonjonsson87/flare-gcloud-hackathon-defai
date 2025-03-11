@@ -28,7 +28,7 @@ class FlareExplorer:
             response.raise_for_status()
             try:
                 json_response = response.json()
-                #self.logger2.debug("Response JSON:", extra={"json_response": json_response})
+                self.logger2.debug("Response JSON:", extra={"json_response": json_response})
             except ValueError:
                 # If the response is not JSON, log the raw content
                 #self.logger2.error("Response is not in JSON format, raw content:", extra={"response_text": response.text})

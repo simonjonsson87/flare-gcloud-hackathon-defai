@@ -24,6 +24,8 @@ from flare_ai_defai.blockchain import FlareProvider
 from flare_ai_defai.blockchain import FlareExplorer
 from flare_ai_defai.prompts import PromptService, SemanticRouterResponse
 from flare_ai_defai.settings import settings
+from flare_ai_defai.blockchain import KineticMarket
+from flare_ai_defai.blockchain import SparkDEX
 
 
 # Configure logging
@@ -90,6 +92,8 @@ class ChatRouter:
         flareExplorer: FlareExplorer,
         attestation: Vtpm,
         prompts: PromptService,
+        kinetic_market: KineticMarket,
+        sparkdex: SparkDEX
     ) -> None:
         self._router = APIRouter()
         self.ai = ai
@@ -100,6 +104,8 @@ class ChatRouter:
         self.logger = logger.bind(router="chat")
         self._setup_routes()
         self.google_auth_client_id = "289493342717-rqktph7q97vsgegclf28ngfhuhcni1d8.apps.googleusercontent.com"
+        self.kinetic_market = kinetic_market
+        self.sparkdex = sparkdex
 
     def _setup_routes(self) -> None:
         @self._router.post("/verify")
@@ -159,7 +165,7 @@ class ChatRouter:
                             tx_hash = self.blockchain.send_tx_in_queue()
                             prompt, mime_type, schema = self.prompts.get_formatted_prompt(
                                 "tx_confirmation",
-                                tx_hash=tx_hash,
+                                tx_hash=tx_hash[-1],
                                 block_explorer=settings.web3_explorer_url,
                             )
                             response = self.ai.generate(
@@ -428,7 +434,7 @@ class ChatRouter:
         Returns:
             dict[str, str]: Response indicating unsupported operation
         """
-        self.logger.debug("In handle_swap()")
+        self.logger.debug("In handle_swap_token()")
         response_json = await self.getDeFiJson(message, "token_swap")
         
         expected_json_len = 3
@@ -440,6 +446,7 @@ class ChatRouter:
             follow_up_response = self.ai.generate(prompt)
             return {"response": follow_up_response.text + " \n " + json.dumps(response_json)}
         
+       
         # Return stringified JSON
         return {"response": json.dumps(response_json)}
 
@@ -468,6 +475,8 @@ class ChatRouter:
             prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_stake")
             follow_up_response = self.ai.generate(prompt)
             return {"response": follow_up_response.text + " \n " + json.dumps(response_json)}
+        
+        
         
         # Return stringified JSON
         return {"response": json.dumps(response_json)}

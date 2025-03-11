@@ -1,0 +1,656 @@
+ => CACHED [frontend-builder 5/5] RUN npm run build                                                                       0.0s
+ => [stage-2  5/12] COPY --from=backend-builder /flare-ai-defai/src ./src                                                 0.0s
+ => [stage-2  6/12] COPY --from=backend-builder /flare-ai-defai/pyproject.toml .                                          0.0s
+ => [stage-2  7/12] COPY --from=backend-builder /flare-ai-defai/README.md .                                               0.0s
+ => [stage-2  8/12] COPY --from=frontend-builder /frontend/dist /usr/share/nginx/html                                     0.0s
+ => [stage-2  9/12] COPY nginx.conf /etc/nginx/sites-enabled/default                                                      0.0s
+ => [stage-2 10/12] COPY fullchain.pem /app/fullchain.pem                                                                 0.0s
+ => [stage-2 11/12] COPY privkey.pem /app/privkey.pem                                                                     0.0s
+ => [stage-2 12/12] COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf                                         0.0s
+ => exporting to image                                                                                                    2.6s
+ => => exporting layers                                                                                                   2.6s
+ => => writing image sha256:d4e1ca294c08c551a2aa5eace6541a378aea510ad41c7db9258617b273cd1341                              0.0s
+ => => naming to docker.io/library/flare-ai-defai                                                                         0.0s
+2025-03-10 12:21:53,744 INFO Set uid to user 0 succeeded
+2025-03-10 12:21:53,746 INFO supervisord started with pid 1
+2025-03-10 12:21:54,751 INFO spawned: 'backend' with pid 7
+2025-03-10 12:21:54,754 INFO spawned: 'nginx' with pid 8
+2025-03-10 12:21:55,769 INFO success: backend entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-03-10 12:21:55,769 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+   Building flare-ai-defai @ file:///app
+Downloading cryptography (4.0MiB)
+Downloading google-api-python-client (12.5MiB)
+Downloading pyright (5.4MiB)
+Downloading aiohttp (1.6MiB)
+Downloading ruff (10.8MiB)
+ Downloaded aiohttp
+ Downloaded cryptography
+ Downloaded ruff
+      Built flare-ai-defai @ file:///app
+ Downloaded google-api-python-client
+ Downloaded pyright
+Uninstalled 14 packages in 668ms
+Installed 14 packages in 270ms
+2025-03-10 12:22:09 [debug    ] settings                       settings={'simulate_attestation': True, 'cors_origins': ['*'], 'gemini_api_key': 'AIzaSyCka9NwqsnJT4w6dNUF-rYznO5U4p3WgP0', 'gemini_model': 'gemini-2.0-flash', 'api_version': 'v1', 'web3_provider_url': 'https://flare-api.flare.network/ext/C/rpc', 'web3_explorer_url': 'https://flare-explorer.flare.network/api'}
+DEBUG:flare_ai_defai.attestation.vtpm_attestation:2025-03-10T12:22:09.541973Z vtpm                           router=vtpm simulate=True unix_socket_path=/run/container_launcher/teeserver.sock url=http://localhost/v1/token
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.542638Z prompt_added                   category=router name=semantic_router
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.543271Z prompt_added                   category=defai name=token_send
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.543605Z prompt_added                   category=defai name=token_swap
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.544416Z prompt_added                   category=defai name=follow_up_token_swap
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.545183Z prompt_added                   category=account name=generate_account
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.546055Z prompt_added                   category=conversational name=conversational
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.547274Z prompt_added                   category=conversational name=request_attestation
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.548324Z prompt_added                   category=account name=tx_confirmation
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.548847Z prompt_added                   category=transfer name=follow_up_token_send
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.549825Z prompt_added                   category=transfer name=tx_no_confirmation
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.550513Z prompt_added                   category=defai name=token_stake
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.551056Z prompt_added                   category=defai name=follow_up_token_stake
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.551653Z prompt_added                   category=defai name=token_supply
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.552267Z prompt_added                   category=defai name=follow_up_token_supply
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.552797Z prompt_added                   category=defai name=token_borrow
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:22:09.553267Z prompt_added                   category=defai name=follow_up_token_borrow
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: web3_clientVersion
+DEBUG:web3._utils.http_session_manager.HTTPSessionManager:Session cached: https://flare-api.flare.network/ext/C/rpc, <requests.sessions.Session object at 0x7f7cec64abd0>
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): flare-api.flare.network:443
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 44
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'v0.11.0'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_call
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_chainId
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0xe'}
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_call
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 103
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_call, Response: {'jsonrpc': '2.0', 'id': 2, 'result': '0x0000000000000000000000000000000000000000000000000000000000000012'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_chainId
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId, Response: {'jsonrpc': '2.0', 'id': 3, 'result': '0xe'}
+DEBUG:flare_ai_defai.blockchain.kinetic_market:2025-03-10T12:22:09.848576Z Fetched decimals               decimals=18 router=kinetic_market
+DEBUG:flare_ai_defai.blockchain.kinetic_market:2025-03-10T12:22:09.848809Z Converted amount to wei        amount=2 amount_wei=2000000000000000000 router=kinetic_market
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getBalance
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getBalance
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 56
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getBalance, Response: {'jsonrpc': '2.0', 'id': 4, 'result': '0x525ed0e002dfddef2'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionCount
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionCount
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 41
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionCount, Response: {'jsonrpc': '2.0', 'id': 5, 'result': '0x14'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionCount
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionCount
+DEBUG:web3._utils.http_session_manager.HTTPSessionManager:Session cached: https://flare-api.flare.network/ext/C/rpc, <requests.sessions.Session object at 0x7f7cebe27620>
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): flare-api.flare.network:443
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 41
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionCount, Response: {'jsonrpc': '2.0', 'id': 0, 'result': '0x14'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_gasPrice
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_gasPrice
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 48
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_gasPrice, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x5d21dba00'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_maxPriorityFeePerGas
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_maxPriorityFeePerGas
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_maxPriorityFeePerGas, Response: {'jsonrpc': '2.0', 'id': 2, 'result': '0x0'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_chainId
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId, Response: {'jsonrpc': '2.0', 'id': 3, 'result': '0xe'}
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:22:10.110558Z Created contract function tx   function=submit router=flare_provider tx={'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 20, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 2000000000000000000, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x5bcb2fc6'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionCount
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionCount
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 41
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionCount, Response: {'jsonrpc': '2.0', 'id': 4, 'result': '0x14'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_gasPrice
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_gasPrice
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 48
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_gasPrice, Response: {'jsonrpc': '2.0', 'id': 5, 'result': '0x5d21dba00'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_maxPriorityFeePerGas
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_maxPriorityFeePerGas
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_maxPriorityFeePerGas, Response: {'jsonrpc': '2.0', 'id': 6, 'result': '0x0'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_chainId
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId, Response: {'jsonrpc': '2.0', 'id': 7, 'result': '0xe'}
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:22:10.220074Z Created contract function tx   function=approve router=flare_provider tx={'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 21, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 0, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x095ea7b3000000000000000000000000e016eeb29af76c379a4f2bb3d71a05d70efbc8a30000000000000000000000000000000000000000000000001bc16d674ec80000'}
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:22:10.220357Z add_tx_to_queue                router=flare_provider tx_queue=[TxQueueElement(msg='Swapping FLR to sFLR', confirm_msg='CONFIRM', txs=[{'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 20, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 2000000000000000000, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x5bcb2fc6'}, {'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 21, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 0, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x095ea7b3000000000000000000000000e016eeb29af76c379a4f2bb3d71a05d70efbc8a30000000000000000000000000000000000000000000000001bc16d674ec80000'}])]
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:22:10.220608Z In send_tx_in_queue.           router=flare_provider tx_queue=[TxQueueElement(msg='Swapping FLR to sFLR', confirm_msg='CONFIRM', txs=[{'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 20, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 2000000000000000000, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x5bcb2fc6'}, {'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 21, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 0, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x095ea7b3000000000000000000000000e016eeb29af76c379a4f2bb3d71a05d70efbc8a30000000000000000000000000000000000000000000000001bc16d674ec80000'}])]
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_sendRawTransaction
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_sendRawTransaction
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 103
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_sendRawTransaction, Response: {'jsonrpc': '2.0', 'id': 8, 'result': '0x34670c973e2888c3a575276e0d6bd954856635d6748a5f030e5cee32d4d74777'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 39
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 9, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 10, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 11, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 12, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 13, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 14, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 15, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 16, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 17, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 18, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 19, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 20, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 21, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 1032
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 22, 'result': {'blockHash': '0x317f48948507fbf1fa634d54e2d7898cea45b3b64a2ef14f22a7f239f6f610a0', 'blockNumber': '0x24c32b2', 'contractAddress': None, 'cumulativeGasUsed': '0x61d96', 'effectiveGasPrice': '0x5d21dba00', 'from': '0x1812c40b5785aed831ec4a0d675f30c5461fd42e', 'gasUsed': '0x2f9c3', 'logs': [], 'logsBloom': '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000', 'status': '0x0', 'to': '0x12e605bc104e93b45e1ad99f9e555f659051c2bb', 'transactionHash': '0x34670c973e2888c3a575276e0d6bd954856635d6748a5f030e5cee32d4d74777', 'transactionIndex': '0x1', 'type': '0x2'}}
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:22:11.904526Z sign_and_send_transaction      router=flare_provider tx={'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 20, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 2000000000000000000, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x5bcb2fc6'}
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:22:11.905024Z sent_tx_hash                   router=flare_provider tx_hash=0x34670c973e2888c3a575276e0d6bd954856635d6748a5f030e5cee32d4d74777
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_sendRawTransaction
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_sendRawTransaction
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 104
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_sendRawTransaction, Response: {'jsonrpc': '2.0', 'id': 23, 'result': '0xe281c0b4f82a598039d820fe916177965c0ce234755f551bc1180761a3d09ba4'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 24, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 25, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 26, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 27, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 28, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 29, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 30, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 31, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 32, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 33, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 34, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 35, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 36, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 37, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 38, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 39, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 40, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 41, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 42, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 43, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 44, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 45, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 46, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 47, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 48, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 None
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 49, 'result': {'blockHash': '0xbe7178583d558b639ab71fdf8a6de6c8b057c0f67064f17f435b19e271d427d9', 'blockNumber': '0x24c32b4', 'contractAddress': None, 'cumulativeGasUsed': '0xa113f', 'effectiveGasPrice': '0x5d21dba00', 'from': '0x1812c40b5785aed831ec4a0d675f30c5461fd42e', 'gasUsed': '0x9753', 'logs': [{'address': '0x12e605bc104e93b45e1ad99f9e555f659051c2bb', 'topics': ['0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925', '0x0000000000000000000000001812c40b5785aed831ec4a0d675f30c5461fd42e', '0x000000000000000000000000e016eeb29af76c379a4f2bb3d71a05d70efbc8a3'], 'data': '0x0000000000000000000000000000000000000000000000001bc16d674ec80000', 'blockNumber': '0x24c32b4', 'transactionHash': '0xe281c0b4f82a598039d820fe916177965c0ce234755f551bc1180761a3d09ba4', 'transactionIndex': '0x4', 'blockHash': '0xbe7178583d558b639ab71fdf8a6de6c8b057c0f67064f17f435b19e271d427d9', 'logIndex': '0x9', 'removed': False}], 'logsBloom': '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001200000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000204000000000000000040000000000000000020000000000000000000000000000000000002000000000000000000000000000000000000010000000000000000000000000000000000020000000000000000010000000000000000000000000000000000000000000000000000000000000', 'status': '0x1', 'to': '0x12e605bc104e93b45e1ad99f9e555f659051c2bb', 'transactionHash': '0xe281c0b4f82a598039d820fe916177965c0ce234755f551bc1180761a3d09ba4', 'transactionIndex': '0x4', 'type': '0x2'}}
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:22:15.058714Z sign_and_send_transaction      router=flare_provider tx={'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 21, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 0, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x095ea7b3000000000000000000000000e016eeb29af76c379a4f2bb3d71a05d70efbc8a30000000000000000000000000000000000000000000000001bc16d674ec80000'}
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:22:15.059020Z sent_tx_hash                   router=flare_provider tx_hash=0xe281c0b4f82a598039d820fe916177965c0ce234755f551bc1180761a3d09ba4
+DEBUG:asyncio:Using selector: EpollSelector
+INFO:     Started server process [51]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+^C2025-03-10 12:23:22,181 WARN received SIGINT indicating exit request
+2025-03-10 12:23:22,185 INFO waiting for backend, nginx to die
+2025-03-10 12:23:23,205 INFO stopped: nginx (exit status 0)
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [51]
+2025-03-10 12:23:23,644 WARN stopped: backend (exit status 143)
+simonjonsson@UOS-18953 flare-gcloud-hackathon-defai % docker build -t flare-ai-defai . && docker run -p 80:80 -p 8080:8080 -it --env-file .env flare-ai-defai
+[+] Building 34.9s (26/26) FINISHED                                                                                            
+ => [internal] load build definition from Dockerfile                                                                      0.0s
+ => => transferring dockerfile: 129B                                                                                      0.0s
+ => [internal] load .dockerignore                                                                                         0.0s
+ => => transferring context: 2B                                                                                           0.0s
+ => [internal] load metadata for docker.io/library/node:18-alpine                                                         1.1s
+ => [internal] load metadata for ghcr.io/astral-sh/uv:python3.12-bookworm-slim                                            1.1s
+ => [internal] load build context                                                                                         0.2s
+ => => transferring context: 63.89kB                                                                                      0.2s
+ => CACHED [backend-builder 1/4] FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim@sha256:cfb37d07d85d4ac9d8d6005fc6f83  0.0s
+ => [frontend-builder 1/5] FROM docker.io/library/node:18-alpine@sha256:e0340f26173b41066d68e3fe9bfbdb6571ab3cad0a427291  0.0s
+ => [backend-builder 2/4] ADD . /flare-ai-defai                                                                           0.4s
+ => [backend-builder 3/4] WORKDIR /flare-ai-defai                                                                         0.0s
+ => [backend-builder 4/4] RUN uv sync --frozen                                                                           19.9s
+ => CACHED [stage-2  2/12] RUN apt-get update && apt-get install -y nginx supervisor curl &&     rm -rf /var/lib/apt/lis  0.0s
+ => CACHED [stage-2  3/12] WORKDIR /app                                                                                   0.0s
+ => [stage-2  4/12] COPY --from=backend-builder /flare-ai-defai/.venv ./.venv                                             8.9s
+ => CACHED [frontend-builder 2/5] WORKDIR /frontend                                                                       0.0s
+ => CACHED [frontend-builder 3/5] COPY chat-ui-quince/ .                                                                  0.0s
+ => CACHED [frontend-builder 4/5] RUN npm install                                                                         0.0s
+ => CACHED [frontend-builder 5/5] RUN npm run build                                                                       0.0s
+ => [stage-2  5/12] COPY --from=backend-builder /flare-ai-defai/src ./src                                                 0.0s
+ => [stage-2  6/12] COPY --from=backend-builder /flare-ai-defai/pyproject.toml .                                          0.0s
+ => [stage-2  7/12] COPY --from=backend-builder /flare-ai-defai/README.md .                                               0.0s
+ => [stage-2  8/12] COPY --from=frontend-builder /frontend/dist /usr/share/nginx/html                                     0.0s
+ => [stage-2  9/12] COPY nginx.conf /etc/nginx/sites-enabled/default                                                      0.0s
+ => [stage-2 10/12] COPY fullchain.pem /app/fullchain.pem                                                                 0.0s
+ => [stage-2 11/12] COPY privkey.pem /app/privkey.pem                                                                     0.0s
+ => [stage-2 12/12] COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf                                         0.0s
+ => exporting to image                                                                                                    2.1s
+ => => exporting layers                                                                                                   2.1s
+ => => writing image sha256:6cd3935d5a2e8f956c5f8bc9524b63d0bcea57d0f152274db49cf9a1e3ed2c1c                              0.0s
+ => => naming to docker.io/library/flare-ai-defai                                                                         0.0s
+2025-03-10 12:45:21,964 INFO Set uid to user 0 succeeded
+2025-03-10 12:45:21,966 INFO supervisord started with pid 1
+2025-03-10 12:45:22,974 INFO spawned: 'backend' with pid 7
+2025-03-10 12:45:22,980 INFO spawned: 'nginx' with pid 8
+2025-03-10 12:45:24,022 INFO success: backend entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-03-10 12:45:24,022 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+   Building flare-ai-defai @ file:///app
+Downloading cryptography (4.0MiB)
+Downloading aiohttp (1.6MiB)
+Downloading google-api-python-client (12.5MiB)
+Downloading pyright (5.4MiB)
+Downloading ruff (10.8MiB)
+      Built flare-ai-defai @ file:///app
+ Downloaded aiohttp
+ Downloaded cryptography
+ Downloaded pyright
+ Downloaded ruff
+ Downloaded google-api-python-client
+Uninstalled 14 packages in 791ms
+Installed 14 packages in 679ms
+2025-03-10 12:45:41 [debug    ] settings                       settings={'simulate_attestation': True, 'cors_origins': ['*'], 'gemini_api_key': 'AIzaSyCka9NwqsnJT4w6dNUF-rYznO5U4p3WgP0', 'gemini_model': 'gemini-2.0-flash', 'api_version': 'v1', 'web3_provider_url': 'https://flare-api.flare.network/ext/C/rpc', 'web3_explorer_url': 'https://flare-explorer.flare.network/api'}
+DEBUG:flare_ai_defai.attestation.vtpm_attestation:2025-03-10T12:45:41.487518Z vtpm                           router=vtpm simulate=True unix_socket_path=/run/container_launcher/teeserver.sock url=http://localhost/v1/token
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.487758Z prompt_added                   category=router name=semantic_router
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.487923Z prompt_added                   category=defai name=token_send
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.488007Z prompt_added                   category=defai name=token_swap
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.488206Z prompt_added                   category=defai name=follow_up_token_swap
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.488280Z prompt_added                   category=account name=generate_account
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.488346Z prompt_added                   category=conversational name=conversational
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.488409Z prompt_added                   category=conversational name=request_attestation
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.488771Z prompt_added                   category=account name=tx_confirmation
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.489010Z prompt_added                   category=transfer name=follow_up_token_send
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.489319Z prompt_added                   category=transfer name=tx_no_confirmation
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.489459Z prompt_added                   category=defai name=token_stake
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.489830Z prompt_added                   category=defai name=follow_up_token_stake
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.489912Z prompt_added                   category=defai name=token_supply
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.489976Z prompt_added                   category=defai name=follow_up_token_supply
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.490181Z prompt_added                   category=defai name=token_borrow
+DEBUG:flare_ai_defai.prompts.library:2025-03-10T12:45:41.490292Z prompt_added                   category=defai name=follow_up_token_borrow
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: web3_clientVersion
+DEBUG:web3._utils.http_session_manager.HTTPSessionManager:Session cached: https://flare-api.flare.network/ext/C/rpc, <requests.sessions.Session object at 0x7fc5bc1326f0>
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): flare-api.flare.network:443
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 44
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'v0.11.0'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_call
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_chainId
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0xe'}
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_call
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 103
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_call, Response: {'jsonrpc': '2.0', 'id': 2, 'result': '0x0000000000000000000000000000000000000000000000000000000000000012'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_chainId
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId, Response: {'jsonrpc': '2.0', 'id': 3, 'result': '0xe'}
+DEBUG:flare_ai_defai.blockchain.kinetic_market:2025-03-10T12:45:41.686942Z Fetched decimals               decimals=18 router=kinetic_market
+DEBUG:flare_ai_defai.blockchain.kinetic_market:2025-03-10T12:45:41.687127Z Converted amount to wei        amount=2 amount_wei=2000000000000000000 router=kinetic_market
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getBalance
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getBalance
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 56
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getBalance, Response: {'jsonrpc': '2.0', 'id': 4, 'result': '0x525d84b241b15e2f2'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionCount
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionCount
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 41
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionCount, Response: {'jsonrpc': '2.0', 'id': 5, 'result': '0x16'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionCount
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionCount
+DEBUG:web3._utils.http_session_manager.HTTPSessionManager:Session cached: https://flare-api.flare.network/ext/C/rpc, <requests.sessions.Session object at 0x7fc5bbe02810>
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): flare-api.flare.network:443
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 41
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionCount, Response: {'jsonrpc': '2.0', 'id': 0, 'result': '0x16'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_gasPrice
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_gasPrice
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 48
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_gasPrice, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x5d21dba00'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_maxPriorityFeePerGas
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_maxPriorityFeePerGas
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_maxPriorityFeePerGas, Response: {'jsonrpc': '2.0', 'id': 2, 'result': '0x0'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_chainId
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId, Response: {'jsonrpc': '2.0', 'id': 3, 'result': '0xe'}
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:45:41.845296Z Created contract function tx   function=submit router=flare_provider tx={'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 22, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 2000000000000000000, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x5bcb2fc6'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionCount
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionCount
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 41
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionCount, Response: {'jsonrpc': '2.0', 'id': 4, 'result': '0x16'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_gasPrice
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_gasPrice
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 48
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_gasPrice, Response: {'jsonrpc': '2.0', 'id': 5, 'result': '0x5d21dba00'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_maxPriorityFeePerGas
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_maxPriorityFeePerGas
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_maxPriorityFeePerGas, Response: {'jsonrpc': '2.0', 'id': 6, 'result': '0x0'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_chainId
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_chainId, Response: {'jsonrpc': '2.0', 'id': 7, 'result': '0xe'}
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:45:41.942247Z Created contract function tx   function=approve router=flare_provider tx={'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 23, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 0, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x095ea7b3000000000000000000000000e016eeb29af76c379a4f2bb3d71a05d70efbc8a30000000000000000000000000000000000000000000000001bc16d674ec80000'}
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:45:41.942399Z add_tx_to_queue                router=flare_provider tx_queue=[TxQueueElement(msg='Swapping FLR to sFLR', confirm_msg='CONFIRM', txs=[{'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 22, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 2000000000000000000, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x5bcb2fc6'}, {'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 23, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 0, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x095ea7b3000000000000000000000000e016eeb29af76c379a4f2bb3d71a05d70efbc8a30000000000000000000000000000000000000000000000001bc16d674ec80000'}])]
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:45:41.942487Z In send_tx_in_queue.           router=flare_provider tx_queue=[TxQueueElement(msg='Swapping FLR to sFLR', confirm_msg='CONFIRM', txs=[{'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 22, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 2000000000000000000, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x5bcb2fc6'}, {'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 23, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 0, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x095ea7b3000000000000000000000000e016eeb29af76c379a4f2bb3d71a05d70efbc8a30000000000000000000000000000000000000000000000001bc16d674ec80000'}])]
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_sendRawTransaction
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_sendRawTransaction
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 103
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_sendRawTransaction, Response: {'jsonrpc': '2.0', 'id': 8, 'result': '0xa00435e4c4be1c764db7ca2bbab154f846c788f6b80c50544c8a1bdbc881b212'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 39
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 9, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 10, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 11, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 12, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 13, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 14, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 15, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 16, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 17, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 18, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 19, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 20, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 21, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 22, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 23, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 24, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 25, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 26, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 27, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 28, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 29, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 30, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 31, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 1032
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 32, 'result': {'blockHash': '0xf5aea0cdece7cfef0fac8b5d12a8061a48136e71ca4cb55793ee114b0eaeab55', 'blockNumber': '0x24c3593', 'contractAddress': None, 'cumulativeGasUsed': '0xf2673', 'effectiveGasPrice': '0x5d21dba00', 'from': '0x1812c40b5785aed831ec4a0d675f30c5461fd42e', 'gasUsed': '0x2f9c3', 'logs': [], 'logsBloom': '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000', 'status': '0x0', 'to': '0x12e605bc104e93b45e1ad99f9e555f659051c2bb', 'transactionHash': '0xa00435e4c4be1c764db7ca2bbab154f846c788f6b80c50544c8a1bdbc881b212', 'transactionIndex': '0x1', 'type': '0x2'}}
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:45:45.150186Z sign_and_send_transaction      router=flare_provider tx={'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 22, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 2000000000000000000, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x5bcb2fc6'}
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:45:45.150648Z sent_tx_hash                   router=flare_provider tx_hash=0xa00435e4c4be1c764db7ca2bbab154f846c788f6b80c50544c8a1bdbc881b212
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_sendRawTransaction
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_sendRawTransaction
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 104
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_sendRawTransaction, Response: {'jsonrpc': '2.0', 'id': 33, 'result': '0x66fb41c135c0593924a4b3711f218e702e46d98df1f6b389aac05d53c0f96b53'}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 34, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 35, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 36, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 37, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 38, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 39, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 40, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 41, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 42, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 43, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 44, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 45, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 46, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 47, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 48, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 49, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 50, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 51, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 52, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 53, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 54, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 55, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 40
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 56, 'result': None}
+DEBUG:web3.manager.RequestManager:Making request. Method: eth_getTransactionReceipt
+DEBUG:web3.providers.HTTPProvider:Making request HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt
+DEBUG:urllib3.connectionpool:https://flare-api.flare.network:443 "POST /ext/C/rpc HTTP/1.1" 200 None
+DEBUG:web3.providers.HTTPProvider:Getting response HTTP. URI: https://flare-api.flare.network/ext/C/rpc, Method: eth_getTransactionReceipt, Response: {'jsonrpc': '2.0', 'id': 57, 'result': {'blockHash': '0xf0d9af197ce601d0d529d05c7fbbc13492132424bcaca002a83ddbea8d027140', 'blockNumber': '0x24c3595', 'contractAddress': None, 'cumulativeGasUsed': '0xb7368', 'effectiveGasPrice': '0x5d21dba00', 'from': '0x1812c40b5785aed831ec4a0d675f30c5461fd42e', 'gasUsed': '0x8c63', 'logs': [{'address': '0x12e605bc104e93b45e1ad99f9e555f659051c2bb', 'topics': ['0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925', '0x0000000000000000000000001812c40b5785aed831ec4a0d675f30c5461fd42e', '0x000000000000000000000000e016eeb29af76c379a4f2bb3d71a05d70efbc8a3'], 'data': '0x0000000000000000000000000000000000000000000000001bc16d674ec80000', 'blockNumber': '0x24c3595', 'transactionHash': '0x66fb41c135c0593924a4b3711f218e702e46d98df1f6b389aac05d53c0f96b53', 'transactionIndex': '0x1', 'blockHash': '0xf0d9af197ce601d0d529d05c7fbbc13492132424bcaca002a83ddbea8d027140', 'logIndex': '0x16', 'removed': False}], 'logsBloom': '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001200000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000204000000000000000040000000000000000020000000000000000000000000000000000002000000000000000000000000000000000000010000000000000000000000000000000000020000000000000000010000000000000000000000000000000000000000000000000000000000000', 'status': '0x1', 'to': '0x12e605bc104e93b45e1ad99f9e555f659051c2bb', 'transactionHash': '0x66fb41c135c0593924a4b3711f218e702e46d98df1f6b389aac05d53c0f96b53', 'transactionIndex': '0x1', 'type': '0x2'}}
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:45:48.285724Z sign_and_send_transaction      router=flare_provider tx={'from': '0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E', 'nonce': 23, 'gas': 200000, 'maxFeePerGas': 25000000000, 'maxPriorityFeePerGas': 0, 'chainId': 14, 'value': 0, 'to': '0x12e605bc104e93B45e1aD99F9e555f659051c2BB', 'data': '0x095ea7b3000000000000000000000000e016eeb29af76c379a4f2bb3d71a05d70efbc8a30000000000000000000000000000000000000000000000001bc16d674ec80000'}
+DEBUG:flare_ai_defai.blockchain.flare:2025-03-10T12:45:48.286085Z sent_tx_hash                   router=flare_provider tx_hash=0x66fb41c135c0593924a4b3711f218e702e46d98df1f6b389aac05d53c0f96b53
+DEBUG:asyncio:Using selector: EpollSelector
+INFO:     Started server process [48]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+^C2025-03-10 12:45:52,590 WARN received SIGINT indicating exit request
+2025-03-10 12:45:52,592 INFO waiting for backend, nginx to die
+2025-03-10 12:45:52,611 INFO stopped: nginx (exit status 0)
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [48]
+2025-03-10 12:45:52,973 WARN stopped: backend (exit status 143)
+simonjonsson@UOS-18953 flare-gcloud-hackathon-defai % 

@@ -10,9 +10,10 @@ import structlog
 from eth_account import Account
 from eth_typing import ChecksumAddress
 from web3 import Web3
+from web3.contract import Contract
 from web3.types import TxParams
 
-from flare_ai_defai.blockchain import FlareExplorer
+from flare_ai_defai.blockchain import FlareExplorer, FlareProvider
 
 
 logger = structlog.get_logger(__name__)
@@ -21,44 +22,100 @@ logger = structlog.get_logger(__name__)
 class KineticMarket:
     """
     """
-    CONTRACT_ADDRESS = "0x12e605bc104e93B45e1aD99F9e555f659051c2BB"
+    
+    BORROW_ADDRESS = "0xDEeBaBe05BDA7e8C1740873abF715f16164C29B8"
+    BORROW_ABI_ADDRESS = "0x10D5D2e68c347bF3aB1784CC6A41c664Ff7AEe56"
+    
+    SFLR_ADDRESS = "0x12e605bc104e93B45e1aD99F9e555f659051c2BB"
+    SFLR_ABI_ADDRESS = "0x21c8F8DEf0A82000558EB5ceB5d5887AdFFb6256"
+    
+    SFLR_ABI = [{
+        "inputs": [],
+        "name": "submit",
+        "outputs": [
+        {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }
+        ],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "decimals",
+        "outputs": [
+        {
+            "internalType": "uint8",
+            "name": "",
+            "type": "uint8"
+        }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [
+        {
+            "internalType": "address",
+            "name": "spender",
+            "type": "address"
+        },
+        {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+        }
+        ],
+        "name": "approve",
+        "outputs": [
+        {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+        }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }]
 
-    def __init__(self, web3_provider_url: str, flare_explorer: FlareExplorer) -> None:
+    def __init__(self, web3_provider_url: str, flare_explorer: FlareExplorer, flare_provider: FlareProvider) -> None:
         """
         Args:
             web3_provider_url (str): URL of the Web3 provider endpoint
         """
         self.address: ChecksumAddress | None = None
         self.private_key: str | None = None
-        self.w3 = Web3(Web3.HTTPProvider(web3_provider_url))
+        self.w3 = Web3(Web3.HTTPProvider(web3_provider_url)) 
         self.logger = logger.bind(router="kinetic_market")
         self.web3_provider_url = web3_provider_url
         self.flare_explorer = flare_explorer
-        self.contract = self.getContract(self.CONTRACT_ADDRESS)
+        self.flare_provider = flare_provider
+        
+        #self.swapFLRtoSFLR(2, "0xe016EEb29Af76c379a4F2Bb3D71A05D70Efbc8A3")
+        
+        #d = {"token": "FLR", "collateral": "USDC", "amount": 0.01}
+        #self.borrowUSDC(d)
         
 
-    def getContract(self, address: msg) -> void:
-        abi = self.flare_explorer.get_contract_abi(self.CONTRACT_ADDRESS)
-        self.contract = Web3.eth.contract(address=self.CONTRACT_ADDRESS, abi=abi)
+    def getContract(self, address: str, abi_address: str) -> Contract:
+        abi = self.flare_explorer.get_contract_abi(abi_address)
+        return self.w3.eth.contract(address=address, abi=abi)
 
     def getBuyInFee(self) -> int:
-        # Connect to Flare network
-        web3 = Web3(Web3.HTTPProvider(self.web3_provider_url))
-
-        if not web3.is_connected():
+        # Use the existing Web3 instance
+        if not self.w3.is_connected():
             raise Exception("Failed to connect to Flare blockchain")
 
-        print("Connected to Flare Blockchain!")
+        self.logger.debug("Connected to Flare Blockchain!")
 
+        self.logger.debug("Available Functions:", functions=[func.fn_name for func in self.contract.functions])
         
-
-        print("Available Functions:")
-        for func in self.contract.functions:
-            print("-", func)
-            
         # Call a function on the contract
-        result = self.contract.functions.buyInStakingFee().call()
-        print("Contract function result:", result)
+        contract = self.getContract(self.BORROW_ADDRESS, self.BORROW_ABI_ADDRESS)
+        result = contract.functions.buyInStakingFee().call()
+        self.logger.debug("Contract function result:", result=result)
         
         return result
 
@@ -94,163 +151,73 @@ class KineticMarket:
         Then transaction request
         https://flare-explorer.flare.network/tx/0x87345aaabd6d2ca19730c2dad62e617272200a1a0fdf2ebc31d2fb413d1ae4ae
         
+        """
+        pass
+    
+    def swapFLRtoSFLR(self, amount: float, spender: str = None):
+        if not self.w3.is_connected():
+            raise Exception("Not connected to Flare blockchain")
         
+        contract = self.w3.eth.contract(address=self.SFLR_ADDRESS, abi=self.SFLR_ABI)
+
+        # Get decimals (typically 18 for FLR/sFLR)
+        decimals = contract.functions.decimals().call()
+        self.logger.debug("Fetched decimals", decimals=decimals)
         
-        """
+        # Convert amount to wei
+        amount_wei = int(amount * pow(10,decimals))
+        self.logger.debug("Converted amount to wei", amount=amount, amount_wei=amount_wei)
         
-        def borrowUSDC():
-            """
-            When you click to borrow you sign a transaction request with 29B8.
-            This interacts with a borrow() function
-            https://flarescan.com//tx/0x91b3d1e4c4178d05914f05c13d47ee3c2869087b0a7ef7a9b636f8e8ad759f19
-            
-            
-            """
-
-        def borrowUSDT():
-            """
-            When you click to borrow you sign a transaction request with 93bb.
-            This interacts with a borrow() function
-            https://flarescan.com//tx/0xfaff5427e53996a324e81357b1eb9eef430ba5e210f0973f46719f2066510d6d
-            
-            """
-
-        def stakeJoule():
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def reset(self) -> None:
-        """
-        Reset the provider state by clearing account details and transaction queue.
-        """
-        self.address = None
-        self.private_key = None
-        self.tx_queue = []
-        self.logger.debug("reset", address=self.address, tx_queue=self.tx_queue)
-
-    def add_tx_to_queue(self, msg: str, tx: TxParams) -> None:
-        """
-        Add a transaction to the queue with an associated message.
-
-        Args:
-            msg (str): Description of the transaction
-            tx (TxParams): Transaction parameters
-        """
-        tx_queue_element = TxQueueElement(msg=msg, tx=tx)
-        self.tx_queue.append(tx_queue_element)
-        self.logger.debug("add_tx_to_queue", tx_queue=self.tx_queue)
-
-    def send_tx_in_queue(self) -> str:
-        """
-        Send the most recent transaction in the queue.
-
-        Returns:
-            str: Transaction hash of the sent transaction
-
-        Raises:
-            ValueError: If no transaction is found in the queue
-        """
-        if self.tx_queue:
-            tx_hash = self.sign_and_send_transaction(self.tx_queue[-1].tx)
-            self.logger.debug("sent_tx_hash", tx_hash=tx_hash)
-            self.tx_queue.pop()
-            return tx_hash
-        msg = "Unable to find confirmed tx"
-        raise ValueError(msg)
-
-    def generate_account(self) -> ChecksumAddress:
-        """
-        Generate a new Flare account.
-
-        Returns:
-            ChecksumAddress: The checksum address of the generated account
-        """
-        account = Account.create()
-        self.private_key = account.key.hex()
-        self.address = self.w3.to_checksum_address(account.address)
-        self.logger.debug(
-            "generate_account", address=self.address, private_key=self.private_key
+        # Check balance
+        balance = self.w3.eth.get_balance(self.flare_provider.address)
+        if balance < amount_wei:
+            raise ValueError(f"Insufficient balance: {self.w3.from_wei(balance, 'ether')} FLR, required: {amount} FLR")
+        
+        # Fetch current nonce
+        current_nonce = self.w3.eth.get_transaction_count(self.flare_provider.address)
+        
+        # Create submit transaction with value
+        tx1 = self.flare_provider.create_contract_function_tx(
+            contract, "submit", 0, value=amount_wei
         )
-        return self.address
-
-    def sign_and_send_transaction(self, tx: TxParams) -> str:
-        """
-        Sign and send a transaction to the network.
-
-        Args:
-            tx (TxParams): Transaction parameters to be sent
-
-        Returns:
-            str: Transaction hash of the sent transaction
-
-        Raises:
-            ValueError: If account is not initialized
-        """
-        if not self.private_key or not self.address:
-            msg = "Account not initialized"
-            raise ValueError(msg)
-        signed_tx = self.w3.eth.account.sign_transaction(
-            tx, private_key=self.private_key
+        tx2 = self.flare_provider.create_contract_function_tx(
+            contract, "approve", 1, spender, amount_wei
         )
-        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.raw_transaction)
-        self.w3.eth.wait_for_transaction_receipt(tx_hash)
-        self.logger.debug("sign_and_send_transaction", tx=tx)
-        return "0x" + tx_hash.hex()
-
-    def check_balance(self) -> float:
+        
+        # Add to queue and send
+        self.flare_provider.add_tx_to_queue("Swapping FLR to sFLR", [tx1, tx2])
+        tx_hashes = self.flare_provider.send_tx_in_queue()
+        
+        return tx_hashes
+        
+        
+    def borrowUSDC(self,user_order: dict):
         """
-        Check the balance of the current account.
-
-        Returns:
-            float: Account balance in FLR
-
-        Raises:
-            ValueError: If account does not exist
+        When you click to borrow you sign a transaction request with 29B8.
+        This interacts with a borrow() function
+        https://flarescan.com//tx/0x91b3d1e4c4178d05914f05c13d47ee3c2869087b0a7ef7a9b636f8e8ad759f19
         """
-        if not self.address:
-            msg = "Account does not exist"
-            raise ValueError(msg)
-        balance_wei = self.w3.eth.get_balance(self.address)
-        self.logger.debug("check_balance", balance_wei=balance_wei)
-        return float(self.w3.from_wei(balance_wei, "ether"))
+        token = user_order["token"]
+        collateral = user_order["collateral"]
+        amount = user_order["amount"]
+        
+        contract = self.getContract(self.BORROW_ADDRESS, self.BORROW_ABI_ADDRESS)
+        #for function in contract.functions:
+        #    print(function)
+        decimals = contract.functions.decimals().call()
+        result = contract.functions.borrow(int(pow(10,decimals)*amount)).call()
+        print(result)
 
-    def create_send_flr_tx(self, to_address: str, amount: float) -> TxParams:
+    def borrowUSDT():
         """
-        Create a transaction to send FLR tokens.
-
-        Args:
-            to_address (str): Recipient address
-            amount (float): Amount of FLR to send
-
-        Returns:
-            TxParams: Transaction parameters for sending FLR
-
-        Raises:
-            ValueError: If account does not exist
+        When you click to borrow you sign a transaction request with 93bb.
+        This interacts with a borrow() function
+        https://flarescan.com//tx/0xfaff5427e53996a324e81357b1eb9eef430ba5e210f0973f46719f2066510d6d
+        
         """
-        if not self.address:
-            msg = "Account does not exist"
-            raise ValueError(msg)
-        tx: TxParams = {
-            "from": self.address,
-            "nonce": self.w3.eth.get_transaction_count(self.address),
-            "to": self.w3.to_checksum_address(to_address),
-            "value": self.w3.to_wei(amount, unit="ether"),
-            "gas": 21000,
-            "maxFeePerGas": self.w3.eth.gas_price,
-            "maxPriorityFeePerGas": self.w3.eth.max_priority_fee,
-            "chainId": self.w3.eth.chain_id,
-            "type": 2,
-        }
-        return tx
+        pass
+
+    def stakeJoule():
+        pass
+
+

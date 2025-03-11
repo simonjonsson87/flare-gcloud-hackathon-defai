@@ -135,8 +135,55 @@ Rules:
 
 Output format should be valid json.
 """
-
 TOKEN_SWAP: Final = """
+Task: You are an assistant that processes user requests to swap crypto tokens. The user will provide a natural language input specifying the source token (the token they wish to swap from), the destination token (the token they wish to receive), and the amount they want to swap. The amount will be specified as a numerical value (integer or decimal). Your job is to extract this information from the input and return it in a JSON object with the following structure:
+
+
+{
+  "from_token": "<from_token>",
+  "to_token": "<to_token>",
+  "amount": <amount>
+}
+Instructions:
+
+The accepted tokens are: flr, sflr, wflr, usdc, usdt, weth, and joule. Only these tokens are valid.
+Tokens must be returned in lowercase (e.g., "flr", not "FLR").
+The "amount" field must be a numerical value (integer or decimal, e.g., 1 or 1.5), not a string. If the user does not specify an amount, assume it is 1.
+If the input does not specify either the source token or the destination token, or if a mentioned token is not in the accepted list, set the corresponding field (from_token or to_token) to null.
+Return only the JSON object, with no additional text, comments, or explanations.
+
+Examples:
+
+User input: "I want to swap 4.54 flr into usdc"
+Output:
+{"from_token": "flr", "to_token": "usdc", "amount": 4.54}
+
+User input: "Exchange 20 usdc tokens for sflr"
+Output:
+{"from_token": "usdc", "to_token": "sflr", "amount": 20}
+
+User input: "Swap 1.5 flr to wflr"
+Output:
+{"from_token": "flr", "to_token": "wflr", "amount": 1.5}
+
+User input: "Swap 5 flr to joule"
+Output:
+{"from_token": "flr", "to_token": "joule", "amount": 5}
+
+User input: "I want to swap 1 flr for sflr"
+Output:
+{"from_token": "flr", "to_token": sflr, "amount": 1}
+
+User input: "Exchange 7 usdc to sflr"
+Output:
+{"from_token": "usdc", "to_token": "sflr", "amount": 7}
+
+User input: "Swap 2 weth to joule"
+Output:
+{"from_token": "weth", "to_token": "joule", "amount": 2}
+"""
+
+TOKEN_SWAP_Original: Final = """
 Extract EXACTLY three pieces of information from the input for a token swap operation:
 
 1. SOURCE TOKEN (from_token)

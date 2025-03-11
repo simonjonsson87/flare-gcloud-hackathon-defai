@@ -13,6 +13,7 @@ from eth_account import Account
 from eth_typing import ChecksumAddress
 from web3 import Web3
 from web3.types import TxParams
+from web3.contract import Contract
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -192,3 +193,35 @@ class FlareProvider:
             "type": 2,
         }
         return tx
+
+    def create_contract_function_tx(self, contract: Contract, function_name: str, add_to_nonce: int = 0, *args, **kwargs) -> TxParams:
+        if not self.address:
+            raise ValueError("Account not initialized")
+        if not contract:
+            raise ValueError("Contract not initialized")
+
+        function = getattr(contract.functions, function_name, None)
+        if not function:
+            raise AttributeError(f"Function '{function_name}' not found in contract ABI")
+
+        nonce = self.w3.eth.get_transaction_count(self.address)
+        nonce = nonce + add_to_nonce
+        print("kwargs.get('value', 0):", kwargs.get("value", 0))
+        tx = function(*args).build_transaction({
+            "from": self.address,
+            "nonce": nonce,
+            "gas": kwargs.get("gas", 200000),
+            "maxFeePerGas": self.w3.eth.gas_price,
+            "maxPriorityFeePerGas": self.w3.eth.max_priority_fee,
+            "chainId": self.w3.eth.chain_id,
+            "value": kwargs.get("value", 0),
+        })
+        self.logger.debug("Created contract function tx", function=function_name, tx=tx)
+        return tx
+   
+
+
+
+    def queue_contract_function(self, contract: Contract, msg: str, function_name: str, *args, **kwargs) -> None:
+        tx = self.create_contract_function_tx(contract, function_name, *args, **kwargs)
+        self.add_tx_to_queue(msg, [tx])

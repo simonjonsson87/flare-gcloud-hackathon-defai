@@ -17,6 +17,9 @@ import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from flare_ai_defai.blockchain import KineticMarket
+from flare_ai_defai.blockchain import SparkDEX
+
 from flare_ai_defai import (
     ChatRouter,
     FlareProvider,
@@ -76,6 +79,8 @@ def create_app() -> FastAPI:
         flareExplorer=FlareExplorer(base_url=settings.web3_explorer_url),
         attestation=Vtpm(simulate=settings.simulate_attestation),
         prompts=PromptService(),
+        kinetic_market=KineticMarket(settings.web3_provider_url, FlareExplorer(base_url=settings.web3_explorer_url), FlareProvider(web3_provider_url=settings.web3_provider_url)),
+        sparkdex=SparkDEX(settings.web3_provider_url, FlareExplorer(base_url=settings.web3_explorer_url), FlareProvider(web3_provider_url=settings.web3_provider_url))
     )
 
     # Register chat routes with API
