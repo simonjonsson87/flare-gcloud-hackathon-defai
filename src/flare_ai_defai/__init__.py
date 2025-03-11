@@ -8,6 +8,7 @@ from flare_ai_defai.prompts import (
     SemanticRouterResponse,
 )
 from flare_ai_defai.storage import WalletStore
+from flare_ai_defai.models import UserInfo
 
 __all__ = [
     "ChatRouter",
@@ -18,5 +19,6 @@ __all__ = [
     "SemanticRouterResponse",
     "Vtpm",
     #"router",
-    "WalletStore"
+    "WalletStore",
+    "UserInfo"
 ]

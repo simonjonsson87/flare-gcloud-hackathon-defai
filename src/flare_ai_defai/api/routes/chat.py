@@ -25,6 +25,7 @@ from flare_ai_defai.prompts import PromptService, SemanticRouterResponse
 from flare_ai_defai.settings import settings
 from flare_ai_defai.blockchain import KineticMarket
 from flare_ai_defai.blockchain import SparkDEX
+from flare_ai_defai.models import UserInfo
 
 from flare_ai_defai.storage.fake_storage import WalletStore
 
@@ -60,9 +61,7 @@ class ChatMessage(BaseModel):
 class TokenRequest(BaseModel):
     token: str
 
-class UserInfo(BaseModel):
-    user_id: str
-    email: str
+
 
 # OAuth2 scheme for token authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/verify")

@@ -15,7 +15,7 @@ from web3 import Web3
 from web3.types import TxParams
 from web3.contract import Contract
 
-from flare_ai_defai.api.routes.chat import UserInfo
+from flare_ai_defai.models import UserInfo
 from flare_ai_defai.storage.fake_storage import WalletStore
 
 logging.basicConfig(level=logging.DEBUG)
