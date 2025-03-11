@@ -347,13 +347,72 @@ Rules:
 
 Output format should be valid json.
 """
-
 TOKEN_BORROW: Final = """
+You are a JSON extraction tool designed to process user input related to token borrowing operations. Your task is to extract exactly three pieces of information and return them in a JSON format.
+
+**JSON Output Format:**
+
+```json
+{
+  "borrow_token": "TOKEN_SYMBOL",
+  "collateral_token": "TOKEN_SYMBOL",
+  "borrow_amount": FLOAT_VALUE
+}
+Extraction Rules:
+
+BORROW_TOKEN:
+Extract the FIRST valid token mentioned for borrowing. Valid tokens are "SFLR" and "USDC" (case-insensitive).
+Convert the extracted token to uppercase.
+Synonyms for "borrow" include "loan," "take out," and "get a loan."
+If no valid token is found, or if multiple conflicting borrow tokens are mentioned (e.g., "borrow SFLR and USDC"), return an error JSON.
+The answer can only be 'SFLR' or 'USDC'. 'SFLR or USDC' is not an acceptable answer.
+COLLATERAL_TOKEN:
+Extract the token explicitly mentioned as collateral.
+Convert the extracted token to uppercase.
+If no collateral token is explicitly mentioned, return an error JSON.
+If multiple conflicting collateral tokens are mentioned, return an error JSON.
+BORROW_AMOUNT:
+Extract the FIRST valid number associated with the borrow amount.
+Convert written numbers to digits (e.g., "five" to 5).
+Handle decimals and integers.
+Convert ALL integers to float (e.g., 100 to 100.0).
+Recognize common amount formats: "1.5", "0.5", "1", "100", "5 tokens", "10 SFLR".
+If no valid amount is found, return an error JSON.
+The Borrow amount must be a positive number.
+Validation Rules:
+
+All three fields (borrow_token, collateral_token, borrow_amount) MUST be present in the JSON output.
+The borrow_amount MUST be a positive float.
+The borrow_token and collateral_token MUST be different.
+DO NOT infer missing values.
+If the input text does not meet the specified criteria, return an error JSON in the following format: {"error": "Error message describing the issue."}
+Example Inputs and Outputs:
+
+Input: "borrow 10 sflr using usdc as collateral"
+Output: {"borrow_token": "SFLR", "collateral_token": "USDC", "borrow_amount": 10.0}
+Input: "Loan five usdc, collateral sflr"
+Output: {"borrow_token": "USDC", "collateral_token": "SFLR", "borrow_amount": 5.0}
+Input: "Loan five usdc, collateral sFLR"
+Output: {"borrow_token": "USDC", "collateral_token": "SFLR", "borrow_amount": 5.0}
+Input: "borrow SFLR with SFLR collateral"
+Output: {"error": "Borrow token and collateral token cannot be the same."}
+Input: "borrow SFLR"
+Output: {"error": "Missing collateral token and amount."}
+Input: "borrow SFLR and USDC"
+Output: {"error": "Multiple conflicting borrow tokens."}
+Input: "borrow SFLR with USDC collateral, ten"
+Output: {"borrow_token": "SFLR", "collateral_token": "USDC", "borrow_amount": 10.0}
+Input Text:
+
+${user_input}
+
+"""
+
+TOKEN_BORROW_Original: Final = """
 Extract EXACTLY three pieces of information from the input text for a token borrow operation:
 
 1. BORROW_TOKEN
    Required format:
-   • Must be exactly one of: "SFLR" or "USDC" (case-insensitive)
    • Extract the FIRST valid token mentioned
    • Convert to uppercase in output (e.g., "sflr" → "SFLR")
    • FAIL if no valid token ("SFLR" or "USDC") is found
@@ -363,10 +422,8 @@ Extract EXACTLY three pieces of information from the input text for a token borr
 
 2. COLLATERAL_TOKEN
    Required format:
-   • Must be exactly one of: "SFLR" or "USDC" (case-insensitive)
    • Extract the token explicitly mentioned as collateral (e.g., "use SFLR as collateral")
    • Convert to uppercase in output (e.g., "usdc" → "USDC")
-   • FAIL if no valid collateral token ("SFLR" or "USDC") is found
    • FAIL if borrow and collateral tokens are the same (e.g., "borrow SFLR with SFLR collateral")
    • FAIL if multiple conflicting collateral tokens are mentioned
 
@@ -389,7 +446,6 @@ Rules:
 - BORROW_AMOUNT MUST be positive
 - BORROW_AMOUNT MUST be float type
 - BORROW_TOKEN and COLLATERAL_TOKEN MUST be different
-- Only "SFLR" and "USDC" are acceptable as tokens
 - DO NOT infer missing values
 - FAIL if any value is missing or invalid
 

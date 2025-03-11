@@ -418,6 +418,15 @@ class SparkDEX:
     
         return f"0x{wrap_tx_hash.hex()}"
 
+    def add_swap_txs_to_queue(self, from_token: str, to_token: str, amount: float) -> str:
+        
+        min_out = 1
+        formatted_preview = (
+            "Transaction Preview: "
+            + f"Swapping {Web3.from_wei(tx.get('value', 0), 'ether')} "
+            + f"{from_token} to at least {min_out} {to_token}\nType CONFIRM to proceed."
+        )
+        return formatted_preview
 
     def handle_swap_token(self, from_token: str, to_token: str, amount: float) -> str:
         """
