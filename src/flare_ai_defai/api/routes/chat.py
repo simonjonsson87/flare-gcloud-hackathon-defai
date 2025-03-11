@@ -493,37 +493,36 @@ class ChatRouter:
     async def handle_borrow(self, message: str, user: UserInfo) -> dict[str, str]:
         self.logger.debug("In handle_borrow()")
         
-        prompt, mime_type, schema = self.prompts.get_formatted_prompt(
-            "token_borrow", user_input=message
-        )
-        ai_response = self.ai.generate(
-            prompt=prompt, response_mime_type=mime_type, response_schema=schema
-        )
-        
-        ai_response_json = json.loads("{}")
-        try:
-            ai_response_json = json.loads(ai_response.text)
-        except:
-            self.logger.debug("We probably did not get valid json back from Gemini. See below.")
+        prompt, mime_type, schema = self.prompts.get_formatted_prompt("token_borrow", user_input=message)
+        ai_response = self.ai.generate(prompt=prompt, response_mime_type=mime_type, response_schema=schema)
                 
         
-        self.logger.debug(message=message)
-        self.logger.debug(prompt=prompt)
-        self.logger.debug(mime_type=mime_type)
-        self.logger.debug(schema=schema)
-        self.logger.debug(ai_response=ai_response)
-        self.logger.debug(ai_response_json=ai_response_json)
-        self.logger.debug(len_ai_response_json=len(ai_response_json))
+        
         
         expected_json_len = 3
-        if (
-            len(ai_response_json) != expected_json_len
-            or ai_response_json.get("amount") == 0.0
-        ):
-            prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_borrow")
-            follow_up_response = self.ai.generate(prompt)
-            return {"response": follow_up_response.text + " \n " + json.dumps(ai_response_json)}
+        ai_response_json = json.loads("{}")
+        for i in range(1,5):
+            
+            try:
+                ai_response_json = json.loads(ai_response.text)
+            except:
+                self.logger.debug("We probably did not get valid json back from Gemini. See below.")
         
+            self.logger.debug(message=message)
+            self.logger.debug(prompt=prompt)
+            self.logger.debug(mime_type=mime_type)
+            self.logger.debug(schema=schema)
+            self.logger.debug(ai_response=ai_response)
+            self.logger.debug(ai_response_json=ai_response_json)
+            self.logger.debug(len_ai_response_json=len(ai_response_json))
+
+            len_ai_response_json = len(ai_response_json)
+            if (len_ai_response_json != expected_json_len):
+                prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_borrow")
+                ai_response = self.ai.generate("The response you gave me ({ai_response}) what incorrect, because it had {ai_response_json_len} and I was expecting {expected_json_len}")
+                
+        if (ai_response_json.get("amount") == 0.0):
+            return {"response": "Sorry, amount must be more than 0.0 \n " + json.dumps(ai_response_json)}
         
         
         # Return stringified JSON

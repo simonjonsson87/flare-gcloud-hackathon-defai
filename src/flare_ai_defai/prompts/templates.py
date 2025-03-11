@@ -347,7 +347,7 @@ Rules:
 
 Output format should be valid json.
 """
-TOKEN_BORROW: Final = """
+TOKEN_BORROW_experiment: Final = """
 You are a JSON extraction tool designed to process user input related to token borrowing operations. Your task is to extract exactly three pieces of information and return them in a JSON format.
 
 
@@ -395,13 +395,15 @@ Input: "borrow SFLR and USDC"
 Output: {"error": "Multiple conflicting borrow tokens."}
 Input: "borrow SFLR with USDC collateral, ten"
 Output: {"borrow_token": "SFLR", "collateral_token": "USDC", "borrow_amount": 10.0}
+
+
 Input Text:
 
 ${user_input}
 
 """
 
-TOKEN_BORROW_Original: Final = """
+TOKEN_BORROW: Final = """
 Extract EXACTLY three pieces of information from the input text for a token borrow operation:
 
 1. BORROW_TOKEN
