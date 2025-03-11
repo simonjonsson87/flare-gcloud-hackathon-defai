@@ -181,6 +181,9 @@ Output:
 User input: "Swap 2 weth to joule"
 Output:
 {"from_token": "weth", "to_token": "joule", "amount": 2}
+
+
+Input: ${user_input}
 """
 
 TOKEN_SWAP_Original: Final = """

@@ -484,20 +484,32 @@ class ChatRouter:
     
     async def handle_borrow(self, message: str, user: UserInfo) -> dict[str, str]:
         self.logger.debug("In handle_borrow()")
-        response_json = await self.getDeFiJson(message, "token_borrow")  
-        self.logger.debug(response_json=response_json)
+        
+        prompt, mime_type, schema = self.prompts.get_formatted_prompt(
+            "token_borrow", user_input=message
+        )
+        ai_response = self.ai.generate(
+            prompt=prompt, response_mime_type=mime_type, response_schema=schema
+        )
+        
+        ai_response_json = json.loads("{}")
+        try:
+            ai_response_json = json.loads(ai_response.text)
+        except:
+            self.logger.debug("We probably did not get valid json back from Gemini. See below.")
+                
         
         expected_json_len = 3
         if (
-            len(response_json) != expected_json_len
-            or response_json.get("amount") == 0.0
+            len(ai_response_json) != expected_json_len
+            or ai_response_json.get("amount") == 0.0
         ):
             prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_borrow")
             follow_up_response = self.ai.generate(prompt)
-            return {"response": follow_up_response.text + " \n " + json.dumps(response_json)}
+            return {"response": follow_up_response.text + " \n " + json.dumps(ai_response_json)}
         
         # Return stringified JSON
-        return {"response": json.dumps(response_json)}
+        return {"response": json.dumps(ai_response_json)}
     
     
     async def handle_supply(self, message: str, user: UserInfo) -> dict[str, str]:
