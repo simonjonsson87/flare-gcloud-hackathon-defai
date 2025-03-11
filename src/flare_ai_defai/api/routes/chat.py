@@ -519,8 +519,9 @@ class ChatRouter:
             len_ai_response_json = len(ai_response_json)
             if (len_ai_response_json != expected_json_len):
                 prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_borrow")
-                ai_response = self.ai.generate("The response you gave me ({ai_response}) what incorrect, because it had {ai_response_json_len} and I was expecting {expected_json_len}")
-                
+                ai_response = self.ai.generate(f"The response you gave me ({ai_response}) what incorrect, because it had {ai_response_json_len} and I was expecting {expected_json_len}")
+              
+            print ("Round ", i)    
         if (ai_response_json.get("amount") == 0.0):
             return {"response": "Sorry, amount must be more than 0.0 \n " + json.dumps(ai_response_json)}
         
