@@ -380,6 +380,14 @@ class ChatRouter:
         except:
             self.logger.debug("We probably did not get valid json back from Gemini. See below.")
                 
+        self.logger.debug(message=message)
+        self.logger.debug(prompt=prompt)
+        self.logger.debug(mime_type=mime_type)
+        self.logger.debug(schema=schema)
+        self.logger.debug(send_token_response=send_token_response)
+        self.logger.debug(send_token_json=send_token_json)
+        self.logger.debug(len_send_token_json=len(send_token_json))        
+                
         self.logger.debug(message=message, prompt=prompt, json_len=len(send_token_json), json=send_token_json)
         expected_json_len = 2
         if (
@@ -492,6 +500,9 @@ class ChatRouter:
             prompt=prompt, response_mime_type=mime_type, response_schema=schema
         )
         
+        
+        
+        
         ai_response_json = json.loads("{}")
         try:
             ai_response_json = json.loads(ai_response.text)
@@ -507,6 +518,14 @@ class ChatRouter:
             prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_borrow")
             follow_up_response = self.ai.generate(prompt)
             return {"response": follow_up_response.text + " \n " + json.dumps(ai_response_json)}
+        
+        self.logger.debug(message=message)
+        self.logger.debug(prompt=prompt)
+        self.logger.debug(mime_type=mime_type)
+        self.logger.debug(schema=schema)
+        self.logger.debug(ai_response=ai_response)
+        self.logger.debug(ai_response_json=ai_response_json)
+        self.logger.debug(len_ai_response_json=len(ai_response_json))
         
         # Return stringified JSON
         return {"response": json.dumps(ai_response_json)}

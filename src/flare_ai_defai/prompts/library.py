@@ -226,7 +226,7 @@ class PromptLibrary:
             ),
             Prompt(
                 name="token_borrow",
-                description="",
+                description="Parses a borrow request into json",
                 template=TOKEN_BORROW,
                 required_inputs=["user_input"],
                 response_schema=TokenBorrowResponse,
