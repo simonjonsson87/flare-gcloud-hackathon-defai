@@ -31,12 +31,14 @@ from flare_ai_defai.blockchain import SparkDEX
 # Configure logging
 structlog.configure(
     processors=[
-        structlog.stdlib.filter_by_level,
-        structlog.processors.StackInfoRenderer(),
-        structlog.processors.format_exc_info,
-        structlog.processors.TimeStamper(fmt="iso"),
-        structlog.dev.ConsoleRenderer(),
+        structlog.stdlib.add_log_level,  # Add log level to event dict
+        structlog.stdlib.add_logger_name, #add logger name
+        structlog.processors.TimeStamper(fmt="iso"),  # Add timestamp
+        structlog.processors.StackInfoRenderer(),  # Add stack info
+        structlog.processors.format_exc_info,  # Format exceptions
+        structlog.processors.JSONRenderer(sort_keys=True),  # Render as JSON
     ],
+    context_class=structlog.threadlocal.wrap_dict(dict),
     logger_factory=structlog.stdlib.LoggerFactory(),
     wrapper_class=structlog.stdlib.BoundLogger,
 )
