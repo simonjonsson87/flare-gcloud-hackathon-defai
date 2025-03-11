@@ -350,14 +350,7 @@ Output format should be valid json.
 TOKEN_BORROW: Final = """
 You are a JSON extraction tool designed to process user input related to token borrowing operations. Your task is to extract exactly three pieces of information and return them in a JSON format.
 
-**JSON Output Format:**
 
-```json
-{
-  "borrow_token": "TOKEN_SYMBOL",
-  "collateral_token": "TOKEN_SYMBOL",
-  "borrow_amount": FLOAT_VALUE
-}
 Extraction Rules:
 
 BORROW_TOKEN:
