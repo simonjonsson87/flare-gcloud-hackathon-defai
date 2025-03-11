@@ -7,6 +7,7 @@ from flare_ai_defai.prompts import (
     PromptService,
     SemanticRouterResponse,
 )
+from flare_ai_defai.storage import WalletStore
 
 __all__ = [
     "ChatRouter",
@@ -17,4 +18,5 @@ __all__ = [
     "SemanticRouterResponse",
     "Vtpm",
     #"router",
+    "WalletStore"
 ]

@@ -13,6 +13,8 @@ from web3 import Web3
 from web3.contract import Contract
 from web3.types import TxParams
 
+from flare_ai_defai.api.routes.chat import UserInfo
+
 from flare_ai_defai.blockchain import FlareExplorer, FlareProvider
 
 
@@ -28,6 +30,8 @@ class KineticMarket:
     
     SFLR_ADDRESS = "0x12e605bc104e93B45e1aD99F9e555f659051c2BB"
     SFLR_ABI_ADDRESS = "0x21c8F8DEf0A82000558EB5ceB5d5887AdFFb6256"
+    
+    SUPPLY_SFLR_ADDRESS = "0x291487beC339c2fE5D83DD45F0a15EFC9Ac45656"
     
     SFLR_ABI = [{
         "inputs": [],
@@ -79,6 +83,28 @@ class KineticMarket:
         "stateMutability": "nonpayable",
         "type": "function"
     }]
+    
+    SUPPLY_SFLR_ABI = [{
+        "constant": False,
+        "inputs": [
+        {
+            "internalType": "uint256",
+            "name": "mintAmount",
+            "type": "uint256"
+        }
+        ],
+        "name": "mint",
+        "outputs": [
+        {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }
+        ],
+        "payable": False,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },]
 
     def __init__(self, web3_provider_url: str, flare_explorer: FlareExplorer, flare_provider: FlareProvider) -> None:
         """
@@ -93,7 +119,7 @@ class KineticMarket:
         self.flare_explorer = flare_explorer
         self.flare_provider = flare_provider
         
-        #self.swapFLRtoSFLR(2, "0xe016EEb29Af76c379a4F2Bb3D71A05D70Efbc8A3")
+        self.supplySFLRwithFLR(1)
         
         #d = {"token": "FLR", "collateral": "USDC", "amount": 0.01}
         #self.borrowUSDC(d)
@@ -119,7 +145,7 @@ class KineticMarket:
         
         return result
 
-    def supplySFLR():
+    def supplySFLR(self, user:UserInfo, amount: float):
         """
         To supply FLR or WFLR you need to be staked and converted to sFLR via Sceptre Protocol. 
         By supplying sFLR you can receive FlareDrops and Delegation.
@@ -152,7 +178,26 @@ class KineticMarket:
         https://flare-explorer.flare.network/tx/0x87345aaabd6d2ca19730c2dad62e617272200a1a0fdf2ebc31d2fb413d1ae4ae
         
         """
-        pass
+        contract = self.w3.eth.contract(address=self.SUPPLY_SFLR_ADDRESS, abi=self.SUPPLY_SFLR_ABI)
+        tx = self.flare_provider.create_contract_function_tx(
+            contract, "mint", 0, amount
+        )
+        
+        # Add to queue and send
+        self.flare_provider.add_tx_to_queue("Minting kSFLR", [tx])
+        tx_hashes = self.flare_provider.send_tx_in_queue(user)
+        
+        return tx_hashes
+        
+    def supplySFLRwithFLR(self,user:UserInfo, amount: float): 
+        #tx_submit_approve = self.swapFLRtoSFLR(amount, "0x291487beC339c2fE5D83DD45F0a15EFC9Ac45656")  
+        
+        tx_mint = self.supplySFLR(user, amount)
+        # Add to queue and send
+        self.flare_provider.add_tx_to_queue("Swapping FLR to sFLR", tx_mint)
+        tx_hashes = self.flare_provider.send_tx_in_queue(user)
+                     
+        return tx_hashes             
     
     def swapFLRtoSFLR(self, amount: float, spender: str = None):
         if not self.w3.is_connected():
@@ -184,11 +229,9 @@ class KineticMarket:
             contract, "approve", 1, spender, amount_wei
         )
         
-        # Add to queue and send
-        self.flare_provider.add_tx_to_queue("Swapping FLR to sFLR", [tx1, tx2])
-        tx_hashes = self.flare_provider.send_tx_in_queue()
         
-        return tx_hashes
+        
+        return [tx1, tx2]
         
         
     def borrowUSDC(self,user_order: dict):
@@ -219,5 +262,7 @@ class KineticMarket:
 
     def stakeJoule():
         pass
+
+
 
 

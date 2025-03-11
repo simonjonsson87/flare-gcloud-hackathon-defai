@@ -16,7 +16,7 @@ from web3 import Web3
 from web3.types import TxParams
 
 from flare_ai_defai.blockchain import FlareExplorer, FlareProvider
-
+from flare_ai_defai.api.routes.chat import UserInfo
 
 logger = structlog.get_logger(__name__)
 
@@ -66,12 +66,12 @@ class SparkDEX:
         self.flare_explorer = flare_explorer
         self.flare_provider = flare_provider
         
-        tx_hashes = self.swapFLRtoToken(
-        amount=1.0,
-        token_out="0xE3e3bC6Dc69FacbA691832AF7754fC5e8D0e09Ee",  # USDT.e
-        min_amount_out=0.0001,  # Adjust based on expected rate
-        deadline_minutes=20
-        )
+        #tx_hashes = self.swapFLRtoToken(
+        #amount=1.0,
+        #token_out="0xE3e3bC6Dc69FacbA691832AF7754fC5e8D0e09Ee",  # USDT.e
+        #min_amount_out=0.0001,  # Adjust based on expected rate
+        #deadline_minutes=20
+        #)
     
     
     def swapFLRforJOULE():
@@ -98,7 +98,7 @@ class SparkDEX:
         https://flarescan.com/tx/0x51b5e93a162050486d64c22ddd9d3c5f42d7a2cfb68a832a5ac16f4fae70035e
         """     
         
-    def swapFLRtoToken(self, amount: float, token_out: str, min_amount_out: float = 0, deadline_minutes: int = 20):
+    def swapFLRtoToken(self, user:UserInfo, amount: float, token_out: str, min_amount_out: float = 0, deadline_minutes: int = 20):
         """
         Swap FLR to a token via SparkDEX.
         
@@ -185,7 +185,7 @@ class SparkDEX:
 
         # Queue and send
         self.flare_provider.add_tx_to_queue(f"Swapping {amount} FLR to {token_out}", [tx])
-        tx_hashes = self.flare_provider.send_tx_in_queue()
+        tx_hashes = self.flare_provider.send_tx_in_queue(user)
         return tx_hashes    
     
     

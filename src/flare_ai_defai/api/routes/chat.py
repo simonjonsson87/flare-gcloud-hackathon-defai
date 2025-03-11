@@ -7,7 +7,6 @@ This module implements the main chat routing system for the AI Agent API with Go
 import json
 import secrets
 import datetime
-from typing import Optional, Dict
 import structlog
 import logging
 from fastapi import APIRouter, HTTPException, Depends, Header
@@ -27,6 +26,7 @@ from flare_ai_defai.settings import settings
 from flare_ai_defai.blockchain import KineticMarket
 from flare_ai_defai.blockchain import SparkDEX
 
+from flare_ai_defai.storage.fake_storage import WalletStore
 
 # Configure logging
 structlog.configure(
@@ -95,7 +95,8 @@ class ChatRouter:
         attestation: Vtpm,
         prompts: PromptService,
         kinetic_market: KineticMarket,
-        sparkdex: SparkDEX
+        sparkdex: SparkDEX,
+        wallet_store: WalletStore
     ) -> None:
         self._router = APIRouter()
         self.ai = ai
@@ -108,11 +109,11 @@ class ChatRouter:
         self.google_auth_client_id = "289493342717-rqktph7q97vsgegclf28ngfhuhcni1d8.apps.googleusercontent.com"
         self.kinetic_market = kinetic_market
         self.sparkdex = sparkdex
+        self.wallet_store = wallet_store
 
     def _setup_routes(self) -> None:
         @self._router.post("/verify")
         async def verify(token_request: TokenRequest):
-            print("Just testing a plain print command.")
             self.logger.debug("Entered verify function.")
             """Verify Google ID token and create session"""
             try:
@@ -164,7 +165,7 @@ class ChatRouter:
                     if (message.message == self.blockchain.tx_queue[-1].confirm_msg):
                         try:
                             self.logger.debug("About to send_tx_in_queue")
-                            tx_hash = self.blockchain.send_tx_in_queue()
+                            tx_hash = self.blockchain.send_tx_in_queue(user)
                             prompt, mime_type, schema = self.prompts.get_formatted_prompt(
                                 "tx_confirmation",
                                 tx_hash=tx_hash[-1],
@@ -316,7 +317,7 @@ class ChatRouter:
     async def handle_generate_account(self, _: str, user: UserInfo) -> dict[str, str]:
         if self.blockchain.address:
             return {"response": f"Account exists - {self.blockchain.address}"}
-        address = self.blockchain.generate_account()
+        address = self.blockchain.generate_account(user)
         prompt, mime_type, schema = self.prompts.get_formatted_prompt(
             "generate_account", address=address, user_id=user.user_id
         )
@@ -403,6 +404,7 @@ class ChatRouter:
         tx = self.blockchain.create_send_flr_tx(
             to_address=send_token_json.get("to_address"),
             amount=send_token_json.get("amount"),
+            user=user
         )
         self.logger.debug("send_token_tx", tx=tx)
         txs = [tx]

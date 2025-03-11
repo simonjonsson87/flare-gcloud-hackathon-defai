@@ -654,3 +654,11 @@ INFO:     Application shutdown complete.
 INFO:     Finished server process [48]
 2025-03-10 12:45:52,973 WARN stopped: backend (exit status 143)
 simonjonsson@UOS-18953 flare-gcloud-hackathon-defai % 
+
+
+
+
+
+
+i want to swap 5 flr tokens for usdc
+i want to borrow 0.6 sflr tokens with usdc as collateral

@@ -20,6 +20,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from flare_ai_defai.blockchain import KineticMarket
 from flare_ai_defai.blockchain import SparkDEX
 
+from flare_ai_defai.storage.fake_storage import WalletStore
+
 from flare_ai_defai import (
     ChatRouter,
     FlareProvider,
@@ -73,14 +75,20 @@ def create_app() -> FastAPI:
     )
 
     # Initialize router with service providers
+    wallet_store = WalletStore()
+    flare_explorer = FlareExplorer(base_url=settings.web3_explorer_url)
+    flare_provider = FlareProvider(web3_provider_url=settings.web3_provider_url, wallet_store=wallet_store)
+    
+    
     chat = ChatRouter(
         ai=GeminiProvider(api_key=settings.gemini_api_key, model=settings.gemini_model),
-        blockchain=FlareProvider(web3_provider_url=settings.web3_provider_url),
-        flareExplorer=FlareExplorer(base_url=settings.web3_explorer_url),
+        blockchain=flare_provider,
+        flareExplorer=flare_explorer,
         attestation=Vtpm(simulate=settings.simulate_attestation),
         prompts=PromptService(),
-        kinetic_market=KineticMarket(settings.web3_provider_url, FlareExplorer(base_url=settings.web3_explorer_url), FlareProvider(web3_provider_url=settings.web3_provider_url)),
-        sparkdex=SparkDEX(settings.web3_provider_url, FlareExplorer(base_url=settings.web3_explorer_url), FlareProvider(web3_provider_url=settings.web3_provider_url))
+        kinetic_market=KineticMarket(settings.web3_provider_url, flare_explorer, flare_provider),
+        sparkdex=SparkDEX(settings.web3_provider_url, flare_explorer, flare_provider),
+        wallet_store=wallet_store
     )
 
     # Register chat routes with API
