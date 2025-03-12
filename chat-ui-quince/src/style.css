@@ -239,7 +239,7 @@ body {
 
 .sidebar {
   width: 250px;
-  height: 10%;
+  height: 100%;
   /* background: #181818; */
   background-color: #1A2A44; /* Midnight Blue */
   color: #E8ECEF; /* Soft Gray */
