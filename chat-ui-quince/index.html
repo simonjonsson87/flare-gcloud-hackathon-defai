@@ -40,8 +40,13 @@
           <textarea id="message-input" rows="2" placeholder="Type your command..."></textarea>
 
            <!-- Microphone Button for Voice Input -->
-          <button id="voice-btn" type="button">
+          <button id="voice-btn-old" type="button">
             🎤
+          </button>
+          <button id="voice-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" id="microphone-icon">
+                <path d="M12 14c2.21 0 4-1.79 4-4V5c0-2.21-1.79-4-4-4s-4 1.79-4 4v5c0 2.21 1.79 4 4 4zm0-11c1.1 0 2 .9 2 2v5c0 1.1-.9 2-2 2s-2-.9-2-2V5c0-1.1.9-2 2-2zm3 7v2h-6V10h6zM12 16c-1.1 0-2 .9-2 2v4h4v-4c0-1.1-.9-2-2-2zm4 5h-8v1h8z"/>
+            </svg>
           </button>
           <button id="read-out-loud-btn"><img src="speaker-disabled.png" alt="Read Out Loud" id="speaker-icon"></button>
 
