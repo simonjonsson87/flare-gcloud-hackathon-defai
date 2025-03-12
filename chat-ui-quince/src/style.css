@@ -129,6 +129,10 @@ body {
   box-sizing: border-box;
 }
 
+#chat-buttons {
+  height: 50px;
+}
+
 #voice-btn, .read-out-loud-btn, #send-btn {
   width: 30px; /* Match width of send button */
   height: 30px; /* Match height of send button */
