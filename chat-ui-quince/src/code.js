@@ -350,7 +350,7 @@ readOutLoudBtn.addEventListener('click', function () {
 document.addEventListener("DOMContentLoaded", () => {
     const messageInput = document.getElementById("message-input");
     const voiceBtn = document.getElementById('voice-btn');
-    const voiceSpinner = document.getElementById("voiceSpinner");
+    const voiceSpinner = document.getElementById("voice-spinner");
 
     // Check if SpeechRecognition is available
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
