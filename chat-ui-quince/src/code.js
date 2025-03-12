@@ -133,9 +133,10 @@ function appendToChat(text, isUser) {
     chat.appendChild(messageDiv);
     chat.scrollTop = chat.scrollHeight;
 
-    // Read the message out loud
-    speakMessage(text);
-
+    // Read the message out loud if from backend
+    if (!isUser) {
+        speakMessage(text);
+    }
 }
 
 function speakMessage(text) {
@@ -210,6 +211,23 @@ async function handleSend() {
     }
 }
 
+function toggleReadOutLoud() {
+    isReadOutLoudEnabled = !isReadOutLoudEnabled;
+
+    const readOutLoudBtn = document.getElementById('read-out-loud-btn');
+    // Update the button icon based on the read out loud status
+    if (isReadOutLoudEnabled) {
+        speakerIcon.src = "speaker-enabled.png"; // Speaker image
+    } else {
+        speakerIcon.src = "speaker-disabled.png"; // Crossed-out speaker image
+    }
+
+    // Optionally, stop any current speech when toggling
+    if (!isReadOutLoudEnabled && speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+    }
+}
+
 ///////////////////////////////////////////////////
 // Actions and definitions
 ///////////////////////////////////////////////////
@@ -220,6 +238,8 @@ const BACKEND_ROUTE = 'api/routes/chat/';
 const chat = document.getElementById('chat');
 const input = document.getElementById('message-input');
 const sendBtn = document.getElementById('send-btn');
+
+let isReadOutLoudEnabled = false;
 ///////////////////////////////////////////////////
 // Window load
 ///////////////////////////////////////////////////
