@@ -247,6 +247,8 @@ const input = document.getElementById('message-input');
 const sendBtn = document.getElementById('send-btn');
 const readOutLoudBtn = document.getElementById('read-out-loud-btn');
 const readOutLoudBtnClass = document.getElementByClass('read-out-loud-btn');
+const voiceBtn = document.getElementById('voice-btn');
+const voiceSpinner = document.getElementById("voiceSpinner");
 
 
 let isReadOutLoudEnabled = false;
@@ -345,8 +347,8 @@ readOutLoudBtnClass.addEventListener('click', function () {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    const voiceBtn = document.getElementById("voice-btn");
     const messageInput = document.getElementById("message-input");
+
 
     // Check if SpeechRecognition is available
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -363,8 +365,11 @@ document.addEventListener("DOMContentLoaded", () => {
     recognition.maxAlternatives = 1; // Only take the most confident result
 
     voiceBtn.addEventListener("click", () => {
+        console.log
         recognition.start();
-        voiceBtn.innerText = "Listening...";
+        /*voiceBtn.innerText = "Listening...";*/
+        voiceBtn.display = "none";
+        voiceSpinner.display = "flex";
     });
 
     recognition.onresult = (event) => {
@@ -372,14 +377,20 @@ document.addEventListener("DOMContentLoaded", () => {
         messageInput.value = transcript; // Insert the transcribed text
         handleSend()
         voiceBtn.innerText = ""; // Reset button
+        voiceBtn.display = "flex";
+        voiceSpinner.display = "none";
     };
 
     recognition.onerror = (event) => {
         console.error("Speech Recognition Error:", event.error);
         voiceBtn.innerText = ""; // Reset button
+        voiceBtn.display = "flex";
+        voiceSpinner.display = "none";
     };
 
     recognition.onend = () => {
         voiceBtn.innerText = ""; // Reset button after stopping
+        voiceBtn.display = "flex";
+        voiceSpinner.display = "none";
     };
 });

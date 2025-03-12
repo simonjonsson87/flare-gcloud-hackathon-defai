@@ -121,7 +121,7 @@ body {
   padding: 10px 40px 10px 10px;
   /*border: 1px solid #333;
   border-radius: 12px;*/
-  background: #1a1a1a;*/
+  background: #1a1a1a;
   color: #fff;
   resize: none;
   outline: none;
@@ -177,7 +177,11 @@ body {
   display: none;
 }
 
-.read-out-loud-btn svg {
+#read-out-loud-btn-disabled svg {
+  width: 70%;
+  height: 70%;
+}
+#read-out-loud-btn-enabled svg {
   width: 70%;
   height: 70%;
 }
@@ -311,4 +315,27 @@ body {
 .sidebar h2 {
   margin: 0 0 20px;
   font-size: 1.2em;
+}
+
+
+
+
+.voice-spinner {
+  width: 40px;                  /* Adjust the size as needed */
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1); /* Light border for the ring */
+  border-top: 4px solid #3498db;        /* Accent color for the spinning segment */
+  border-radius: 50%;           /* Makes it a circle */
+  animation: spin 1s linear infinite;  /* Spin animation */
+  display: none;
+}
+
+/* Define the keyframes for the spin animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
