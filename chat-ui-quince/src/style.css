@@ -329,7 +329,7 @@ body {
 
 
 
-.voice-ear {
+#voice-ear {
   width: 32px;                 
   height: 32px;
   display: none;

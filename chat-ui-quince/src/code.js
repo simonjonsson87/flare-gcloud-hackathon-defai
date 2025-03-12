@@ -266,8 +266,22 @@ window.addEventListener('load', function() {
 
     window.google.accounts.id.initialize({
         client_id: '289493342717-rqktph7q97vsgegclf28ngfhuhcni1d8.apps.googleusercontent.com',
-        callback: handleGoogleSignIn
+        callback: handleGoogleSignIn,
+        cancel_on_tap_outside: true
     });
+
+    window.google.accounts.id.renderButton(
+        document.getElementById('g_id_signin'),
+        {
+            type: 'standard',    // or 'icon'
+            theme: 'outline',    // or 'filled_blue', 'filled_black'
+            size: 'large',       // or 'medium', 'small'
+            text: 'signin_with', // or 'signin', 'continue_with'
+            shape: 'rectangular', // or 'pill', 'circle', 'square'
+            logo_alignment: 'left', // or 'center'
+            width: 240           // Optional: pixel width
+        }
+    );
 
     const loginBtn = document.getElementById('google-sign-in');
     if (!loginBtn) {
@@ -352,7 +366,7 @@ readOutLoudBtn.addEventListener('click', function () {
 document.addEventListener("DOMContentLoaded", () => {
     const messageInput = document.getElementById("message-input");
     const voiceBtn = document.getElementById('voice-btn');
-    const voiceSpinner = document.getElementById("voice-spinner");
+    const voiceEar = document.getElementById("voice-ear");
     const voiceMic = document.getElementById("voice-mic");
 
     // Check if SpeechRecognition is available
@@ -374,7 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
         recognition.start();
         /*voiceBtn.innerText = "Listening...";*/
         voiceMic.style.display = "none";
-        voiceSpinner.style.display = "flex";
+        voiceEar.style.display = "flex";
     });
 
     recognition.onresult = (event) => {
@@ -382,17 +396,17 @@ document.addEventListener("DOMContentLoaded", () => {
         messageInput.value = transcript; // Insert the transcribed text
         handleSend()
         voiceMic.style.display = "flex";
-        voiceSpinner.style.display = "none";
+        voiceEar.style.display = "none";
     };
 
     recognition.onerror = (event) => {
         console.error("Speech Recognition Error:", event.error);
         voiceMic.style.display = "flex";
-        voiceSpinner.style.display = "none";
+        voiceEar.style.display = "none";
     };
 
     recognition.onend = () => {
         voiceMic.style.display = "flex";
-        voiceSpinner.style.display = "none";
+        voiceEar.style.display = "none";
     };
 });
