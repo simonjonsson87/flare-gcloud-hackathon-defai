@@ -336,7 +336,7 @@ input.addEventListener('keypress', function(e) {
     }
 });
 
-readOutLoudBtnClass.addEventListener('click', function () { 
+readOutLoudBtn.addEventListener('click', function () { 
     toggleReadOutLoud();
 });
 
