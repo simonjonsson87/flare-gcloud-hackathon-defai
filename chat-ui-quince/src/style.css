@@ -147,6 +147,44 @@ body {
 }
 
 
+/* Style for the voice button */
+.voice-btn {
+  background-color: #E8ECEF;  /* Light gray background */
+  border-radius: 50%;         /* Round button */
+  border: none;               /* No border */
+  padding: 12px;              /* Some padding to make the button larger */
+  cursor: pointer;           /* Pointer on hover */
+  display: flex;              /* Flexbox to center the icon */
+  justify-content: center;    /* Center horizontally */
+  align-items: center;        /* Center vertically */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for the read out loud button */
+.read-out-loud-btn {
+  background-color: #E8ECEF;  /* Same background */
+  border: none;  /* No border */
+  padding: 10px;  /* Padding */
+  border-radius: 50%;  /* Round shape */
+  cursor: pointer;  /* Pointer on hover */
+  display: flex;
+  justify-content: center;  /* Center the icon */
+  align-items: center;  /* Center the icon */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional subtle shadow */
+}
+
+/* Make the svg icon a smaller size */
+.voice-btn svg {
+  width: 20px;  /* Set icon size */
+  height: 20px; /* Set icon size */
+}
+
+/* Optional: Style for the speaker icon */
+#speaker-icon {
+  width: 32px; /* Match the size of the other button */
+  height: 32px; /* Keep the icon square */
+}
+
 
 .disclaimer {
   font-size: 12px;
