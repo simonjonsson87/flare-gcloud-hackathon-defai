@@ -64,7 +64,7 @@ class ApiClient {
                 const errorText = await response.text();
                 console.warn(`Logout failed: ${response.status} - ${errorText}`);
             } else {
-                console.warn(`Logout succesful.`);
+                console.log(`Logout succesful.`);
             }
 
             return await response.json();
@@ -221,12 +221,12 @@ function toggleReadOutLoud() {
     // Update the button icon based on the read out loud status
     if (isReadOutLoudEnabled) {
         // speakerIcon.src = "speaker-enabled.png"; // Speaker image
-        readOutLoudBtnEnabled.display = "flex";
-        readOutLoudBtnDisabled.display = "none";
+        readOutLoudBtnEnabled.style.display = "flex";
+        readOutLoudBtnDisabled.style.display = "none";
     } else {
         //speakerIcon.src = "speaker-disabled.png"; // Crossed-out speaker image
-        readOutLoudBtnEnabled.display = "none";
-        readOutLoudBtnDisabled.display = "flex";
+        readOutLoudBtnEnabled.style.display = "none";
+        readOutLoudBtnDisabled.style.display = "flex";
     }
 
     // Optionally, stop any current speech when toggling
@@ -246,7 +246,7 @@ const chat = document.getElementById('chat');
 const input = document.getElementById('message-input');
 const sendBtn = document.getElementById('send-btn');
 const readOutLoudBtn = document.getElementById('read-out-loud-btn');
-const voiceBtn = document.getElementById('voice-btn');
+
 const voiceSpinner = document.getElementById("voiceSpinner");
 
 
@@ -347,7 +347,7 @@ readOutLoudBtn.addEventListener('click', function () {
 
 document.addEventListener("DOMContentLoaded", () => {
     const messageInput = document.getElementById("message-input");
-
+    const voiceBtn = document.getElementById('voice-btn');
 
     // Check if SpeechRecognition is available
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
