@@ -338,7 +338,7 @@ sendBtn.addEventListener('click', function () {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    const voiceBtn = document.getElementById("voice-btn");
+    const voiceBtn = document.getElementById("voice-btn-text");
     const messageInput = document.getElementById("message-input");
 
     // Check if SpeechRecognition is available
@@ -357,22 +357,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     voiceBtn.addEventListener("click", () => {
         recognition.start();
-        voiceBtn.innerText = "🎙️ Listening...";
+        voiceBtn.innerText = "Listening...";
     });
 
     recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         messageInput.value = transcript; // Insert the transcribed text
         handleSend()
-        voiceBtn.innerText = "🎤"; // Reset button
+        voiceBtn.innerText = ""; // Reset button
     };
 
     recognition.onerror = (event) => {
         console.error("Speech Recognition Error:", event.error);
-        voiceBtn.innerText = "🎤"; // Reset button
+        voiceBtn.innerText = ""; // Reset button
     };
 
     recognition.onend = () => {
-        voiceBtn.innerText = "🎤"; // Reset button after stopping
+        voiceBtn.innerText = ""; // Reset button after stopping
     };
 });

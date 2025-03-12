@@ -104,6 +104,8 @@ body {
   position: relative;
   padding: 10px 0;
   flex-shrink: 0;
+  display: flex; /* Ensure flexbox layout */
+  justify-content: space-between; /* Place items at opposite ends */
 }
 
 .stroke-\[2\] {
@@ -125,21 +127,27 @@ body {
   box-sizing: border-box;
 }
 
+#voice-btn, #read-out-loud-btn, #send-btn {
+  width: 60px; /* Match width of send button */
+  height: 60px; /* Match height of send button */
+  display: flex; /* Use flex to center the icon inside */
+  justify-content: center;
+  align-items: center;
+  background-color: #E8ECEF;  /* Light gray background */
+  border-radius: 50%; /* Round buttons */
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 12px;              /* Some padding to make the button larger */
+}
+
 #send-btn {
   position: absolute;
   right: 15px;
   bottom: 20px;
-  width: 30px;
-  height: 30px;
-  background: #fff;
-  border: none;
   border-radius: 50%;
   color: #000;
   font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 #send-btn:hover {
@@ -147,44 +155,7 @@ body {
 }
 
 
-/* Style for the voice button */
-#voice-btn {
-  background-color: #E8ECEF;  /* Light gray background */
-  border-radius: 50%;         /* Round button */
-  border: none;               /* No border */
-  padding: 12px;              /* Some padding to make the button larger */
-  cursor: pointer;           /* Pointer on hover */
-  display: flex;              /* Flexbox to center the icon */
-  justify-content: center;    /* Center horizontally */
-  align-items: center;        /* Center vertically */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
 
-/* Style for the read out loud button */
-#read-out-loud-btn {
-  background-color: #E8ECEF;  /* Same background */
-  border: none;  /* No border */
-  padding: 10px;  /* Padding */
-  background: #fff;
-  border-radius: 50%;
-  cursor: pointer;  /* Pointer on hover */
-  display: flex;
-  justify-content: center;  /* Center the icon */
-  align-items: center;  /* Center the icon */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional subtle shadow */
-}
-
-/* Make the svg icon a smaller size */
-#voice-btn svg {
-  width: 20px;  /* Set icon size */
-  height: 20px; /* Set icon size */
-}
-
-/* Optional: Style for the speaker icon */
-#speaker-icon {
-  width: 32px; /* Match the size of the other button */
-  height: 32px; /* Keep the icon square */
-}
 
 
 .disclaimer {
