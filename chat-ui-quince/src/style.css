@@ -75,19 +75,6 @@ body {
   min-height: 0;
 }
 
-.sidebar {
-  width: 250px;
-  height: 10%;
-  background: #181818;
-  padding: 20px;
-  border: 1px solid #333;
-  border-radius: 8px;
-  overflow-y: auto;
-  margin: 20px 0 20px 20px; /* Consistent margins */
-  flex-shrink: 0;
-}
-
-
 
 .chat {
   flex: 1;
@@ -207,3 +194,81 @@ body {
     height: auto;
   }
 }
+
+/* -------------------------------- */
+/*             Sidebar              */
+/* -------------------------------- */
+
+.sidebar {
+  width: 250px;
+  height: 10%;
+  /* background: #181818; */
+  background-color: #1A2A44; /* Midnight Blue */
+  color: #E8ECEF; /* Soft Gray */
+  padding: 20px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  margin: 20px 0 20px 20px; /* Consistent margins */
+  flex-shrink: 0;
+  font-family: Arial, sans-serif;
+}
+/* Title in the sidebar */
+.sidebar-title {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #00D4FF; /* Electric Cyan */
+  text-align: center;
+}
+
+/* Table styling */
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.stats-header-row {
+  background-color: #1A2A44; /* Midnight Blue */
+}
+
+.stats-header {
+  padding: 10px;
+  text-align: left;
+  color: #00D4FF; /* Electric Cyan */
+  font-weight: bold;
+}
+
+.stats-row {
+  border-bottom: 1px solid #7f8c8d;
+}
+
+.stats-token {
+  padding: 10px;
+}
+
+.token-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.stats-value {
+  padding: 10px;
+  color: #34C759; /* Success Green */
+  font-weight: bold;
+}
+
+.stats-row.stats-yield .stats-value {
+  color: #FF9500; /* Warm Orange */
+}
+
+.stats-row:nth-child(even) {
+  background-color: #2c3e50; /* Slightly darker blue for alternating rows */
+}
+
+.stats-row:hover {
+  background-color: #34495e; /* Light hover effect */
+}
+
