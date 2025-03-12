@@ -152,10 +152,20 @@ body {
   font-size: 16px;
 }
 
-
-
 #send-btn:hover {
   background: #e0e0e0;
+}
+
+#voice-btn {
+  position: absolute;
+  left: 15px;
+  bottom: 20px;
+}
+
+.read-out-loud-btn {
+  position: absolute;
+  left: 40px;
+  bottom: 20px;
 }
 
 #speaker-icon {
@@ -207,7 +217,8 @@ body {
   }
   .sidebar {
     margin: 20px 20px 20px 20px; /* Equal margins all around */
-    height: calc(100% - 80px); /* Full height minus top/bottom margins */
+    /*height: calc(100% - 80px); /* Full height minus top/bottom margins */
+    height: calc(100vh - 136px);
     max-height: none; /* Remove cap */
   }
   .chat-container {

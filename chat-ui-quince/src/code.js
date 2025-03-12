@@ -216,11 +216,17 @@ function toggleReadOutLoud() {
     isReadOutLoudEnabled = !isReadOutLoudEnabled;
 
     const readOutLoudBtn = document.getElementById('read-out-loud-btn');
+    const readOutLoudBtnEnabled = document.getElementById('read-out-loud-btn-enabled')
+    const readOutLoudBtnDisabled = document.getElementById('read-out-loud-btn-disabled')
     // Update the button icon based on the read out loud status
     if (isReadOutLoudEnabled) {
-        speakerIcon.src = "speaker-enabled.png"; // Speaker image
+        // speakerIcon.src = "speaker-enabled.png"; // Speaker image
+        readOutLoudBtnEnabled.display = "flex";
+        readOutLoudBtnDisabled.display = "none";
     } else {
-        speakerIcon.src = "speaker-disabled.png"; // Crossed-out speaker image
+        //speakerIcon.src = "speaker-disabled.png"; // Crossed-out speaker image
+        readOutLoudBtnEnabled.display = "none";
+        readOutLoudBtnDisabled.display = "flex";
     }
 
     // Optionally, stop any current speech when toggling
