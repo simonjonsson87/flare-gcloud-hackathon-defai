@@ -351,6 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const messageInput = document.getElementById("message-input");
     const voiceBtn = document.getElementById('voice-btn');
     const voiceSpinner = document.getElementById("voice-spinner");
+    const voiceMic = document.getElementById("voice-mic");
 
     // Check if SpeechRecognition is available
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -370,7 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Clicked the voice button.");
         recognition.start();
         /*voiceBtn.innerText = "Listening...";*/
-        voiceBtn.style.display = "none";
+        voiceMic.style.display = "none";
         voiceSpinner.style.display = "flex";
     });
 
@@ -378,21 +379,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const transcript = event.results[0][0].transcript;
         messageInput.value = transcript; // Insert the transcribed text
         handleSend()
-        voiceBtn.innerText = ""; // Reset button
-        voiceBtn.style.display = "flex";
+        voiceMic.style.display = "flex";
         voiceSpinner.style.display = "none";
     };
 
     recognition.onerror = (event) => {
         console.error("Speech Recognition Error:", event.error);
-        voiceBtn.innerText = ""; // Reset button
-        voiceBtn.style.display = "flex";
+        voiceMic.style.display = "flex";
         voiceSpinner.style.display = "none";
     };
 
     recognition.onend = () => {
-        voiceBtn.innerText = ""; // Reset button after stopping
-        voiceBtn.style.display = "flex";
+        voiceMic.style.display = "flex";
         voiceSpinner.style.display = "none";
     };
 });
