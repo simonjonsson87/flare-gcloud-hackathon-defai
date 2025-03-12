@@ -45,8 +45,15 @@ async function sendUserInputToBackend(text) {
 async function handleSend() {
     const text = input.value.trim();
     if (text) {
+
         appendToChat(text, true);
         input.value = '';
+
+        if (!apiClient.token) {
+            appendToChat("Sorry, we can't start working before you login.", false); // Bot response if not logged in
+            return;
+        }
+
         try {
             const response = await sendUserInputToBackend(text);
             console.log('Backend response:', response);
