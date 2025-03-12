@@ -364,7 +364,7 @@ document.addEventListener("DOMContentLoaded", () => {
     recognition.maxAlternatives = 1; // Only take the most confident result
 
     voiceBtn.addEventListener("click", () => {
-        console.log
+        console.log("Clicked the voice button.");
         recognition.start();
         /*voiceBtn.innerText = "Listening...";*/
         voiceBtn.display = "none";
