@@ -1,4 +1,4 @@
-import { appendToChat } from './main.js';
+//import { appendToChat } from './main.js';
 
 const BACKEND_ROUTE = 'api/routes/chat/';
 
@@ -170,9 +170,9 @@ window.addEventListener('load', function() {
     } else {
         updateUI(false);
     }
-    if (apiClient.token) {
-        message = "Hi there! I’m your personal assistant, here to help you manage your crypto transactions with ease. Here’s what I can do for you: \n 💸 Transfer Funds – Send money securely to other accounts.\n 🔄 Swap Tokens – Exchange ERC-20 tokens instantly.\n📈 Stake Crypto – Grow your assets by staking your tokens.\n\n Just type what you need, and I’ll guide you through it! If you ever need help, just ask. 😊\nIf you don't already have a wallet, you could start by asking for one"
-        appendToChat(message, false);
-    }    
+    //if (apiClient.token) {
+    //    message = "Hi there! I’m your personal assistant, here to help you manage your crypto transactions with ease. Here’s what I can do for you: \n 💸 Transfer Funds – Send money securely to other accounts.\n 🔄 Swap Tokens – Exchange ERC-20 tokens instantly.\n📈 Stake Crypto – Grow your assets by staking your tokens.\n\n Just type what you need, and I’ll guide you through it! If you ever need help, just ask. 😊\nIf you don't already have a wallet, you could start by asking for one"
+    //    appendToChat(message, false);
+    //}    
 
 });
