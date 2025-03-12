@@ -249,7 +249,7 @@ const sendBtn = document.getElementById('send-btn');
 const readOutLoudBtn = document.querySelector('.read-out-loud-btn');
 
 
-const voiceSpinner = document.getElementById("voiceSpinner");
+
 
 
 let isReadOutLoudEnabled = false;
@@ -350,6 +350,7 @@ readOutLoudBtn.addEventListener('click', function () {
 document.addEventListener("DOMContentLoaded", () => {
     const messageInput = document.getElementById("message-input");
     const voiceBtn = document.getElementById('voice-btn');
+    const voiceSpinner = document.getElementById("voiceSpinner");
 
     // Check if SpeechRecognition is available
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;

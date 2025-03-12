@@ -175,6 +175,14 @@ body {
 
 #read-out-loud-btn-enabled {
   display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+#read-out-loud-btn-disabled {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #read-out-loud-btn-disabled svg {
@@ -186,11 +194,7 @@ body {
   height: 70%;
 }
 
-#read-out-loud-btn-enabled, #read-out-loud-btn-disabled {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+
 
 
 .disclaimer {
