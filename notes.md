@@ -21,3 +21,10 @@ docker build -t flare-ai-defai . && docker run -p 80:80 -p 8080:8080 -it --env-f
 ```
 uv add package1 package2
 ```
+
+# Colour scheme
+Midnight Blue (#1A2A44) – Trustworthy base
+Electric Cyan (#00D4FF) – Modern crypto accent
+Soft Gray (#E8ECEF) – Clean neutral
+Success Green (#34C759) – Positive feedback
+Warm Orange (#FF9500) – Alerts
