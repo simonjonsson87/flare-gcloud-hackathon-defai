@@ -120,7 +120,7 @@ body {
   height: 60px;
   padding: 10px 40px 10px 10px;
   /*border: 1px solid #333;
-  border-radius: 12px;
+  border-radius: 12px;*/
   background: #1a1a1a;*/
   color: #fff;
   resize: none;
@@ -147,12 +147,13 @@ body {
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   /*padding: 12px;              /* Some padding to make the button larger */
+  bottom: 15px;
 }
 
 #send-btn {
   position: absolute;
   right: 15px;
-  bottom: 20px;
+  
   border-radius: 50%;
   color: #000;
   font-size: 16px;
@@ -164,14 +165,12 @@ body {
 
 #voice-btn {
   position: absolute;
-  left: 15px;
-  bottom: 20px;
+  left: 70px;
 }
 
 .read-out-loud-btn {
   position: absolute;
-  left: 70px;
-  bottom: 20px;
+  left: 15px;
 }
 
 #read-out-loud-btn-disabled {
@@ -179,8 +178,8 @@ body {
 }
 
 .read-out-loud-btn svg {
-  width: 100%;
-  height: 100%;
+  width: 70%;
+  height: 70%;
 }
 
 
@@ -194,24 +193,8 @@ body {
   flex-shrink: 0;
 }
 
-.sidebar h2 {
-  margin: 0 0 20px;
-  font-size: 1.2em;
-}
 
-.token-icon {
-  display: none;
-}
 
-#stats {
-  list-style: none;
-  padding: 0;
-}
-
-#stats li {
-  padding: 8px 0;
-  border-bottom: 1px solid #222;
-}
 
 @media (min-width: 1080px) {
   .container {
@@ -226,12 +209,7 @@ body {
     flex-direction: row;
     align-items: stretch; /* Ensures children align vertically */
   }
-  .sidebar {
-    margin: 20px 20px 20px 20px; /* Equal margins all around */
-    /*height: calc(100% - 80px); /* Full height minus top/bottom margins */
-    height: calc(100vh - 136px);
-    max-height: none; /* Remove cap */
-  }
+ 
   .chat-container {
     margin-top: 0;
     height: auto;
@@ -244,7 +222,8 @@ body {
 
 .sidebar {
   width: 250px;
-  height: 100%;
+  height: calc(100vh - 136px);
+  max-height: none; /* Remove cap */
   /* background: #181818; */
   background-color: #1A2A44; /* Midnight Blue */
   color: #E8ECEF; /* Soft Gray */
@@ -315,3 +294,21 @@ body {
   background-color: #34495e; /* Light hover effect */
 }
 
+.token-icon {
+  display: none;
+}
+
+#stats {
+  list-style: none;
+  padding: 0;
+}
+
+#stats li {
+  padding: 8px 0;
+  border-bottom: 1px solid #222;
+}
+
+.sidebar h2 {
+  margin: 0 0 20px;
+  font-size: 1.2em;
+}

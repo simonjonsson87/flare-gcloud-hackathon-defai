@@ -246,6 +246,7 @@ const chat = document.getElementById('chat');
 const input = document.getElementById('message-input');
 const sendBtn = document.getElementById('send-btn');
 const readOutLoudBtn = document.getElementById('read-out-loud-btn');
+const readOutLoudBtnClass = document.getElementByClass('read-out-loud-btn');
 
 
 let isReadOutLoudEnabled = false;
@@ -334,7 +335,7 @@ input.addEventListener('keypress', function(e) {
     }
 });
 
-sendBtn.addEventListener('click', function () { 
+readOutLoudBtnClass.addEventListener('click', function () { 
     toggleReadOutLoud();
 });
 
@@ -344,7 +345,7 @@ sendBtn.addEventListener('click', function () {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    const voiceBtn = document.getElementById("voice-btn-text");
+    const voiceBtn = document.getElementById("voice-btn");
     const messageInput = document.getElementById("message-input");
 
     // Check if SpeechRecognition is available
