@@ -130,12 +130,13 @@ body {
 }
 
 #chat-buttons {
-  height: 50px;
+  height: 60px;
+  width: 100%;
 }
 
 #voice-btn, .read-out-loud-btn, #send-btn {
-  width: 30px; /* Match width of send button */
-  height: 30px; /* Match height of send button */
+  width: 40px; /* Match width of send button */
+  height: 40px; /* Match height of send button */
   display: flex; /* Use flex to center the icon inside */
   justify-content: center;
   align-items: center;
@@ -144,7 +145,7 @@ body {
   border: none;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 12px;              /* Some padding to make the button larger */
+  /*padding: 12px;              /* Some padding to make the button larger */
 }
 
 #send-btn {
@@ -168,14 +169,14 @@ body {
 
 .read-out-loud-btn {
   position: absolute;
-  left: 40px;
+  left: 70px;
   bottom: 20px;
 }
 
-#speaker-icon {
-  width: 20px; /* Match width of send button */
-  height: 20px;
+#read-out-loud-btn-disabled {
+  display: none;
 }
+
 
 
 
