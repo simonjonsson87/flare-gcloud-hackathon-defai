@@ -13,7 +13,7 @@ from web3 import Web3
 from web3.contract import Contract
 from web3.types import TxParams
 
-from flare_ai_defai.api.routes.chat import UserInfo
+from flare_ai_defai.models import UserInfo
 
 from flare_ai_defai.blockchain import FlareExplorer, FlareProvider
 
@@ -119,7 +119,7 @@ class KineticMarket:
         self.flare_explorer = flare_explorer
         self.flare_provider = flare_provider
         
-        self.supplySFLRwithFLR(1)
+        #self.supplySFLRwithFLR(user, 1)
         
         #d = {"token": "FLR", "collateral": "USDC", "amount": 0.01}
         #self.borrowUSDC(d)

@@ -16,7 +16,7 @@ from web3 import Web3
 from web3.types import TxParams
 
 from flare_ai_defai.blockchain import FlareExplorer, FlareProvider
-from flare_ai_defai.api.routes.chat import UserInfo
+from flare_ai_defai.models.user import UserInfo
 
 logger = structlog.get_logger(__name__)
 

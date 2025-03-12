@@ -1,7 +1,7 @@
 
 from pydantic import BaseModel
 
-from flare_ai_defai.api.routes.chat import UserInfo
+from flare_ai_defai.models import UserInfo
 # Define UserInfo class (same as in your original code)
 
 
