@@ -285,3 +285,46 @@ input.addEventListener('keypress', function(e) {
     }
 });
 
+///////////////////////////////////////////////////
+// Voice input
+///////////////////////////////////////////////////
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const voiceBtn = document.getElementById("voice-btn");
+    const messageInput = document.getElementById("message-input");
+
+    // Check if SpeechRecognition is available
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (!SpeechRecognition) {
+        console.warn("Speech Recognition is not supported in this browser.");
+        voiceBtn.style.display = "none"; // Hide button if not supported
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US"; // Set language
+    recognition.interimResults = false; // Only send final results
+    recognition.maxAlternatives = 1; // Only take the most confident result
+
+    voiceBtn.addEventListener("click", () => {
+        recognition.start();
+        voiceBtn.innerText = "🎙️ Listening...";
+    });
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        messageInput.value = transcript; // Insert the transcribed text
+        voiceBtn.innerText = "🎤"; // Reset button
+    };
+
+    recognition.onerror = (event) => {
+        console.error("Speech Recognition Error:", event.error);
+        voiceBtn.innerText = "🎤"; // Reset button
+    };
+
+    recognition.onend = () => {
+        voiceBtn.innerText = "🎤"; // Reset button after stopping
+    };
+});
