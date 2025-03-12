@@ -132,6 +132,24 @@ function appendToChat(text, isUser) {
 
     chat.appendChild(messageDiv);
     chat.scrollTop = chat.scrollHeight;
+
+    // Read the message out loud
+    speakMessage(text);
+
+}
+
+function speakMessage(text) {
+    // Check if SpeechSynthesis is supported
+    const speechSynthesis = window.speechSynthesis;
+    if (!speechSynthesis) {
+        console.warn("Speech Synthesis not supported.");
+        return;
+    }
+
+    // Create a speech synthesis utterance
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";  // Set language
+    speechSynthesis.speak(utterance); // Speak the message
 }
 
 async function sendUserInputToBackend(text) {
@@ -316,6 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
     recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         messageInput.value = transcript; // Insert the transcribed text
+        handleSend()
         voiceBtn.innerText = "🎤"; // Reset button
     };
 
