@@ -146,6 +146,8 @@ function speakMessage(text) {
         return;
     }
 
+    //
+
     // Create a speech synthesis utterance
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "en-US";  // Set language
