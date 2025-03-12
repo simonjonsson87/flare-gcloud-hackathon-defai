@@ -13,6 +13,7 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
+  <script> window.DOMPurify = DOMPurify;  // Ensure it's accessible in module scripts </script>
 
   <script type="module" src="/src/code.js"></script>
   <link rel="stylesheet" crossorigin href="/src/style.css">
@@ -36,6 +37,12 @@
         <div id="chat" class="chat"></div>
         <div class="input-container">
           <textarea id="message-input" rows="2" placeholder="Type your command..."></textarea>
+
+           <!-- Microphone Button for Voice Input -->
+          <button id="voice-btn" type="button">
+            🎤
+          </button>
+
           <div id="send-btn" type="button">
             <svg id="button-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="stroke-[2] relative">
               <path d="M5 11L12 4M12 4L19 11M12 4V21" stroke="currentColor"></path>
