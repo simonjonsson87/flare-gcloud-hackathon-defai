@@ -124,7 +124,12 @@ function updateUI(isAuthenticated) {
 function appendToChat(text, isUser) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-    messageDiv.textContent = text;
+    //messageDiv.textContent = text;
+
+    //messageDiv.innerHTML = marked.parse(text);
+    const safeHTML = DOMPurify.sanitize(marked.parse(text));
+    messageDiv.innerHTML = safeHTML;
+
     chat.appendChild(messageDiv);
     chat.scrollTop = chat.scrollHeight;
 }
