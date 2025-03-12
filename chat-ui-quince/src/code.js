@@ -369,8 +369,8 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Clicked the voice button.");
         recognition.start();
         /*voiceBtn.innerText = "Listening...";*/
-        voiceBtn.display = "none";
-        voiceSpinner.display = "flex";
+        voiceBtn.style.display = "none";
+        voiceSpinner.style.display = "flex";
     });
 
     recognition.onresult = (event) => {
@@ -378,20 +378,20 @@ document.addEventListener("DOMContentLoaded", () => {
         messageInput.value = transcript; // Insert the transcribed text
         handleSend()
         voiceBtn.innerText = ""; // Reset button
-        voiceBtn.display = "flex";
-        voiceSpinner.display = "none";
+        voiceBtn.style.display = "flex";
+        voiceSpinner.style.display = "none";
     };
 
     recognition.onerror = (event) => {
         console.error("Speech Recognition Error:", event.error);
         voiceBtn.innerText = ""; // Reset button
-        voiceBtn.display = "flex";
-        voiceSpinner.display = "none";
+        voiceBtn.style.display = "flex";
+        voiceSpinner.style.display = "none";
     };
 
     recognition.onend = () => {
         voiceBtn.innerText = ""; // Reset button after stopping
-        voiceBtn.display = "flex";
-        voiceSpinner.display = "none";
+        voiceBtn.style.display = "flex";
+        voiceSpinner.style.display = "none";
     };
 });
