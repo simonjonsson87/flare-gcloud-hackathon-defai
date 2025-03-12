@@ -212,6 +212,7 @@ async function handleSend() {
 }
 
 function toggleReadOutLoud() {
+    console.log("In toggleReadOutLoud and isReadOutLoudEnabled=", isReadOutLoudEnabled);
     isReadOutLoudEnabled = !isReadOutLoudEnabled;
 
     const readOutLoudBtn = document.getElementById('read-out-loud-btn');
@@ -238,6 +239,8 @@ const BACKEND_ROUTE = 'api/routes/chat/';
 const chat = document.getElementById('chat');
 const input = document.getElementById('message-input');
 const sendBtn = document.getElementById('send-btn');
+const readOutLoudBtn = document.getElementById('read-out-loud-btn');
+
 
 let isReadOutLoudEnabled = false;
 ///////////////////////////////////////////////////
@@ -323,6 +326,10 @@ input.addEventListener('keypress', function(e) {
         e.preventDefault();
         handleSend();
     }
+});
+
+sendBtn.addEventListener('click', function () { 
+    toggleReadOutLoud();
 });
 
 ///////////////////////////////////////////////////
