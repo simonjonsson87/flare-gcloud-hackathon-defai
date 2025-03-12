@@ -130,8 +130,8 @@ body {
 }
 
 #voice-btn, .read-out-loud-btn, #send-btn {
-  width: 20px; /* Match width of send button */
-  height: 20px; /* Match height of send button */
+  width: 30px; /* Match width of send button */
+  height: 30px; /* Match height of send button */
   display: flex; /* Use flex to center the icon inside */
   justify-content: center;
   align-items: center;
