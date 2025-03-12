@@ -246,7 +246,6 @@ const chat = document.getElementById('chat');
 const input = document.getElementById('message-input');
 const sendBtn = document.getElementById('send-btn');
 const readOutLoudBtn = document.getElementById('read-out-loud-btn');
-const readOutLoudBtnClass = document.getElementByClass('read-out-loud-btn');
 const voiceBtn = document.getElementById('voice-btn');
 const voiceSpinner = document.getElementById("voiceSpinner");
 
