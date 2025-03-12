@@ -3,9 +3,10 @@
 // Classes
 ///////////////////////////////////////////////////
 class ApiClient {
-    constructor() {
+    constructor(updateUICallback) {
         this.token = localStorage.getItem('google_token') || null;
         this.userInfo = null;
+        this.updateUI = updateUICallback
     }
 
     setToken(token) {
@@ -17,6 +18,7 @@ class ApiClient {
         this.token = null;
         this.userInfo = null;
         localStorage.removeItem('google_token');
+        if (this.updateUI) this.updateUI(false);
     }
 
     async verifyGoogleToken(idToken) {
@@ -29,6 +31,7 @@ class ApiClient {
 
             if (!response.ok) {
                 const errorText = await response.text();
+                this.clearSession()
                 throw new Error(`Verification failed: ${response.status} - ${errorText}`);
             }
 
@@ -41,6 +44,7 @@ class ApiClient {
             return data;
         } catch (error) {
             console.error('Token verification failed:', error);
+            this.clearSession()
             throw error;
         }
     }
@@ -59,13 +63,16 @@ class ApiClient {
             if (!response.ok) {
                 const errorText = await response.text();
                 console.warn(`Logout failed: ${response.status} - ${errorText}`);
+            } else {
+                console.warn(`Logout succesful.`);
             }
 
-            this.clearSession();
             return await response.json();
         } catch (error) {
             console.error('Logout failed:', error);
             throw error;
+        } finally {
+            this.clearSession();
         }
     }
 }
@@ -87,6 +94,8 @@ async function handleGoogleSignIn(response) {
         const result = await apiClient.verifyGoogleToken(idToken);
         console.log('User verified:', result);
         updateUI(true);
+        appendToChat("Hi there! I’m your personal assistant, here to help you manage your crypto transactions with ease. Here’s what I can do for you: \n 💸 Transfer Funds – Send money securely to other accounts.\n 🔄 Swap Tokens – Exchange ERC-20 tokens instantly.\n 📈 Stake Crypto – Grow your assets by staking your tokens.\n\n Just type what you need, and I’ll guide you through it! If you ever need help, just ask. 😊\n If you don't already have a wallet, you could start by asking for one.", false);
+
     } catch (error) {
         console.error('Sign-in failed:', error);
         updateUI(false);
@@ -99,20 +108,16 @@ function updateUI(isAuthenticated) {
     const chatInput = document.getElementById('message-input');
     const sendBtn = document.getElementById('send-btn');
 
-
-    // TODO this makes updateUI innane.
-    isAuthenticated = true
-
     if (isAuthenticated) {
         loginBtn.style.display = 'none';
         logoutBtn.style.display = 'block';
-        chatInput.disabled = false;
-        sendBtn.disabled = false;
+        //chatInput.disabled = false;
+        //sendBtn.disabled = false;
     } else {
         loginBtn.style.display = 'block';
         logoutBtn.style.display = 'none';
-        chatInput.disabled = true;
-        sendBtn.disabled = true;
+        //chatInput.disabled = true;
+        //sendBtn.disabled = true;
     }
 }
 
@@ -126,7 +131,7 @@ function appendToChat(text, isUser) {
 
 async function sendUserInputToBackend(text) {
     if (!apiClient.token) {
-        throw new Error('Not authenticated');
+        throw new Error('Not authenticated. Please login');
     }
 
     try {
@@ -148,6 +153,11 @@ async function sendUserInputToBackend(text) {
         return data.response;
     } catch (error) {
         console.error('Error sending message:', error);
+        
+        if (error.message.includes("Failed to fetch")) {
+            return "Network error. Please check your internet connection.";
+        }
+        
         return 'Sorry, there was an error processing your request. Please try again.';
     }
 }
@@ -178,7 +188,7 @@ async function handleSend() {
 ///////////////////////////////////////////////////
 // Actions and definitions
 ///////////////////////////////////////////////////
-const apiClient = new ApiClient();
+const apiClient = new ApiClient(updateUI);
 
 const BACKEND_ROUTE = 'api/routes/chat/';
 
@@ -253,6 +263,7 @@ window.addEventListener('load', function() {
 window.onload = function() {
     const messageInput = document.getElementById('message-input');
     messageInput.focus();
+
     // Initial UI setup is handled in google.js
 };
 
