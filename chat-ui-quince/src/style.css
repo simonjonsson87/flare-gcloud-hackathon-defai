@@ -105,7 +105,9 @@ body {
   padding: 10px 0;
   flex-shrink: 0;
   display: flex; /* Ensure flexbox layout */
-  justify-content: space-between; /* Place items at opposite ends */
+  flex-direction: column;
+  align-items: center; 
+
 }
 
 .stroke-\[2\] {
@@ -127,9 +129,9 @@ body {
   box-sizing: border-box;
 }
 
-#voice-btn, #read-out-loud-btn, #send-btn {
-  width: 60px; /* Match width of send button */
-  height: 60px; /* Match height of send button */
+#voice-btn, .read-out-loud-btn, #send-btn {
+  width: 20px; /* Match width of send button */
+  height: 20px; /* Match height of send button */
   display: flex; /* Use flex to center the icon inside */
   justify-content: center;
   align-items: center;
@@ -150,11 +152,16 @@ body {
   font-size: 16px;
 }
 
+
+
 #send-btn:hover {
   background: #e0e0e0;
 }
 
-
+#speaker-icon {
+  width: 20px; /* Match width of send button */
+  height: 20px;
+}
 
 
 
@@ -169,6 +176,10 @@ body {
 .sidebar h2 {
   margin: 0 0 20px;
   font-size: 1.2em;
+}
+
+.token-icon {
+  display: none;
 }
 
 #stats {
