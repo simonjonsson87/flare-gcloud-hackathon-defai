@@ -545,7 +545,7 @@ class SparkDEX:
         except Exception as e:
             self.logger.error(e)   
             
-        amount_out_min = amount_out_wei - amount_out_wei*slippage     
+        amount_out_min = amount_out_wei - int(amount_out_wei*slippage)    
 
         # --- Step 1: Approve Universal Router to Spend wFLR ---
         approval_tx = contract_in.functions.approve(universal_router_address, amount_in).build_transaction({
