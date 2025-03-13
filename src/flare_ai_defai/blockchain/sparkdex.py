@@ -612,9 +612,15 @@ class SparkDEX:
         
         if from_token.lower() == "flr":
             wrap_tx = self.wrap_flr_to_wflr_tx(amount)
-            self.flare_provider.add_tx_to_queue(
-                f"Swap {amount} {from_token} to {to_token}", 
-                [wrap_tx, approval_tx, swap_tx])
+            if (to_token.lower() == "wflr"):
+                self.flare_provider.add_tx_to_queue(
+                    f"Swap {amount} {from_token} to {to_token}", 
+                    [wrap_tx])
+            else:
+                self.flare_provider.add_tx_to_queue(
+                    f"Swap {amount} {from_token} to {to_token}", 
+                    [wrap_tx, approval_tx, swap_tx])
+            
         else:    
             self.flare_provider.add_tx_to_queue(
                 f"Swap {amount} {from_token} to {to_token}", 

@@ -458,6 +458,13 @@ class ChatRouter:
             prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_swap")
             follow_up_response = self.ai.generate(prompt)
             return {"response": follow_up_response.text + " \n " + json.dumps(response_json)}
+        
+        if response_json['from_token'] not in ("flr","wflr","joule", "usdc", "usdt", "weth"):
+            return {"response": "Sorry, we cannot make a swap from that token."}
+        
+        if response_json['to_token'] not in ("wflr","joule", "usdc", "usdt", "weth"):
+            return {"response": "Sorry, we cannot make a swap to that token."}
+
 
         formatted_preview = self.sparkdex.add_swap_txs_to_queue(user, response_json["from_token"], response_json["to_token"], response_json["amount"])
         
