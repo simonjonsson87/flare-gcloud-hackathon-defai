@@ -28,3 +28,5 @@ Electric Cyan (#00D4FF) – Modern crypto accent
 Soft Gray (#E8ECEF) – Clean neutral
 Success Green (#34C759) – Positive feedback
 Warm Orange (#FF9500) – Alerts
+
+
