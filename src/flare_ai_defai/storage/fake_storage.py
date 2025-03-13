@@ -40,7 +40,7 @@ class WalletStore:
         }
         return True
 
-    def get_address(self, user_id: str) -> str | None:
+    def get_address(self, user: UserInfo) -> str | None:
         """
         Fetch the wallet address for a given user.
 
@@ -50,10 +50,11 @@ class WalletStore:
         Returns:
             Optional[str]: Wallet address if found, None if not found
         """
+        user_id = user.user_id
         wallet = self._wallets.get(user_id)
         return wallet["address"] if wallet else None
 
-    def get_private_key(self, user_id: str) -> str | None:
+    def get_private_key(self, user: UserInfo) -> str | None:
         """
         Fetch the private key for a given user.
 
@@ -63,10 +64,11 @@ class WalletStore:
         Returns:
             Optional[str]: Private key if found, None if not found
         """
+        user_id = user.user_id
         wallet = self._wallets.get(user_id)
         return wallet["private_key"] if wallet else None
 
-    def get_wallet_info(self, user_id: str) -> dict[str, str] | None:
+    def get_wallet_info(self, user: UserInfo) -> dict[str, str] | None:
         """
         Fetch all wallet information for a given user.
 
@@ -76,6 +78,7 @@ class WalletStore:
         Returns:
             Optional[Dict[str, str]]: Dictionary with address, private_key, and email if found, None if not found
         """
+        user_id = user.user_id
         return self._wallets.get(user_id)
 
 
