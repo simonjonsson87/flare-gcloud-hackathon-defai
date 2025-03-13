@@ -12,6 +12,7 @@ wheels/
 .ruff_cache
 .vscode
 .DS_Store
+AI_research/myenv/
 
 
 server.crt

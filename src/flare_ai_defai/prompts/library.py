@@ -121,7 +121,7 @@ class PromptLibrary:
                 description="Extract token swap parameters from user input",
                 template=TOKEN_SWAP,
                 required_inputs=["user_input"],
-                response_schema=TokenSwapResponse,
+                response_schema=None, #TokenSwapResponse,
                 response_mime_type="application/json",
                 category="defai",
             ),
