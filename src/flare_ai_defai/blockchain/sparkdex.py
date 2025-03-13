@@ -609,7 +609,7 @@ class SparkDEX:
         return wrap_tx
 
     def add_swap_txs_to_queue(self, user: UserInfo, from_token: str, to_token: str, amount: float) -> str:
-        self.reset_nonce()
+        self.reset_nonce(user)
         
         if from_token.lower() == "flr":
             wrap_tx = self.wrap_flr_to_wflr_tx(amount)
@@ -657,8 +657,8 @@ class SparkDEX:
         return self.swap_erc20_tokens(from_token, to_token, amount)  
     
       
-    def reset_nonce(self):    
-        self.add_to_nonce = self.w3.eth.get_transaction_count(self.address)
+    def reset_nonce(self, user: UserInfo):    
+        self.add_to_nonce = self.w3.eth.get_transaction_count(user.address)
 
     def get_nonce(self):
         current_add_to_nonce = self.add_to_nonce
