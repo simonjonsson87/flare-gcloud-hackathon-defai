@@ -368,7 +368,7 @@ class SparkDEX:
         return Web3.to_hex(swap_tx_hash)
 
 
-    def swap_erc20_tokens_tx(self, token_in: str, token_out: str, amount_in: float):
+    def swap_erc20_tokens_tx(self, user: UserInfo, token_in: str, token_out: str, amount_in: float):
 
         amount_in = self.w3.to_wei(amount_in, unit="ether")
         universal_router_address = "0x8a1E35F5c98C4E85B36B7B253222eE17773b2781"  # Replace with Flare's Universal Router if different
@@ -477,7 +477,7 @@ class SparkDEX:
 
         # --- Step 1: Approve Universal Router to Spend wFLR ---
         approval_tx = contract_in.functions.approve(universal_router_address, amount_in).build_transaction({
-            'from': self.address,
+            'from': self.wallet_store.get_address(user),
             'nonce': self.get_nonce(),
             "maxFeePerGas": self.w3.eth.gas_price,
             "maxPriorityFeePerGas": self.w3.eth.max_priority_fee,
@@ -491,7 +491,7 @@ class SparkDEX:
         token_in_address,  # Token In
         token_out_address,  # Token Out
         fee_tier,  # Pool Fee Tier (0.05%)
-        self.address,  # Recipient
+        self.wallet_store.get_address(user),  # Recipient
         deadline,  # Deadline (5 min)
         amount_in,  # Amount In (exact wFLR amount)
         amount_out_min,  # Minimum amount of JOULE expected
@@ -503,7 +503,7 @@ class SparkDEX:
 
         # --- Step 3: Execute the swap ---
         swap_tx = universal_router.functions.exactInputSingle(params).build_transaction({
-            'from': self.address,
+            'from': self.wallet_store.get_address(user),
             'nonce': self.get_nonce(),
             "maxFeePerGas": base_fee + priority_fee, #self.w3.eth.gas_price,
             "maxPriorityFeePerGas": priority_fee, #self.w3.eth.max_priority_fee,
@@ -512,7 +512,7 @@ class SparkDEX:
         })
 
         # --- Step 4: Check JOULE Balance ---
-        # joule_balance = joule_contract.functions.balanceOf(self.address).call()
+        # joule_balance = joule_contract.functions.balanceOf(self.wallet_store.get_address(user)).call()
         # print(f"New JOULE balance: {joule_balance / 10**6}")
 
         return approval_tx, swap_tx
@@ -572,7 +572,7 @@ class SparkDEX:
     
         return f"0x{wrap_tx_hash.hex()}"
     
-    def wrap_flr_to_wflr_tx(self, amount_in: float):
+    def wrap_flr_to_wflr_tx(self, user: UserInfo, amount_in: float):
         """
         Make the transaction to wrap native FLR into WFLR (Wrapped FLR).
         
@@ -601,7 +601,7 @@ class SparkDEX:
 
         # Build wrap transaction (calling `deposit()` on WFLR contract)
         wrap_tx = wflr_contract.functions.deposit().build_transaction({
-            "from": self.address,
+            "from": self.wallet_store.get_address(user),
             "nonce": self.get_nonce(),
             "value": self.w3.to_wei(amount_in, unit="ether"),  # Sending FLR directly
             "maxFeePerGas": base_fee + priority_fee,  
