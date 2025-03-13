@@ -369,7 +369,7 @@ class SparkDEX:
 
 
     def swap_erc20_tokens_tx(self, user: UserInfo, token_in: str, token_out: str, amount_in: float):
-
+        slippage = 0.05
         amount_in = self.w3.to_wei(amount_in, unit="ether")
         universal_router_address = "0x8a1E35F5c98C4E85B36B7B253222eE17773b2781"  # Replace with Flare's Universal Router if different
         
@@ -513,6 +513,8 @@ class SparkDEX:
         token_in_abi = ERC20_ABI
         token_out_abi = ERC20_ABI
         
+        base_fee = self.w3.eth.get_block('latest')['baseFeePerGas']
+        priority_fee = self.w3.eth.max_priority_fee
         
         universal_router = self.w3.eth.contract(address=universal_router_address, abi=SWAP_ROUTER_ABI)
         contract_in = self.w3.eth.contract(address=token_in_address, abi=token_in_abi)
@@ -522,33 +524,43 @@ class SparkDEX:
         amount_out_min = 0  # Fetch dynamically for slippage protection
         deadline = self.w3.eth.get_block("latest")["timestamp"] + 300  # 5 minutes from now
 
+        # ---- Step 0.5: calculate amount_out_min
+        params = (
+            token_in_address,  # tokenIn
+            token_out_address,  # tokenOut
+            fee_tier,  # fee (e.g., 500 = 0.05%)
+            self.wallet_store.get_address(user),  # recipient (your address)
+            int(self.w3.eth.get_block("latest")["timestamp"]) + 300,  # deadline (5 min)
+            amount_in,  # amountIn
+            0,  # amountOutMinimum (set to 0 for estimation)
+            0  # sqrtPriceLimitX96 (no limit)
+        )
+
+        amount_out_wei = 0
+        try:
+            # Static call to estimate amountOut
+            amount_out_wei = universal_router.functions.exactInputSingle(params).call()
+            amount_out = self.w3.from_wei(amount_out_wei, "ether")  # Adjust decimals if needed
+        except Exception as e:
+            self.logger.error(e)   
+            
+        amount_out_min = amount_out_wei - amount_out_wei*slippage     
+
         # --- Step 1: Approve Universal Router to Spend wFLR ---
         approval_tx = contract_in.functions.approve(universal_router_address, amount_in).build_transaction({
             'from': self.wallet_store.get_address(user),
             'nonce': self.get_nonce(),
-            "maxFeePerGas": self.w3.eth.gas_price,
-            "maxPriorityFeePerGas": self.w3.eth.max_priority_fee,
+            "maxFeePerGas": base_fee,
+            "maxPriorityFeePerGas": base_fee + priority_fee,
             'chainId': self.w3.eth.chain_id,
             "type": 2,
         })
 
         self.logger.debug(f"Approval transaction: {approval_tx}")
 
-        params = (
-        token_in_address,  # Token In
-        token_out_address,  # Token Out
-        fee_tier,  # Pool Fee Tier (0.05%)
-        self.wallet_store.get_address(user),  # Recipient
-        deadline,  # Deadline (5 min)
-        amount_in,  # Amount In (exact wFLR amount)
-        amount_out_min,  # Minimum amount of JOULE expected
-        0  # sqrtPriceLimitX96 (0 = no limit)
-        )
-
-        base_fee = self.w3.eth.get_block('latest')['baseFeePerGas']
-        priority_fee = self.w3.eth.max_priority_fee
-
         # --- Step 3: Execute the swap ---
+        
+        
         swap_tx = universal_router.functions.exactInputSingle(params).build_transaction({
             'from': self.wallet_store.get_address(user),
             'nonce': self.get_nonce(),
