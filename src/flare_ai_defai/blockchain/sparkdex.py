@@ -389,8 +389,7 @@ class SparkDEX:
             "weth": "0x1502FA4be69d526124D453619276FacCab275d3D"
         }
         
-        ERC20_ABI = """
-            {
+        ERC20_ABI = {
                 "inputs": [
                 {
                     "internalType": "address",
@@ -432,7 +431,7 @@ class SparkDEX:
                 "stateMutability": "view",
                 "type": "function"
             }
-        """
+    
         
         SWAP_ROUTER_ABI =   [{
             "inputs": [
