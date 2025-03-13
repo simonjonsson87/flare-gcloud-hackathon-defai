@@ -126,7 +126,7 @@ class FlareProvider:
             "generate_account", address=self.wallet_store.get_address(user), private_key=self.wallet_store.get_private_key(user)
         )
         self.wallet_store.store_wallet(user, str(self.address), str(self.private_key))
-        return self.address
+        return self.address, self.private_key
 
     def sign_and_send_transaction(self, user:UserInfo, tx: TxParams) -> str:
         """

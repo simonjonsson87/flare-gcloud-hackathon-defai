@@ -316,9 +316,9 @@ class ChatRouter:
     async def handle_generate_account(self, _: str, user: UserInfo) -> dict[str, str]:
         if self.blockchain.address:
             return {"response": f"Account exists - {self.blockchain.address}"}
-        address = self.blockchain.generate_account(user)
+        address, private_key = self.blockchain.generate_account(user)
         prompt, mime_type, schema = self.prompts.get_formatted_prompt(
-            "generate_account", address=address, user_id=user.user_id
+            "generate_account", address=address, private_key=private_key, user_id=user.user_id
         )
         gen_address_response = self.ai.generate(
             prompt=prompt, response_mime_type=mime_type, response_schema=schema

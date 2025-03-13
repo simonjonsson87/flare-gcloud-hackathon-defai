@@ -138,7 +138,7 @@ class PromptLibrary:
                 name="generate_account",
                 description="Generate a new account for a user",
                 template=GENERATE_ACCOUNT,
-                required_inputs=["address"],
+                required_inputs=["address","private_key"],
                 response_schema=None,
                 response_mime_type=None,
                 category="account",

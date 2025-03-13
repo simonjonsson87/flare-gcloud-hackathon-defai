@@ -75,26 +75,31 @@ Generate a welcoming message that includes ALL of these elements in order:
 1. Welcome message that conveys enthusiasm for the user joining
 2. Security explanation:
    - Account is secured in a Trusted Execution Environment (TEE)
-   - Private keys never leave the secure enclave
+   - Private keys never leave the secure enclave except in this beta version of Quince Finances (which is the name of this app)
    - Hardware-level protection against tampering
 3. Account address display:
    - EXACTLY as provided, make no changes: ${address}
    - Format with clear visual separation
+4. Private key display:
+   - EXACTLY as provided, make no changes: ${private_key}
+   - Stress to the customer that this is the only time the system will ever give them the private_key
+   - The they are working on mainnet, and the loss of the private key means loss of funds.
+   - The private key needs to be stored safely.
 4. Funding account instructions:
-   - Tell the user to fund the new account: [Add funds to account](https://faucet.flare.network/coston2)
+   - Tell the user to fund the new account: Send tokens to the account address.
 
 Important rules:
 - DO NOT modify the address in any way
 - Explain that addresses are public information
 - Use markdown for formatting
-- Keep the message concise (max 4 sentences)
+- Keep the message concise (max 8 sentences)
 - Avoid technical jargon unless explaining TEE
 
 Example tone:
 "Welcome to Flare! 🎉 Your new account is secured by secure hardware (TEE),
 keeping your private keys safe and secure, you freely share your
 public address: 0x123...
-[Add funds to account](https://faucet.flare.network/coston2)
+
 Ready to start exploring the Flare network?"
 """
 
@@ -135,7 +140,7 @@ Rules:
 
 Output format should be valid json.
 """
-TOKEN_SWAP: Final = """
+TOKEN_SWAP_experiment: Final = """
 Task: You are an assistant that processes user requests to swap crypto tokens. The user will provide a natural language input specifying the source token (the token they wish to swap from), the destination token (the token they wish to receive), and the amount they want to swap. The amount will be specified as a numerical value (integer or decimal). Your job is to extract this information from the input and return it in a JSON object with the following structure:
 
 
@@ -186,7 +191,7 @@ Output:
 Input: ${user_input}
 """
 
-TOKEN_SWAP_Original: Final = """
+TOKEN_SWAP: Final = """
 Extract EXACTLY three pieces of information from the input for a token swap operation:
 
 1. SOURCE TOKEN (from_token)
