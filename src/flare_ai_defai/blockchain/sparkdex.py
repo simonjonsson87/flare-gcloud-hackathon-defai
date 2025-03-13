@@ -362,6 +362,154 @@ class SparkDEX:
         return Web3.to_hex(swap_tx_hash)
 
 
+    def swap_erc20_tokens_tx(self, token_in: str, token_out: str, amount_in: float):
+
+        amount_in = self.w3.to_wei(amount_in, unit="ether")
+        universal_router_address = "0x8a1E35F5c98C4E85B36B7B253222eE17773b2781"  # Replace with Flare's Universal Router if different
+        
+        token_address = {
+            "wflr": "0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d",
+            "joule": "0xE6505f92583103AF7ed9974DEC451A7Af4e3A3bE",
+            "usdc": "0xFbDa5F676cB37624f28265A144A48B0d6e87d3b6",
+            "usdt": "0x0B38e83B86d491735fEaa0a791F65c2B99535396",
+            "weth": "0x1502FA4be69d526124D453619276FacCab275d3D"
+        }
+
+        token_address_abi = {
+            "wflr": "0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d",
+            "joule": "0xEE15da0edB70FC6D98D03651F949FcCc2C4e1E80",
+            "usdc": "0x3AdAE7Ad0449e26ad2e95059e08CC29ECB93E194",
+            "usdt": "0x0B38e83B86d491735fEaa0a791F65c2B99535396",
+            "weth": "0x1502FA4be69d526124D453619276FacCab275d3D"
+        }
+        
+        SWAP_ROUTER_ABI =   [{
+            "inputs": [
+            {
+                "components": [
+                {
+                    "internalType": "address",
+                    "name": "tokenIn",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "tokenOut",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint24",
+                    "name": "fee",
+                    "type": "uint24"
+                },
+                {
+                    "internalType": "address",
+                    "name": "recipient",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "deadline",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amountIn",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amountOutMinimum",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint160",
+                    "name": "sqrtPriceLimitX96",
+                    "type": "uint160"
+                }
+                ],
+                "internalType": "struct ISwapRouter.ExactInputSingleParams",
+                "name": "params",
+                "type": "tuple"
+            }
+            ],
+            "name": "exactInputSingle",
+            "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "amountOut",
+                "type": "uint256"
+            }
+            ],
+            "stateMutability": "payable",
+            "type": "function"
+        }]
+
+        # token_abi = {
+        #     "wflr": WFLR_ABI,
+        #     "joule": JOULE_ABI,
+        #     "usdc": USDC_ABI
+        # }
+
+        token_in_address = token_address[token_in.lower()]
+        token_out_address = token_address[token_out.lower()]
+
+        # token_in_abi = token_abi[token_in.lower()]
+        # token_out_abi = token_abi[token_out.lower()]
+
+        token_in_abi = self.flare_explorer.get_contract_abi(contract_address=token_address_abi[token_in.lower()])
+        token_out_abi = self.flare_explorer.get_contract_abi(contract_address=token_address_abi[token_out.lower()])
+        
+        
+        universal_router = self.w3.eth.contract(address=universal_router_address, abi=SWAP_ROUTER_ABI)
+        contract_in = self.w3.eth.contract(address=token_in_address, abi=token_in_abi)
+        contract_out = self.w3.eth.contract(address=token_out_address, abi=token_out_abi)
+
+        fee_tier = 500  # Assuming 0.05% pool fee
+        amount_out_min = 0  # Fetch dynamically for slippage protection
+        deadline = self.w3.eth.get_block("latest")["timestamp"] + 300  # 5 minutes from now
+
+        # --- Step 1: Approve Universal Router to Spend wFLR ---
+        approval_tx = contract_in.functions.approve(universal_router_address, amount_in).build_transaction({
+            'from': self.address,
+            'nonce': self.w3.eth.get_transaction_count(self.address),
+            "maxFeePerGas": self.w3.eth.gas_price,
+            "maxPriorityFeePerGas": self.w3.eth.max_priority_fee,
+            'chainId': self.w3.eth.chain_id,
+            "type": 2,
+        })
+
+        self.logger.debug(f"Approval transaction: {approval_tx}")
+
+        params = (
+        token_in_address,  # Token In
+        token_out_address,  # Token Out
+        fee_tier,  # Pool Fee Tier (0.05%)
+        self.address,  # Recipient
+        deadline,  # Deadline (5 min)
+        amount_in,  # Amount In (exact wFLR amount)
+        amount_out_min,  # Minimum amount of JOULE expected
+        0  # sqrtPriceLimitX96 (0 = no limit)
+        )
+
+        base_fee = self.w3.eth.get_block('latest')['baseFeePerGas']
+        priority_fee = self.w3.eth.max_priority_fee
+
+        # --- Step 3: Execute the swap ---
+        swap_tx = universal_router.functions.exactInputSingle(params).build_transaction({
+            'from': self.address,
+            'nonce': self.w3.eth.get_transaction_count(self.address),
+            "maxFeePerGas": base_fee + priority_fee, #self.w3.eth.gas_price,
+            "maxPriorityFeePerGas": priority_fee, #self.w3.eth.max_priority_fee,
+            'chainId': self.w3.eth.chain_id,
+            "type": 2,
+        })
+
+        # --- Step 4: Check JOULE Balance ---
+        # joule_balance = joule_contract.functions.balanceOf(self.address).call()
+        # print(f"New JOULE balance: {joule_balance / 10**6}")
+
+        return approval_tx, swap_tx
 
 
     def wrap_flr_to_wflr(self, amount_in: float):
@@ -417,14 +565,66 @@ class SparkDEX:
 
     
         return f"0x{wrap_tx_hash.hex()}"
-
-    def add_swap_txs_to_queue(self, from_token: str, to_token: str, amount: float) -> str:
+    
+    def wrap_flr_to_wflr_tx(self, amount_in: float):
+        """
+        Make the transaction to wrap native FLR into WFLR (Wrapped FLR).
         
-        min_out = 1
+        Args:
+            amount_in (float): Amount of FLR to wrap (in wei)
+
+        Returns:
+            str: Transaction hash
+        """
+        
+        WFLR_ADDRESS = "0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d" 
+        
+        WFLR_ABI = [{
+            "inputs": [],
+            "name": "deposit",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        }]
+        
+        # Initialize WFLR contract
+        wflr_contract = self.w3.eth.contract(address=WFLR_ADDRESS, abi=WFLR_ABI)
+
+        base_fee = self.w3.eth.get_block('latest')['baseFeePerGas']
+        priority_fee = self.w3.eth.max_priority_fee
+
+        # Build wrap transaction (calling `deposit()` on WFLR contract)
+        wrap_tx = wflr_contract.functions.deposit().build_transaction({
+            "from": self.address,
+            "nonce": self.w3.eth.get_transaction_count(self.address),
+            "value": self.w3.to_wei(amount_in, unit="ether"),  # Sending FLR directly
+            "maxFeePerGas": base_fee + priority_fee,  
+            "maxPriorityFeePerGas": priority_fee,
+            "chainId": self.w3.eth.chain_id,
+            "type": 2,
+        })
+        
+        return wrap_tx
+
+    def add_swap_txs_to_queue(self, user: UserInfo, from_token: str, to_token: str, amount: float) -> str:
+        
+        approval_tx, swap_tx = self.swap_erc20_tokens_tx(from_token, to_token, amount)
+        
+        if from_token.lower() == "flr":
+            wrap_tx = self.wrap_flr_to_wflr_tx(amount)
+            self.flare_provider.add_tx_to_queue(
+                f"Swap {amount} {from_token} to {to_token}", 
+                [wrap_tx, approval_tx, swap_tx])
+        else:    
+            self.flare_provider.add_tx_to_queue(
+                f"Swap {amount} {from_token} to {to_token}", 
+                [approval_tx, swap_tx])
+        
+        
         formatted_preview = (
             "Transaction Preview: "
-            + f"Swapping {Web3.from_wei(tx.get('value', 0), 'ether')} "
-            + f"{from_token} to at least {min_out} {to_token}\nType CONFIRM to proceed."
+            + f"Swapping {amount} "
+            + f"{from_token} to {to_token}\nType CONFIRM to proceed."
         )
         return formatted_preview
 
