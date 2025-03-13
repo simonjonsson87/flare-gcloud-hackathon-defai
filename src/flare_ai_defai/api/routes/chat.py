@@ -109,6 +109,9 @@ class ChatRouter:
         self.kinetic_market = kinetic_market
         self.sparkdex = sparkdex
         self.wallet_store = wallet_store
+        
+        self.handler_waiting_for_response = False
+        self.handler_waiting_for_response_name = ""
 
     def _setup_routes(self) -> None:
         @self._router.post("/verify")
@@ -157,6 +160,15 @@ class ChatRouter:
                     user_id=user.user_id
                 )
 
+                # Some workflows will set a flag when they are waiting for a response.
+                if (self.handler_waiting_for_response) {
+                    match self.handler_waiting_for_response_name:
+                        case SemanticRouterResponse.SWAP_TOKEN:
+                            self.handle_swap_token(message, user)
+                            
+                }
+
+                # Other workflows will use the transaction_queue to handle follow up answers.
                 if message.message.startswith("/"):
                     return await self.handle_command(message.message)
                 self.logger.debug(tx_queue=self.blockchain.tx_queue, tx_queue_len=len(self.blockchain.tx_queue))
@@ -456,10 +468,25 @@ class ChatRouter:
             prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_swap")
             follow_up_response = self.ai.generate(prompt)
             return {"response": follow_up_response.text + " \n " + json.dumps(response_json)}
-        
-       
-        # Return stringified JSON
-        return {"response": json.dumps(response_json)}
+        self.handler_waiting_for_response = True
+        self.handler_waiting_for_response_name = SemanticRouterResponse.SWAP_TOKEN
+        #
+        #handle_swap_token(self, from_token: str, to_token: str, amount: float)
+        #
+        #tx = self.blockchain.create_send_flr_tx(
+        #    to_address=response_json.get("to_address"),
+        #    amount=response_json.get("amount"),
+        #    user=user
+        #)
+        #self.logger.debug("send_token_tx", tx=tx)
+        #txs = [tx]
+        #self.blockchain.add_tx_to_queue(msg=message, txs=txs)
+        #formatted_preview = (
+        #    "Transaction Preview: "
+        #    + f"Sending {Web3.from_wei(tx.get('value', 0), 'ether')} "
+        #    + f"FLR to {tx.get('to')}\nType CONFIRM to proceed."
+        #)
+        #return {"response": formatted_preview}
 
     
     
