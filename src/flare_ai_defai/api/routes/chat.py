@@ -459,10 +459,10 @@ class ChatRouter:
             follow_up_response = self.ai.generate(prompt)
             return {"response": follow_up_response.text + " \n " + json.dumps(response_json)}
         
-        if response_json['from_token'] not in ("flr","wflr","joule", "usdc", "usdt", "weth"):
+        if response_json['from_token'].lower() not in ("flr","wflr", "joule", "usdc", "usdt", "weth"):
             return {"response": "Sorry, we cannot make a swap from that token."}
         
-        if response_json['to_token'] not in ("wflr","joule", "usdc", "usdt", "weth"):
+        if response_json['to_token'].lower() not in ("wflr", "joule", "usdc", "usdt", "weth"):
             return {"response": "Sorry, we cannot make a swap to that token."}
 
 
