@@ -389,6 +389,51 @@ class SparkDEX:
             "weth": "0x1502FA4be69d526124D453619276FacCab275d3D"
         }
         
+        ERC20_ABI = """
+            {
+                "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "spender",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+                ],
+                "name": "approve",
+                "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+                ],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },{
+                "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+                ],
+                "name": "balanceOf",
+                "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            }
+        """
+        
         SWAP_ROUTER_ABI =   [{
             "inputs": [
             {
@@ -463,8 +508,11 @@ class SparkDEX:
         # token_in_abi = token_abi[token_in.lower()]
         # token_out_abi = token_abi[token_out.lower()]
 
-        token_in_abi = self.flare_explorer.get_contract_abi(contract_address=token_address_abi[token_in.lower()])
-        token_out_abi = self.flare_explorer.get_contract_abi(contract_address=token_address_abi[token_out.lower()])
+        #token_in_abi = self.flare_explorer.get_contract_abi(contract_address=token_address_abi[token_in.lower()])
+        #token_out_abi = self.flare_explorer.get_contract_abi(contract_address=token_address_abi[token_out.lower()])
+        
+        token_in_abi = ERC20_ABI
+        token_out_abi = ERC20_ABI
         
         
         universal_router = self.w3.eth.contract(address=universal_router_address, abi=SWAP_ROUTER_ABI)
