@@ -336,9 +336,14 @@ body {
 }
 
 
-.google_buttons {
-  background-color: white;
-  font-size: 20px;
-  border-radius: 100;
-  color: black;
+#company_name {
+  left: 70px;
+  position: absolute;
+  font-size: 35px;
+}
+
+#logo {
+  left: 15px;
+  position: absolute;
+  height: 40px;
 }
