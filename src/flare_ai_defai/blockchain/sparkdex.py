@@ -17,6 +17,7 @@ from web3.types import TxParams
 
 from flare_ai_defai.blockchain import FlareExplorer, FlareProvider
 from flare_ai_defai.models.user import UserInfo
+from flare_ai_defai.storage.fake_storage import WalletStore
 
 logger = structlog.get_logger(__name__)
 
@@ -53,7 +54,7 @@ class SparkDEX:
     ]
     
     
-    def __init__(self, web3_provider_url: str, flare_explorer: FlareExplorer, flare_provider: FlareProvider) -> None:
+    def __init__(self, web3_provider_url: str, flare_explorer: FlareExplorer, flare_provider: FlareProvider, wallet_store: WalletStore) -> None:
         """
         Args:
             web3_provider_url (str): URL of the Web3 provider endpoint
@@ -65,6 +66,7 @@ class SparkDEX:
         self.web3_provider_url = web3_provider_url
         self.flare_explorer = flare_explorer
         self.flare_provider = flare_provider
+        self.wallet_store = wallet_store
         
         self.add_to_nonce = 0  
         
@@ -658,7 +660,7 @@ class SparkDEX:
     
       
     def reset_nonce(self, user: UserInfo):    
-        self.add_to_nonce = self.w3.eth.get_transaction_count(user.address)
+        self.add_to_nonce = self.w3.eth.get_transaction_count(self.wallet_store.get_address(user))
 
     def get_nonce(self):
         current_add_to_nonce = self.add_to_nonce
