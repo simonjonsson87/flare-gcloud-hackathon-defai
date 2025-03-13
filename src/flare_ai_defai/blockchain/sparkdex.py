@@ -66,6 +66,8 @@ class SparkDEX:
         self.flare_explorer = flare_explorer
         self.flare_provider = flare_provider
         
+        self.add_to_nonce = 0  
+        
         #tx_hashes = self.swapFLRtoToken(
         #amount=1.0,
         #token_out="0xE3e3bC6Dc69FacbA691832AF7754fC5e8D0e09Ee",  # USDT.e
@@ -472,7 +474,7 @@ class SparkDEX:
         # --- Step 1: Approve Universal Router to Spend wFLR ---
         approval_tx = contract_in.functions.approve(universal_router_address, amount_in).build_transaction({
             'from': self.address,
-            'nonce': self.w3.eth.get_transaction_count(self.address),
+            'nonce': self.get_nonce(),
             "maxFeePerGas": self.w3.eth.gas_price,
             "maxPriorityFeePerGas": self.w3.eth.max_priority_fee,
             'chainId': self.w3.eth.chain_id,
@@ -498,7 +500,7 @@ class SparkDEX:
         # --- Step 3: Execute the swap ---
         swap_tx = universal_router.functions.exactInputSingle(params).build_transaction({
             'from': self.address,
-            'nonce': self.w3.eth.get_transaction_count(self.address),
+            'nonce': self.get_nonce(),
             "maxFeePerGas": base_fee + priority_fee, #self.w3.eth.gas_price,
             "maxPriorityFeePerGas": priority_fee, #self.w3.eth.max_priority_fee,
             'chainId': self.w3.eth.chain_id,
@@ -596,7 +598,7 @@ class SparkDEX:
         # Build wrap transaction (calling `deposit()` on WFLR contract)
         wrap_tx = wflr_contract.functions.deposit().build_transaction({
             "from": self.address,
-            "nonce": self.w3.eth.get_transaction_count(self.address),
+            "nonce": self.get_nonce(),
             "value": self.w3.to_wei(amount_in, unit="ether"),  # Sending FLR directly
             "maxFeePerGas": base_fee + priority_fee,  
             "maxPriorityFeePerGas": priority_fee,
@@ -607,11 +609,11 @@ class SparkDEX:
         return wrap_tx
 
     def add_swap_txs_to_queue(self, user: UserInfo, from_token: str, to_token: str, amount: float) -> str:
-        
-        approval_tx, swap_tx = self.swap_erc20_tokens_tx(from_token, to_token, amount)
+        self.reset_nonce()
         
         if from_token.lower() == "flr":
             wrap_tx = self.wrap_flr_to_wflr_tx(amount)
+            approval_tx, swap_tx = self.swap_erc20_tokens_tx("wflr", to_token, amount)
             if (to_token.lower() == "wflr"):
                 self.flare_provider.add_tx_to_queue(
                     f"Swap {amount} {from_token} to {to_token}", 
@@ -620,8 +622,8 @@ class SparkDEX:
                 self.flare_provider.add_tx_to_queue(
                     f"Swap {amount} {from_token} to {to_token}", 
                     [wrap_tx, approval_tx, swap_tx])
-            
         else:    
+            approval_tx, swap_tx = self.swap_erc20_tokens_tx(from_token, to_token, amount)
             self.flare_provider.add_tx_to_queue(
                 f"Swap {amount} {from_token} to {to_token}", 
                 [approval_tx, swap_tx])
@@ -654,4 +656,14 @@ class SparkDEX:
 
         return self.swap_erc20_tokens(from_token, to_token, amount)  
     
+      
+    def reset_nonce(self):    
+        self.add_to_nonce = self.w3.eth.get_transaction_count(self.address)
+
+    def get_nonce(self):
+        current_add_to_nonce = self.add_to_nonce
+        self.add_to_nonce += 1
+        return current_add_to_nonce
+        
+  
     
