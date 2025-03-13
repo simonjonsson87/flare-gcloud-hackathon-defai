@@ -254,7 +254,7 @@ const readOutLoudBtn = document.querySelector('.read-out-loud-btn');
 
 
 
-let isReadOutLoudEnabled = false;
+let isReadOutLoudEnabled = false; 
 ///////////////////////////////////////////////////
 // Window load
 ///////////////////////////////////////////////////
