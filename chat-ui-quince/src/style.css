@@ -337,13 +337,45 @@ body {
 
 
 #company_name {
+  top: 8px;
   left: 70px;
   position: absolute;
-  font-size: 35px;
+  font-size: 30px;
 }
 
 #logo {
+  top: 5px;
   left: 15px;
   position: absolute;
   height: 40px;
+}
+
+body {
+  /* Set the background image */
+  background-image: url('quincefinance480x480-trans.png');
+  
+  /* Position the logo in the center of the page */
+  background-position: center center;
+  
+  /* Scale the logo to fit and maintain proportions */
+  background-size: contain;  /* Or 'cover' depending on desired scaling */
+  
+  /* Ensure the logo stays fixed and doesn't move with scrolling */
+  background-attachment: fixed;
+  
+  /* Set a faint opacity using rgba or use a semi-transparent logo image */
+  background-color: rgba(0, 0, 0, 0.8); /* Adjust opacity */
+  
+  /* Make sure the logo is behind the content */
+  z-index: -1;
+  
+  /* Cover the entire background */
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.google-buttons {
+  border-radius: 15px;
+  font-size: 15px;
 }
