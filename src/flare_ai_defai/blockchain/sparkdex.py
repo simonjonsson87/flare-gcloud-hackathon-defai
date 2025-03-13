@@ -13,7 +13,7 @@ import structlog
 from eth_account import Account
 from eth_typing import ChecksumAddress
 from web3 import Web3
-from web3.middleware import extra_data_to_poa_middleware
+from web3.middleware import ExtraDataToPOAMiddleware
 from web3.types import TxParams
 
 from flare_ai_defai.blockchain import FlareExplorer, FlareProvider
@@ -63,7 +63,7 @@ class SparkDEX:
         self.address: ChecksumAddress | None = None
         self.private_key: str | None = None
         self.w3 = Web3(Web3.HTTPProvider(web3_provider_url))
-        self.w3.middleware_onion.inject(extra_data_to_poa_middleware, layer=0)  # Added to deal with the PoA extraData issue.
+        self.w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)  # Added to deal with the PoA extraData issue.
         self.logger = logger.bind(router="SparkDEX")
         self.web3_provider_url = web3_provider_url
         self.flare_explorer = flare_explorer
