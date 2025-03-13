@@ -31,7 +31,7 @@ class FlareExplorer:
                 self.logger.debug("Response JSON:", extra={"json_response": json_response})
             except ValueError:
                 # If the response is not JSON, log the raw content
-                #self.logger.error("Response is not in JSON format, raw content:", extra={"response_text": response.text})
+                self.logger.error("Response is not in JSON format, raw content:", extra={"response_text": response.text})
                 #with open('invalid_response.json', 'w') as f:
                 #    f.write(response.text)
                 

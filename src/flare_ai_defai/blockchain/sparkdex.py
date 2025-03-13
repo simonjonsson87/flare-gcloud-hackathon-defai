@@ -523,6 +523,7 @@ class SparkDEX:
         fee_tier = 500  # Assuming 0.05% pool fee
         amount_out_min = 0  # Fetch dynamically for slippage protection
         deadline = self.w3.eth.get_block("latest")["timestamp"] + 300  # 5 minutes from now
+        
 
         # ---- Step 0.5: calculate amount_out_min
         params = (
@@ -559,7 +560,16 @@ class SparkDEX:
         self.logger.debug(f"Approval transaction: {approval_tx}")
 
         # --- Step 3: Execute the swap ---
-        
+        params = (
+            token_in_address,  # tokenIn
+            token_out_address,  # tokenOut
+            fee_tier,  # fee (e.g., 500 = 0.05%)
+            self.wallet_store.get_address(user),  # recipient (your address)
+            int(self.w3.eth.get_block("latest")["timestamp"]) + 300,  # deadline (5 min)
+            amount_in,  # amountIn
+            amount_out_min,  # amountOutMinimum (set to 0 for estimation)
+            0  # sqrtPriceLimitX96 (no limit)
+        )
         
         swap_tx = universal_router.functions.exactInputSingle(params).build_transaction({
             'from': self.wallet_store.get_address(user),
