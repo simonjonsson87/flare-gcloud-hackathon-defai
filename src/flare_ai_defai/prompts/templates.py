@@ -83,7 +83,7 @@ Generate a welcoming message that includes ALL of these elements in order:
 4. Private key display:
    - EXACTLY as provided, make no changes: ${private_key}
    - Stress to the customer that this is the only time the system will ever give them the private_key
-   - The they are working on mainnet, and the loss of the private key means loss of funds.
+   - The they are working on mainnet, and the loss of the private key could mean loss of funds.
    - The private key needs to be stored safely.
 4. Funding account instructions:
    - Tell the user to fund the new account: Send tokens to the account address.
