@@ -335,3 +335,10 @@ body {
   display: none;
 }
 
+
+.google_buttons {
+  background-color: white;
+  font-size: 20px;
+  border-radius: 100;
+  color: black;
+}

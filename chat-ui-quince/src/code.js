@@ -270,19 +270,6 @@ window.addEventListener('load', function() {
         cancel_on_tap_outside: true
     });
 
-    window.google.accounts.id.renderButton(
-        document.getElementById('g_id_signin'),
-        {
-            type: 'standard',    // or 'icon'
-            theme: 'outline',    // or 'filled_blue', 'filled_black'
-            size: 'large',       // or 'medium', 'small'
-            text: 'signin_with', // or 'signin', 'continue_with'
-            shape: 'rectangular', // or 'pill', 'circle', 'square'
-            logo_alignment: 'left', // or 'center'
-            width: 240           // Optional: pixel width
-        }
-    );
-
     const loginBtn = document.getElementById('google-sign-in');
     if (!loginBtn) {
         console.error('Login button not found');
