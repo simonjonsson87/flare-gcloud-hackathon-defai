@@ -568,6 +568,36 @@ class SparkDEX:
             "amount_out_min": amount_out_min
         })
 
+
+
+
+
+        fee_tiers = [500, 3000, 10000]  # 0.05%, 0.3%, 1%
+
+        amount_out_wei = None
+        for fee_tier in fee_tiers:
+            params = (
+                token_address[token_in.lower()],
+                token_address[token_out.lower()],
+                fee_tier,
+                self.wallet_store.get_address(user),
+                deadline,
+                amount_in_wei,
+                1,  # Minimum for estimation
+                0
+            )
+            try:
+                amount_out_wei = universal_router.functions.exactInputSingle(params).call()
+                self.logger.debug(f"Found valid pool with fee tier {fee_tier}", extra={"amount_out_wei": amount_out_wei})
+                break
+            except Exception as e:
+                self.logger.debug(f"Fee tier {fee_tier} failed: {str(e)}", extra={"params": params})
+
+
+
+
+
+
         # --- Step 1: Approve Universal Router to Spend wFLR ---
         approval_tx = contract_in.functions.approve(universal_router_address, amount_in_wei).build_transaction({
             'from': self.wallet_store.get_address(user),
