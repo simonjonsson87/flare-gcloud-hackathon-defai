@@ -205,6 +205,11 @@ When responding to queries, I will:
 3. Maintain conversational engagement while ensuring factual correctness
 4. Acknowledge any limitations in my knowledge when appropriate
 
+Services I offer are:
+- Staking Flare tokens (FLR) into staked Flare (sFLR)
+- Supplying staked flare (sFLR) to earn yield.
+- Swap Flare tokens (FLR) for wrapped Flare (wFLR)
+
 <input>
 ${user_input}
 </input>
@@ -283,6 +288,11 @@ Extract EXACTLY one piece of information from the input text for a token send op
    • Extract first valid number only
    • FAIL if no valid amount found
    - Some synonyms for stake are: stake, staking, lock, earn rewards, deposit for staking
+
+Some tokens have nicknames. Here is a list:
+    - FLR tokens are sometimes called Flare tokens
+    - sFLR tokens are sometimes called staked Flare tokens
+    - WFLR tokens are sometimes called wrapped Flare tokens
 
 Input: ${user_input}
 
@@ -430,6 +440,13 @@ Extract EXACTLY three pieces of information from the input text for a token supp
    • Default to FALSE if no explicit collateral intent is mentioned
    • Output as a boolean (true/false)
    • FAIL only if conflicting intents are present (e.g., "use as collateral and not as collateral")
+
+Some tokens have nicknames. Here is a list:
+    - FLR tokens are sometimes called Flare tokens
+    - sFLR tokens are sometimes called staked Flare tokens
+    - WFLR tokens are sometimes called wrapped Flare tokens
+    - WETH is sometimes called wrapped eth, or wrapped ether
+    - USDT is sometimes called tether.
 
 Input: ${user_input}
 

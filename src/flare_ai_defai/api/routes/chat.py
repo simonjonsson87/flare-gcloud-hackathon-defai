@@ -572,19 +572,19 @@ class ChatRouter:
             follow_up_response = self.ai.generate(prompt)
             return {"response": follow_up_response.text + " \n " + json.dumps(response_json)}
         
-        if response_json["token"].lower() == "sflr" and response_json["token"] == False:
-            tx = self.kinetic_market.supplySFLR(user, response_json["amount"])
-        
-            self.blockchain.add_tx_to_queue(msg=message, txs=[tx])
-            formatted_preview = (
-                "Transaction Preview: "
-                + f"Supplying {response_json["amount"]} sFLR"
-                + f"<br>Type CONFIRM to proceed."
-            )
-            return {"response": formatted_preview}
+        #if response_json["token"].lower() == "sflr" and response_json["token"] == False:
+        tx = self.kinetic_market.supplySFLR(user, response_json["amount"])
+    
+        self.blockchain.add_tx_to_queue(msg=message, txs=[tx])
+        formatted_preview = (
+            "Transaction Preview: "
+            + f"Supplying {response_json["amount"]} sFLR"
+            + f"<br>Type CONFIRM to proceed."
+        )
+        return {"response": formatted_preview}
         
         # Return stringified JSON
-        return {"response": "Sorry, we don't support that yet.<br>" + json.dumps(response_json)}
+        #return {"response": "Sorry, we don't support that yet.<br>" + json.dumps(response_json)}
     
 
     
