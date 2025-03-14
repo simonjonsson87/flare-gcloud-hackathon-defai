@@ -200,7 +200,7 @@ class FlareProvider:
         return tx
 
     def create_contract_function_tx(self, user:UserInfo, contract: Contract, function_name: str, add_to_nonce: int = 0, *args, **kwargs) -> TxParams:
-        if not self.address:
+        if not self.wallet_store.get_address(user):
             raise ValueError("Account not initialized")
         if not contract:
             raise ValueError("Contract not initialized")
