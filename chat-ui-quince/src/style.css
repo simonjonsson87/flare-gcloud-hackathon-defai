@@ -368,3 +368,35 @@ body {
   border-radius: 15px;
   font-size: 15px;
 }
+
+
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.sidebar-title {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+#refresh-stats-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: none; /* Hidden until signed in */
+}
+
+#refresh-stats-btn svg {
+  width: 20px;
+  height: 20px;
+  color: #333; /* Adjust color to match your theme */
+}
+
+#refresh-stats-btn:hover svg {
+  color: #007bff; /* Hover effect, adjust as needed */
+}

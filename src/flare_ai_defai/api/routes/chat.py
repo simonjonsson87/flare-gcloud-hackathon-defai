@@ -145,6 +145,18 @@ class ChatRouter:
                 self.logger.error(f"Token verification failed: {e}")
                 raise HTTPException(status_code=401, detail=f"Invalid token: {str(e)}")
 
+        @self._router.get("/stats")
+        async def stats(user: UserInfo = Depends(get_current_user)) -> dict[str, float]:
+            """Return balances of FLR, WFLR, USDC, USDT, JOULE, and WETH for the user."""
+            try:
+                self.logger.debug("Fetching stats", user_id=user.user_id)
+                balances = await self.get_token_balances(user)
+                return balances
+            except Exception as e:
+                self.logger.error("Failed to fetch stats", error=str(e))
+                raise HTTPException(status_code=500, detail=f"Failed to fetch balances: {str(e)}")
+
+
         @self._router.post("/")
         async def chat(
             message: ChatMessage,
@@ -560,3 +572,57 @@ class ChatRouter:
     
 
     
+    async def get_token_balances(self, user: UserInfo) -> dict[str, float]:
+        """Fetch balances of FLR and ERC-20 tokens for the user."""
+        # ERC-20 ABI with balanceOf and decimals
+        ERC20_ABI = [
+            {
+                "inputs": [{"internalType": "address", "name": "account", "type": "address"}],
+                "name": "balanceOf",
+                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "decimals",
+                "outputs": [{"internalType": "uint8", "name": "", "type": "uint8"}],
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ]
+
+        # Token addresses from your provided data
+        token_addresses = {
+            "wflr": "0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d",
+            "joule": "0xE6505f92583103AF7ed9974DEC451A7Af4e3A3bE",
+            "usdc": "0xFbDa5F676cB37624f28265A144A48B0d6e87d3b6",
+            "usdt": "0x0B38e83B86d491735fEaa0a791F65c2B99535396",
+            "weth": "0x1502FA4be69d526124D453619276FacCab275d3D"
+        }
+
+        user_address = self.wallet_store.get_address(user)
+        balances = {}
+
+        # Fetch FLR balance (native token)
+        try:
+            flr_balance_wei = self.blockchain.w3.eth.get_balance(user_address)
+            balances["flr"] = float(self.blockchain.w3.from_wei(flr_balance_wei, "ether"))
+        except Exception as e:
+            self.logger.error("Failed to fetch FLR balance", error=str(e))
+            balances["flr"] = 0.0
+
+        # Fetch ERC-20 token balances
+        for token, address in token_addresses.items():
+            try:
+                contract = self.blockchain.w3.eth.contract(address=address, abi=ERC20_ABI)
+                decimals = contract.functions.decimals().call()
+                balance_wei = contract.functions.balanceOf(user_address).call()
+                balance = balance_wei / (10 ** decimals)
+                balances[token] = float(balance)
+            except Exception as e:
+                self.logger.error(f"Failed to fetch {token} balance", error=str(e))
+                balances[token] = 0.0
+
+        self.logger.debug("Fetched balances", balances=balances, user_id=user.user_id)
+        return balances

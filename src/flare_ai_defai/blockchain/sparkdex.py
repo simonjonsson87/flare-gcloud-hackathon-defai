@@ -370,7 +370,6 @@ class SparkDEX:
 
     def swap_erc20_tokens_tx(self, user: UserInfo, token_in: str, token_out: str, amount_in: float):
         slippage = 0.05
-        amount_in = self.w3.to_wei(amount_in, unit="ether")
         universal_router_address = "0x8a1E35F5c98C4E85B36B7B253222eE17773b2781"  # Replace with Flare's Universal Router if different
         
         token_address = {
@@ -564,13 +563,13 @@ class SparkDEX:
         amount_out = amount_out_wei / (10 ** token_out_decimals)
         amount_out_min = int(amount_out_wei * (1 - slippage))  # Keep in wei units
         self.logger.debug("Estimated swap output", extra={
-            "amount_in": amount_in, "token_in": token_in,
+            "amount_in_wei": amount_in_wei, "token_in": token_in,
             "amount_out": amount_out, "token_out": token_out,
             "amount_out_min": amount_out_min
         })
 
         # --- Step 1: Approve Universal Router to Spend wFLR ---
-        approval_tx = contract_in.functions.approve(universal_router_address, amount_in).build_transaction({
+        approval_tx = contract_in.functions.approve(universal_router_address, amount_in_wei).build_transaction({
             'from': self.wallet_store.get_address(user),
             'nonce': self.get_nonce(),
             "maxFeePerGas": base_fee + priority_fee,

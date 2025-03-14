@@ -1,3 +1,4 @@
+import { fetchStats, updateStats, clearStats } from './stats.js';
 
 ///////////////////////////////////////////////////
 // Classes
@@ -249,7 +250,7 @@ const input = document.getElementById('message-input');
 const sendBtn = document.getElementById('send-btn');
 //const readOutLoudBtn = document.getElementById('read-out-loud-btn');
 const readOutLoudBtn = document.querySelector('.read-out-loud-btn');
-
+const refreshStatsButton = document.getElementById('refresh-stats-btn');
 
 
 
@@ -331,7 +332,10 @@ window.onload = function() {
 ///////////////////////////////////////////////////
 // Event listeners
 ///////////////////////////////////////////////////
-
+refreshStatsButton.addEventListener('click', () => {
+    fetchStats(token);
+});
+  
 sendBtn.addEventListener("click", handleSend);
 
 input.addEventListener('keypress', function(e) {
