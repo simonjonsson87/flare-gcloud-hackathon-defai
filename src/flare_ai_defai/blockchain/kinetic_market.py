@@ -180,9 +180,10 @@ class KineticMarket:
         https://flare-explorer.flare.network/tx/0x87345aaabd6d2ca19730c2dad62e617272200a1a0fdf2ebc31d2fb413d1ae4ae
         
         """
+        amount_wei = int( amount * pow(10,18) )
         contract = self.w3.eth.contract(address=self.SUPPLY_SFLR_ADDRESS, abi=self.SUPPLY_SFLR_ABI)
         tx = self.flare_provider.create_contract_function_tx(
-            contract, "mint", 0, amount
+            user, contract, "mint", 0, amount_wei
         )
         
         # Add to queue and send

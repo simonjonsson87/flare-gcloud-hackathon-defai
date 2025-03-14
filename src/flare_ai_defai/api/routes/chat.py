@@ -521,8 +521,6 @@ class ChatRouter:
         )
         return {"response": formatted_preview}
         
-        # Return stringified JSON
-        return {"response": json.dumps(response_json)}
     
     
     async def handle_borrow(self, message: str, user: UserInfo) -> dict[str, str]:
@@ -530,10 +528,7 @@ class ChatRouter:
         
         prompt, mime_type, schema = self.prompts.get_formatted_prompt("token_borrow", user_input=message)
         ai_response = self.ai.generate(prompt=prompt, response_mime_type=mime_type, response_schema=schema)
-                
-        
-        
-        
+
         expected_json_len = 3
         ai_response_json = json.loads("{}")
         for i in range(1,5):
@@ -576,6 +571,17 @@ class ChatRouter:
             prompt, _, _ = self.prompts.get_formatted_prompt("follow_up_token_supply")
             follow_up_response = self.ai.generate(prompt)
             return {"response": follow_up_response.text + " \n " + json.dumps(response_json)}
+        
+        
+        txs = self.kinetic_market.supplySFLR(user, response_json["amount"])
+        
+        self.blockchain.add_tx_to_queue(msg=message, txs=txs)
+        formatted_preview = (
+            "Transaction Preview: "
+            + f"Supplying {response_json["amount"]} sFLR"
+            + f"<br>Type CONFIRM to proceed."
+        )
+        return {"response": formatted_preview}
         
         # Return stringified JSON
         return {"response": json.dumps(response_json)}
