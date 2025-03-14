@@ -273,6 +273,9 @@ class ChatRouter:
             response = self.flareExplorer.get_contract_abi("0x12e605bc104e93B45e1aD99F9e555f659051c2BB")
             return {"response": json.dumps(response)}
         
+        if command == "/testSwap":
+            self.sparkdex.handle_swap_token("wflr", "usdc", 1)
+        
         return {"response": "Unknown command"}
 
     async def get_semantic_route(self, message: str) -> SemanticRouterResponse:
