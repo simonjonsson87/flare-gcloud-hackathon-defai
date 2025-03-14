@@ -557,7 +557,7 @@ class ChatRouter:
         self.blockchain.add_tx_to_queue(msg=message, txs=txs)
         formatted_preview = (
             "Transaction Preview: "
-            + f"Staking {Web3.from_wei(tx.get('value', 0), 'ether')} "
+            #+ f"Staking {Web3.from_wei(tx.get('value', 0), 'ether')} "
             + f"FLR to sFLR\nType CONFIRM to proceed."
         )
         return {"response": formatted_preview}
