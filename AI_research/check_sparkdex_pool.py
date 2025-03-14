@@ -138,3 +138,13 @@ swap_tx = universal_router.functions.exactInputSingle(params).build_transaction(
     'chainId': 14,
     "type": 2,
 })
+
+
+
+
+
+
+
+
+
+

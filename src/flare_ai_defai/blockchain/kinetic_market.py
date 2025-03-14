@@ -223,9 +223,17 @@ class KineticMarket:
         # Fetch current nonce
         current_nonce = self.w3.eth.get_transaction_count(self.wallet_store.get_address(user))
         
+        estimated_gas = self.w3.eth.estimate_gas({
+            "from": self.wallet_store.get_address(user),
+            "to": self.SFLR_ADDRESS,
+            "data": self.SFLR_ABI,
+            "value": amount_wei,
+        })
+        gas_limit = int(estimated_gas * 1.2)  # Adding a 20% buffer
+        
         # Create submit transaction with value
         tx1 = self.flare_provider.create_contract_function_tx(user,
-            contract, "submit", 0, value=amount_wei
+            contract, "submit", 0, value=amount_wei, gas=gas_limit
         )
         
         return [tx1]
