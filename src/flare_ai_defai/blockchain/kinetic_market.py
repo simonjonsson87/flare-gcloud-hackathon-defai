@@ -234,7 +234,7 @@ class KineticMarket:
         
         # Create submit transaction with value
         tx1 = self.flare_provider.create_contract_function_tx(user,
-            contract, "submit", 0, value=amount_wei, gas=gas_limit
+            contract, "submit", 0, value=amount_wei#, gas=gas_limit
         )
         
         return [tx1]
