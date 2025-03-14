@@ -338,7 +338,7 @@ window.onload = function() {
 // Event listeners
 ///////////////////////////////////////////////////
 refreshStatsButton.addEventListener('click', () => {
-    fetchStats(token);
+    fetchStats(apiClient.token);
 });
   
 sendBtn.addEventListener("click", handleSend);
