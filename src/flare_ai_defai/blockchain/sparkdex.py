@@ -290,6 +290,55 @@ class SparkDEX:
             "type": "function"
         }]
 
+        ERC20_ABI = {
+            "inputs": [
+            {
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+            ],
+            "name": "approve",
+            "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },{
+            "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+            ],
+            "name": "balanceOf",
+            "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },{
+            "inputs": [],
+            "name": "decimals",
+            "outputs": [{"internalType": "uint8", "name": "", "type": "uint8"}],
+            "stateMutability": "view",
+            "type": "function"
+        }
+
         # token_abi = {
         #     "wflr": WFLR_ABI,
         #     "joule": JOULE_ABI,
@@ -299,19 +348,21 @@ class SparkDEX:
         token_in_address = token_address[token_in.lower()]
         token_out_address = token_address[token_out.lower()]
 
-        # token_in_abi = token_abi[token_in.lower()]
-        # token_out_abi = token_abi[token_out.lower()]
+        #token_in_abi = token_abi[token_in.lower()]
+        #token_out_abi = token_abi[token_out.lower()]
 
         token_in_abi = self.flare_explorer.get_contract_abi(contract_address=token_address_abi[token_in.lower()])
         token_out_abi = self.flare_explorer.get_contract_abi(contract_address=token_address_abi[token_out.lower()])
-        
+        token_in_abi = ERC20_ABI
+        token_out_abi = ERC20_ABI
         
         universal_router = self.w3.eth.contract(address=universal_router_address, abi=SWAP_ROUTER_ABI)
         contract_in = self.w3.eth.contract(address=token_in_address, abi=token_in_abi)
         contract_out = self.w3.eth.contract(address=token_out_address, abi=token_out_abi)
+        
 
         fee_tier = 500  # Assuming 0.05% pool fee
-        amount_out_min = 0  # Fetch dynamically for slippage protection
+        amount_out_min = 1  # Fetch dynamically for slippage protection
         deadline = self.w3.eth.get_block("latest")["timestamp"] + 300  # 5 minutes from now
 
         # --- Step 1: Approve Universal Router to Spend wFLR ---
