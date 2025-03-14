@@ -351,8 +351,8 @@ class SparkDEX:
         #token_in_abi = token_abi[token_in.lower()]
         #token_out_abi = token_abi[token_out.lower()]
 
-        token_in_abi = self.flare_explorer.get_contract_abi(contract_address=token_address_abi[token_in.lower()])
-        token_out_abi = self.flare_explorer.get_contract_abi(contract_address=token_address_abi[token_out.lower()])
+        #token_in_abi = self.flare_explorer.get_contract_abi(contract_address=token_address_abi[token_in.lower()])
+        #token_out_abi = self.flare_explorer.get_contract_abi(contract_address=token_address_abi[token_out.lower()])
         token_in_abi = ERC20_ABI
         token_out_abi = ERC20_ABI
         

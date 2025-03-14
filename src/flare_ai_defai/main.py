@@ -86,7 +86,7 @@ def create_app() -> FastAPI:
         flareExplorer=flare_explorer,
         attestation=Vtpm(simulate=settings.simulate_attestation),
         prompts=PromptService(),
-        kinetic_market=KineticMarket(settings.web3_provider_url, flare_explorer, flare_provider),
+        kinetic_market=KineticMarket(settings.web3_provider_url, flare_explorer, flare_provider, wallet_store),
         sparkdex=SparkDEX(settings.web3_provider_url, flare_explorer, flare_provider, wallet_store),
         wallet_store=wallet_store
     )

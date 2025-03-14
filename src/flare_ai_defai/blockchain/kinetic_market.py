@@ -12,6 +12,7 @@ from eth_typing import ChecksumAddress
 from web3 import Web3
 from web3.contract import Contract
 from web3.types import TxParams
+from flare_ai_defai.storage.fake_storage import WalletStore
 
 from flare_ai_defai.models import UserInfo
 
@@ -106,7 +107,7 @@ class KineticMarket:
         "type": "function"
     },]
 
-    def __init__(self, web3_provider_url: str, flare_explorer: FlareExplorer, flare_provider: FlareProvider) -> None:
+    def __init__(self, web3_provider_url: str, flare_explorer: FlareExplorer, flare_provider: FlareProvider, wallet_store: WalletStore) -> None:
         """
         Args:
             web3_provider_url (str): URL of the Web3 provider endpoint
@@ -118,6 +119,7 @@ class KineticMarket:
         self.web3_provider_url = web3_provider_url
         self.flare_explorer = flare_explorer
         self.flare_provider = flare_provider
+        self.wallet_store = wallet_store
         
         #self.supplySFLRwithFLR(user, 1)
         
@@ -199,7 +201,7 @@ class KineticMarket:
                      
         return tx_hashes             
     
-    def swapFLRtoSFLR(self, amount: float, spender: str = None):
+    def swapFLRtoSFLR(self, user: UserInfo, amount: float):
         if not self.w3.is_connected():
             raise Exception("Not connected to Flare blockchain")
         
@@ -214,24 +216,19 @@ class KineticMarket:
         self.logger.debug("Converted amount to wei", amount=amount, amount_wei=amount_wei)
         
         # Check balance
-        balance = self.w3.eth.get_balance(self.flare_provider.address)
+        balance = self.w3.eth.get_balance(self.wallet_store.get_address(user))
         if balance < amount_wei:
             raise ValueError(f"Insufficient balance: {self.w3.from_wei(balance, 'ether')} FLR, required: {amount} FLR")
         
         # Fetch current nonce
-        current_nonce = self.w3.eth.get_transaction_count(self.flare_provider.address)
+        current_nonce = self.w3.eth.get_transaction_count(self.wallet_store.get_address(user))
         
         # Create submit transaction with value
-        tx1 = self.flare_provider.create_contract_function_tx(
+        tx1 = self.flare_provider.create_contract_function_tx(user,
             contract, "submit", 0, value=amount_wei
         )
-        tx2 = self.flare_provider.create_contract_function_tx(
-            contract, "approve", 1, spender, amount_wei
-        )
         
-        
-        
-        return [tx1, tx2]
+        return [tx1]
         
         
     def borrowUSDC(self,user_order: dict):
