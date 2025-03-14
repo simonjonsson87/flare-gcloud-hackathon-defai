@@ -517,7 +517,7 @@ class ChatRouter:
         formatted_preview = (
             "Transaction Preview: "
             + f"Staking {response_json["amount"]} FLR"
-            + f"\nType CONFIRM to proceed."
+            + f"<br>Type CONFIRM to proceed."
         )
         return {"response": formatted_preview}
         

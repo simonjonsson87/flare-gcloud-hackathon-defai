@@ -623,8 +623,8 @@ class SparkDEX:
         approval_tx = contract_in.functions.approve(universal_router_address, amount_in_wei).build_transaction({
             'from': self.wallet_store.get_address(user),
             'nonce': self.get_nonce(),
-            "maxFeePerGas": (base_fee + priority_fee),
-            "maxPriorityFeePerGas": (priority_fee),
+            "maxFeePerGas": 2*(base_fee + priority_fee),
+            "maxPriorityFeePerGas": 2*(priority_fee),
             'chainId': self.w3.eth.chain_id,
             "type": 2,
         })
@@ -643,6 +643,10 @@ class SparkDEX:
             0  # sqrtPriceLimitX96 (no limit)
         )
         
+        tx1 = self.flare_provider.create_contract_function_tx(user,
+            universal_router, "exactInputSingle", 0, 
+            params#, gas=gas_limit
+        )
         
         swap_tx = universal_router.functions.exactInputSingle(params).build_transaction({
             'from': self.wallet_store.get_address(user),
