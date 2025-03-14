@@ -1,24 +1,28 @@
-# Flare AI DeFAI
+<div align="center">
+  <img src="chat-ui-quince/quincefinance480x480_trans.png" alt="Quince Finance Logo" width="300"/>
+</div>
 
-Flare AI Kit template for AI x DeFi (DeFAI).
+# Quince Finance  
+Welcome to **Quince Finance**—a webapp built as a solo contribution for the [Flare x Google Verifiable AI Hackathon](https://dorahacks.io/hackathon/flare-google-hackathon-virtual/tracks), Track 3: AI x DeFi. It makes DeFi on the Flare ecosystem so easy, even your tech-shy uncle could use it! Quince combines Google Cloud’s Confidential Computing with Flare’s enshrined oracles for a secure, user-friendly experience. Check it out at [quincefinance.xyz](https://quincefinance.xyz/).
 
-## 🚀 Key Features
+## What It Does  
+Quince Finance lets users dive into Flare’s DeFi world with minimal fuss. Log in with your Google ID (verified by both frontend and backend), and your wallet is securely stored in a Trusted Execution Environment (TEE). From there, a friendly AI-powered chatbot takes the wheel—use plain language to swap tokens, stake assets, or check balances. No crypto PhD required!
 
-- **Secure AI Execution**  
-  Runs within a Trusted Execution Environment (TEE) featuring remote attestation support for robust security.
+## Key Features  
+- **Simple Sign-In**: Connect with Google for fast, secure access.  
+- **AI Chatbot**: Tell it what you want in everyday words—e.g., “Swap 10 FLR for SGB.”  
+- **Voice Commands & Read-Aloud**: Hands-free DeFi with accessibility in mind.  
+- **Asset Dashboard**: See all your balances in one clean pane.  
+- **Top-Notch Security**: TLS-enabled, dual Google ID verification, and TEE-protected wallets.  
 
-- **Built-in Chat UI**  
-  Interact with your AI via a TEE-served chat interface.
+## Why It’s Cool  
+Quince is built for *everyone*. Its intuitive design flattens the DeFi learning curve, while its security (thanks to TEE and TLS) keeps your funds safe. Perfect for newbies and pros alike!
 
-- **Flare Blockchain and Wallet Integration**  
-  Perform token operations and generate wallets from within the TEE.
+## Getting Started  (user)
+Stay tuned for setup instructions as this hackathon project evolves. For now, visit [quincefinance.xyz](https://quincefinance.xyz/) to see it in action!
 
-- **Gemini 2.0 + over 300 LLMs supported**  
-  Utilize Google Gemini’s latest model with structured query support for advanced AI functionalities.
 
-<img width="500" alt="Artemis" src="https://github.com/user-attachments/assets/921fbfe2-9d52-496c-9b48-9dfc32a86208" />
-
-## 🎯 Getting Started
+## 🎯 Getting Started (dev)
 
 You can deploy Flare AI DeFAI using Docker (recommended) or set up the backend and frontend manually.
 
