@@ -34,6 +34,7 @@ class ApiClient {
                 const errorText = await response.text();
                 this.clearSession()
                 throw new Error(`Verification failed: ${response.status} - ${errorText}`);
+                refreshStatsButton.style.display = 'none';
             }
 
             const data = await response.json();
@@ -42,6 +43,9 @@ class ApiClient {
                 user_id: data.user_id,
                 email: data.email
             };
+
+            refreshStatsButton.style.display = 'inline-block';
+
             return data;
         } catch (error) {
             console.error('Token verification failed:', error);
@@ -74,6 +78,7 @@ class ApiClient {
             throw error;
         } finally {
             this.clearSession();
+            refreshStatsButton.style.display = 'none';
         }
     }
 }

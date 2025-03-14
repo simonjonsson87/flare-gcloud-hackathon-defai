@@ -384,7 +384,7 @@ body {
 }
 
 #refresh-stats-btn {
-  background: none;
+  background: white;
   border: none;
   cursor: pointer;
   padding: 5px;

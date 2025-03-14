@@ -541,34 +541,6 @@ class SparkDEX:
         deadline = self.w3.eth.get_block("latest")["timestamp"] + 300  # 5 minutes from now
         
 
-        # ---- Step 0.5: calculate amount_out_min
-        params = (
-            token_in_address,  # tokenIn
-            token_out_address,  # tokenOut
-            fee_tier,  # fee (e.g., 500 = 0.05%)
-            self.wallet_store.get_address(user),  # recipient (your address)
-            int(self.w3.eth.get_block("latest")["timestamp"]) + 300,  # deadline (5 min)
-            amount_in_wei,  # amountIn
-            1,  # amountOutMinimum (set to 0 for estimation)
-            0  # sqrtPriceLimitX96 (no limit)
-        )
-
-        amount_out_wei = 1
-        try:
-            amount_out_wei = universal_router.functions.exactInputSingle(params).call()
-        except Exception as e:
-            self.logger.error(f"Failed to estimate amount out: {str(e)}", extra={"params": params})
-            raise  
-            
-        amount_out = amount_out_wei / (10 ** token_out_decimals)
-        amount_out_min = int(amount_out_wei * (1 - slippage))  # Keep in wei units
-        self.logger.debug("Estimated swap output", extra={
-            "amount_in_wei": amount_in_wei, "token_in": token_in,
-            "amount_out": amount_out, "token_out": token_out,
-            "amount_out_min": amount_out_min
-        })
-
-
 
 
 
@@ -597,6 +569,33 @@ class SparkDEX:
 
 
 
+
+        # ---- Step 0.5: calculate amount_out_min
+        params = (
+            token_in_address,  # tokenIn
+            token_out_address,  # tokenOut
+            fee_tier,  # fee (e.g., 500 = 0.05%)
+            self.wallet_store.get_address(user),  # recipient (your address)
+            int(self.w3.eth.get_block("latest")["timestamp"]) + 300,  # deadline (5 min)
+            amount_in_wei,  # amountIn
+            1,  # amountOutMinimum (set to 0 for estimation)
+            0  # sqrtPriceLimitX96 (no limit)
+        )
+
+        amount_out_wei = 1
+        try:
+            amount_out_wei = universal_router.functions.exactInputSingle(params).call()
+        except Exception as e:
+            self.logger.error(f"Failed to estimate amount out: {str(e)}", extra={"params": params})
+            raise  
+            
+        amount_out = amount_out_wei / (10 ** token_out_decimals)
+        amount_out_min = int(amount_out_wei * (1 - slippage))  # Keep in wei units
+        self.logger.debug("Estimated swap output", extra={
+            "amount_in_wei": amount_in_wei, "token_in": token_in,
+            "amount_out": amount_out, "token_out": token_out,
+            "amount_out_min": amount_out_min
+        })
 
         # --- Step 1: Approve Universal Router to Spend wFLR ---
         approval_tx = contract_in.functions.approve(universal_router_address, amount_in_wei).build_transaction({
