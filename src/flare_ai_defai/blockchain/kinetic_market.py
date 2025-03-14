@@ -187,10 +187,10 @@ class KineticMarket:
         )
         
         # Add to queue and send
-        self.flare_provider.add_tx_to_queue("Minting kSFLR", [tx])
-        tx_hashes = self.flare_provider.send_tx_in_queue(user)
+        #self.flare_provider.add_tx_to_queue("Minting kSFLR", [tx])
+        #tx_hashes = self.flare_provider.send_tx_in_queue(user)
         
-        return tx_hashes
+        return tx
         
     def supplySFLRwithFLR(self,user:UserInfo, amount: float): 
         #tx_submit_approve = self.swapFLRtoSFLR(amount, "0x291487beC339c2fE5D83DD45F0a15EFC9Ac45656")  
