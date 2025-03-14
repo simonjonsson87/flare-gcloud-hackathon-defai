@@ -511,7 +511,15 @@ class ChatRouter:
             follow_up_response = self.ai.generate(prompt)
             return {"response": follow_up_response.text + " \n " + json.dumps(response_json)}
         
-        
+        txs = self.kinetic_market.swapFLRtoSFLR(user, 1)
+  
+        self.blockchain.add_tx_to_queue(msg=message, txs=txs)
+        formatted_preview = (
+            "Transaction Preview: "
+            + f"Staking {response_json["amount"]} FLR"
+            + f"\nType CONFIRM to proceed."
+        )
+        return {"response": formatted_preview}
         
         # Return stringified JSON
         return {"response": json.dumps(response_json)}
@@ -552,15 +560,7 @@ class ChatRouter:
         if (ai_response_json.get("amount") == 0.0):
             return {"response": "Sorry, amount must be more than 0.0 \n " + json.dumps(ai_response_json)}
         
-        txs = self.kinetic_market.swapFLRtoSFLR(user, 1)
-  
-        self.blockchain.add_tx_to_queue(msg=message, txs=txs)
-        formatted_preview = (
-            "Transaction Preview: "
-            #+ f"Staking {Web3.from_wei(tx.get('value', 0), 'ether')} "
-            + f"FLR to sFLR\nType CONFIRM to proceed."
-        )
-        return {"response": formatted_preview}
+        return {"response": "Sorry, not implemented yet"}
         
     
     
