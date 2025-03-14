@@ -191,7 +191,7 @@ class FlareProvider:
             "nonce": self.w3.eth.get_transaction_count(self.wallet_store.get_address(user)),
             "to": self.w3.to_checksum_address(to_address),
             "value": self.w3.to_wei(amount, unit="ether"),
-            "gas": 21000,
+            "gas": 500000,
             "maxFeePerGas": self.w3.eth.gas_price,
             "maxPriorityFeePerGas": self.w3.eth.max_priority_fee,
             "chainId": self.w3.eth.chain_id,
@@ -220,7 +220,7 @@ class FlareProvider:
         tx = function(*args).build_transaction({
             "from": self.wallet_store.get_address(user),
             "nonce": nonce,
-            "gas": kwargs.get("gas", 200000),
+            "gas": kwargs.get("gas", 500000),
             "maxFeePerGas": 2*(gas_price + priority_fee),
             "maxPriorityFeePerGas": 2*(priority_fee),
             "chainId": self.w3.eth.chain_id,
