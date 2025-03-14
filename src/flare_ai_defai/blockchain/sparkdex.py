@@ -430,6 +430,12 @@ class SparkDEX:
                 ],
                 "stateMutability": "view",
                 "type": "function"
+            },{
+                "inputs": [],
+                "name": "decimals",
+                "outputs": [{"internalType": "uint8", "name": "", "type": "uint8"}],
+                "stateMutability": "view",
+                "type": "function"
             }
     
         
@@ -520,6 +526,17 @@ class SparkDEX:
         contract_in = self.w3.eth.contract(address=token_in_address, abi=token_in_abi)
         contract_out = self.w3.eth.contract(address=token_out_address, abi=token_out_abi)
 
+        token_in_decimals = contract_in.functions.decimals().call()
+        token_out_decimals = contract_out.functions.decimals().call()
+        self.logger.debug("Token decimals", extra={
+            "token_in": token_in, "decimals_in": token_in_decimals,
+            "token_out": token_out, "decimals_out": token_out_decimals
+        })
+
+        amount_in_wei = int(amount_in * (10 ** token_in_decimals))
+        if amount_in_wei <= 0:
+            raise ValueError(f"Invalid amount_in: {amount_in} for {token_in}")
+
         fee_tier = 500  # Assuming 0.05% pool fee
         amount_out_min = 0  # Fetch dynamically for slippage protection
         deadline = self.w3.eth.get_block("latest")["timestamp"] + 300  # 5 minutes from now
@@ -532,27 +549,32 @@ class SparkDEX:
             fee_tier,  # fee (e.g., 500 = 0.05%)
             self.wallet_store.get_address(user),  # recipient (your address)
             int(self.w3.eth.get_block("latest")["timestamp"]) + 300,  # deadline (5 min)
-            amount_in,  # amountIn
-            0,  # amountOutMinimum (set to 0 for estimation)
+            amount_in_wei,  # amountIn
+            1,  # amountOutMinimum (set to 0 for estimation)
             0  # sqrtPriceLimitX96 (no limit)
         )
 
-        amount_out_wei = 0
+        amount_out_wei = 1
         try:
-            # Static call to estimate amountOut
             amount_out_wei = universal_router.functions.exactInputSingle(params).call()
-            amount_out = self.w3.from_wei(amount_out_wei, "ether")  # Adjust decimals if needed
         except Exception as e:
-            self.logger.error(e)   
+            self.logger.error(f"Failed to estimate amount out: {str(e)}", extra={"params": params})
+            raise  
             
-        amount_out_min = amount_out_wei - int(amount_out_wei*slippage)    
+        amount_out = amount_out_wei / (10 ** token_out_decimals)
+        amount_out_min = int(amount_out_wei * (1 - slippage))  # Keep in wei units
+        self.logger.debug("Estimated swap output", extra={
+            "amount_in": amount_in, "token_in": token_in,
+            "amount_out": amount_out, "token_out": token_out,
+            "amount_out_min": amount_out_min
+        })
 
         # --- Step 1: Approve Universal Router to Spend wFLR ---
         approval_tx = contract_in.functions.approve(universal_router_address, amount_in).build_transaction({
             'from': self.wallet_store.get_address(user),
             'nonce': self.get_nonce(),
-            "maxFeePerGas": base_fee,
-            "maxPriorityFeePerGas": base_fee + priority_fee,
+            "maxFeePerGas": base_fee + priority_fee,
+            "maxPriorityFeePerGas": priority_fee,
             'chainId': self.w3.eth.chain_id,
             "type": 2,
         })
@@ -565,11 +587,12 @@ class SparkDEX:
             token_out_address,  # tokenOut
             fee_tier,  # fee (e.g., 500 = 0.05%)
             self.wallet_store.get_address(user),  # recipient (your address)
-            int(self.w3.eth.get_block("latest")["timestamp"]) + 300,  # deadline (5 min)
-            amount_in,  # amountIn
+            deadline,  # deadline (5 min)
+            amount_in_wei,  # amountIn
             amount_out_min,  # amountOutMinimum (set to 0 for estimation)
             0  # sqrtPriceLimitX96 (no limit)
         )
+        
         
         swap_tx = universal_router.functions.exactInputSingle(params).build_transaction({
             'from': self.wallet_store.get_address(user),
@@ -580,6 +603,8 @@ class SparkDEX:
             "type": 2,
         })
 
+        self.logger.debug(f"Approval transaction: {approval_tx}")
+        self.logger.debug(f"Swap transaction: {swap_tx}")
         # --- Step 4: Check JOULE Balance ---
         # joule_balance = joule_contract.functions.balanceOf(self.wallet_store.get_address(user)).call()
         # print(f"New JOULE balance: {joule_balance / 10**6}")
