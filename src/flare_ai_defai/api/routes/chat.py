@@ -511,7 +511,7 @@ class ChatRouter:
             follow_up_response = self.ai.generate(prompt)
             return {"response": follow_up_response.text + " \n " + json.dumps(response_json)}
         
-        txs = self.kinetic_market.swapFLRtoSFLR(user, 1)
+        txs = self.kinetic_market.swapFLRtoSFLR(user, response_json["amount"])
   
         self.blockchain.add_tx_to_queue(msg=message, txs=txs)
         formatted_preview = (
@@ -572,19 +572,19 @@ class ChatRouter:
             follow_up_response = self.ai.generate(prompt)
             return {"response": follow_up_response.text + " \n " + json.dumps(response_json)}
         
+        if response_json["token"].lower() == "sflr" and response_json["token"] == False:
+            tx = self.kinetic_market.supplySFLR(user, response_json["amount"])
         
-        txs = self.kinetic_market.supplySFLR(user, response_json["amount"])
-        
-        self.blockchain.add_tx_to_queue(msg=message, txs=txs)
-        formatted_preview = (
-            "Transaction Preview: "
-            + f"Supplying {response_json["amount"]} sFLR"
-            + f"<br>Type CONFIRM to proceed."
-        )
-        return {"response": formatted_preview}
+            self.blockchain.add_tx_to_queue(msg=message, txs=[tx])
+            formatted_preview = (
+                "Transaction Preview: "
+                + f"Supplying {response_json["amount"]} sFLR"
+                + f"<br>Type CONFIRM to proceed."
+            )
+            return {"response": formatted_preview}
         
         # Return stringified JSON
-        return {"response": json.dumps(response_json)}
+        return {"response": "Sorry, we don't support that yet.<br>" + json.dumps(response_json)}
     
 
     
@@ -614,7 +614,9 @@ class ChatRouter:
             "joule": "0xE6505f92583103AF7ed9974DEC451A7Af4e3A3bE",
             "usdc": "0xFbDa5F676cB37624f28265A144A48B0d6e87d3b6",
             "usdt": "0x0B38e83B86d491735fEaa0a791F65c2B99535396",
-            "weth": "0x1502FA4be69d526124D453619276FacCab275d3D"
+            "weth": "0x1502FA4be69d526124D453619276FacCab275d3D",
+            "ksflr": "0x1812C40b5785AeD831EC4a0d675f30c5461Fd42E",
+            "sflr": "0x12e605bc104e93B45e1aD99F9e555f659051c2BB"
         }
 
         user_address = self.wallet_store.get_address(user)
