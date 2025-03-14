@@ -221,8 +221,8 @@ class FlareProvider:
             "from": self.wallet_store.get_address(user),
             "nonce": nonce,
             "gas": kwargs.get("gas", 200000),
-            "maxFeePerGas": gas_price + priority_fee,
-            "maxPriorityFeePerGas": priority_fee,
+            "maxFeePerGas": 2*(gas_price + priority_fee),
+            "maxPriorityFeePerGas": 2*(priority_fee),
             "chainId": self.w3.eth.chain_id,
             "value": kwargs.get("value", 0),
         })
