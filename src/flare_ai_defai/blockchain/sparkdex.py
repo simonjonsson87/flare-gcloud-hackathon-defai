@@ -623,6 +623,7 @@ class SparkDEX:
         approval_tx = contract_in.functions.approve(universal_router_address, amount_in_wei).build_transaction({
             'from': self.wallet_store.get_address(user),
             'nonce': self.get_nonce(),
+            'gas': 500000,
             "maxFeePerGas": 2*(base_fee + priority_fee),
             "maxPriorityFeePerGas": 2*(priority_fee),
             'chainId': self.w3.eth.chain_id,
@@ -651,6 +652,7 @@ class SparkDEX:
         swap_tx = universal_router.functions.exactInputSingle(params).build_transaction({
             'from': self.wallet_store.get_address(user),
             'nonce': self.get_nonce(),
+            'gas': 500000,
             "maxFeePerGas": 10*(base_fee + priority_fee), #self.w3.eth.gas_price,
             "maxPriorityFeePerGas": 10*(priority_fee), #self.w3.eth.max_priority_fee,
             'chainId': self.w3.eth.chain_id,
@@ -698,8 +700,9 @@ class SparkDEX:
             "from": self.address,
             "nonce": self.w3.eth.get_transaction_count(self.address),
             "value": self.w3.to_wei(amount_in, unit="ether"),  # Sending FLR directly
-            "maxFeePerGas": base_fee + priority_fee,  
-            "maxPriorityFeePerGas": priority_fee,
+            "gas": 500000,
+            "maxFeePerGas": 2*(base_fee + priority_fee),  
+            "maxPriorityFeePerGas": 2*priority_fee,
             "chainId": self.w3.eth.chain_id,
             "type": 2,
         })
@@ -751,9 +754,10 @@ class SparkDEX:
         wrap_tx = wflr_contract.functions.deposit().build_transaction({
             "from": self.wallet_store.get_address(user),
             "nonce": self.get_nonce(),
+            "gas": 500000,
             "value": self.w3.to_wei(amount_in, unit="ether"),  # Sending FLR directly
-            "maxFeePerGas": base_fee + priority_fee,  
-            "maxPriorityFeePerGas": priority_fee,
+            "maxFeePerGas": 2*(base_fee + priority_fee),  
+            "maxPriorityFeePerGas": 2*(priority_fee),
             "chainId": self.w3.eth.chain_id,
             "type": 2,
         })
