@@ -389,6 +389,7 @@ body {
   cursor: pointer;
   padding: 5px;
   display: none; /* Hidden until signed in */
+  border-radius: 50%;
 }
 
 #refresh-stats-btn svg {

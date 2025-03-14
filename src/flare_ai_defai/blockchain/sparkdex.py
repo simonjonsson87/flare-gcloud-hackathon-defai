@@ -537,35 +537,8 @@ class SparkDEX:
             raise ValueError(f"Invalid amount_in: {amount_in} for {token_in}")
 
         fee_tier = 500  # Assuming 0.05% pool fee
-        amount_out_min = 0  # Fetch dynamically for slippage protection
+        amount_out_min = 1  # Fetch dynamically for slippage protection
         deadline = self.w3.eth.get_block("latest")["timestamp"] + 300  # 5 minutes from now
-        
-
-
-
-
-        fee_tiers = [500, 3000, 10000]  # 0.05%, 0.3%, 1%
-
-        amount_out_wei = None
-        for fee_tier in fee_tiers:
-            params = (
-                token_address[token_in.lower()],
-                token_address[token_out.lower()],
-                fee_tier,
-                self.wallet_store.get_address(user),
-                deadline,
-                amount_in_wei,
-                135540,  # Minimum for estimation
-                0
-            )
-            try:
-                amount_out_wei = universal_router.functions.exactInputSingle(params).call()
-                self.logger.debug(f"tiercheck - Found valid pool with fee tier {fee_tier}", extra={"amount_out_wei": amount_out_wei})
-                break
-            except Exception as e:
-                self.logger.debug(f"tiercheck - Fee tier {fee_tier} failed: {str(e)}", extra={"params": params})
-
-
 
 
         # ---- Step 0.5: calculate amount_out_min
@@ -734,6 +707,7 @@ class SparkDEX:
 
     def add_swap_txs_to_queue(self, user: UserInfo, from_token: str, to_token: str, amount: float) -> str:
         self.reset_nonce(user)
+        
         
         if from_token.lower() == "flr":
             wrap_tx = self.wrap_flr_to_wflr_tx(user, amount)
